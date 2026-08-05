@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { LanguageSwitcher } from "./LanguageSwitcher";
-import { ThemeSwitcher } from "./ThemeSwitcher";
 
 const instagramUrl = "https://www.instagram.com/qeva_digital/";
 const tiktokUrl = "https://www.tiktok.com/@qeva_digital";
@@ -43,7 +42,6 @@ export function Footer() {
       <div className="mx-auto grid max-w-7xl grid-cols-3 items-center gap-4 px-6 py-5 lg:px-10">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <LanguageSwitcher />
-          <ThemeSwitcher />
         </div>
 
         <p className="text-center text-xs tracking-wide text-faint">

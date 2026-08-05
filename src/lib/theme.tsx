@@ -8,46 +8,97 @@ import {
   type ReactNode,
 } from "react";
 
-export type Theme = "dark" | "light";
+export type ThemeId = "dark" | "light" | "latte" | "mint" | "corporate";
+export type CorporateAccent = "red" | "green" | "blue";
+
+export type Theme = ThemeId;
+
+export const THEME_IDS: ThemeId[] = [
+  "dark",
+  "light",
+  "latte",
+  "mint",
+  "corporate",
+];
+
+export const CORPORATE_ACCENTS: CorporateAccent[] = ["red", "green", "blue"];
 
 type ThemeContextValue = {
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
+  theme: ThemeId;
+  accent: CorporateAccent;
+  setTheme: (theme: ThemeId) => void;
+  setAccent: (accent: CorporateAccent) => void;
 };
 
-const STORAGE_KEY = "qeva-theme";
+const THEME_KEY = "qeva-theme";
+const ACCENT_KEY = "qeva-accent";
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-function applyTheme(theme: Theme) {
-  document.documentElement.setAttribute("data-theme", theme);
+function normalizeTheme(value: string | null): ThemeId {
+  if (value === "ember") {
+    return "latte";
+  }
+  if (value === "meadow") {
+    return "mint";
+  }
+  if (
+    value === "dark" ||
+    value === "light" ||
+    value === "latte" ||
+    value === "mint" ||
+    value === "corporate"
+  ) {
+    return value;
+  }
+  return "dark";
+}
+
+function isAccent(value: string | null): value is CorporateAccent {
+  return value === "red" || value === "green" || value === "blue";
+}
+
+function applyTheme(theme: ThemeId, accent: CorporateAccent) {
+  const root = document.documentElement;
+  root.setAttribute("data-theme", theme);
+
+  if (theme === "corporate") {
+    root.setAttribute("data-accent", accent);
+  } else {
+    root.removeAttribute("data-accent");
+  }
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("dark");
+  const [theme, setThemeState] = useState<ThemeId>("dark");
+  const [accent, setAccentState] = useState<CorporateAccent>("red");
 
   useEffect(() => {
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    if (stored === "dark" || stored === "light") {
-      setThemeState(stored);
-      applyTheme(stored);
-      return;
-    }
+    const nextTheme = normalizeTheme(window.localStorage.getItem(THEME_KEY));
+    const storedAccent = window.localStorage.getItem(ACCENT_KEY);
+    const nextAccent = isAccent(storedAccent) ? storedAccent : "red";
 
-    applyTheme("dark");
+    setThemeState(nextTheme);
+    setAccentState(nextAccent);
+    applyTheme(nextTheme, nextAccent);
   }, []);
 
   useEffect(() => {
-    applyTheme(theme);
-    window.localStorage.setItem(STORAGE_KEY, theme);
-  }, [theme]);
+    applyTheme(theme, accent);
+    window.localStorage.setItem(THEME_KEY, theme);
+    window.localStorage.setItem(ACCENT_KEY, accent);
+  }, [theme, accent]);
 
-  const setTheme = (next: Theme) => {
+  const setTheme = (next: ThemeId) => {
     setThemeState(next);
   };
 
+  const setAccent = (next: CorporateAccent) => {
+    setAccentState(next);
+  };
+
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <ThemeContext.Provider value={{ theme, accent, setTheme, setAccent }}>
       {children}
     </ThemeContext.Provider>
   );

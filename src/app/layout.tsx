@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   },
 };
 
-const themeInitScript = `(function(){try{var t=localStorage.getItem("qeva-theme");document.documentElement.setAttribute("data-theme",t==="light"||t==="dark"?t:"dark");}catch(e){document.documentElement.setAttribute("data-theme","dark");}})();`;
+const themeInitScript = `(function(){try{var root=document.documentElement;var t=localStorage.getItem("qeva-theme");var a=localStorage.getItem("qeva-accent");if(t==="ember")t="latte";if(t==="meadow")t="mint";var themes={dark:1,light:1,latte:1,mint:1,corporate:1};var accents={red:1,green:1,blue:1};root.setAttribute("data-theme",themes[t]?t:"dark");if((themes[t]?t:"dark")==="corporate"){root.setAttribute("data-accent",accents[a]?a:"red");}else{root.removeAttribute("data-accent");}}catch(e){document.documentElement.setAttribute("data-theme","dark");}})();`;
 
 export default function RootLayout({
   children,
