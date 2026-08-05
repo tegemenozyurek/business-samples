@@ -36,8 +36,8 @@ export const rezNavCopy: Record<"tr" | "en", NavCopy> = {
     homeHref: "/rez",
     links: [
       { label: "Ana Sayfa", href: "/rez" },
-      { label: "Galeri", href: "/rez/gallery" },
       { label: "Hizmetler", href: "/rez/hizmetler" },
+      { label: "Galeri", href: "/rez/gallery" },
       { label: "İletişim", href: "/rez/iletisim" },
     ],
   },
@@ -50,8 +50,8 @@ export const rezNavCopy: Record<"tr" | "en", NavCopy> = {
     homeHref: "/rez",
     links: [
       { label: "Home", href: "/rez" },
-      { label: "Gallery", href: "/rez/gallery" },
       { label: "Services", href: "/rez/hizmetler" },
+      { label: "Gallery", href: "/rez/gallery" },
       { label: "Contact", href: "/rez/iletisim" },
     ],
   },

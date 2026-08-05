@@ -11,10 +11,16 @@ import { ImageLightbox } from "@/components/rez/ImageLightbox";
 type ServiceCardProps = {
   service: ServiceItem;
   index: number;
+  titleAs?: "h2" | "h3";
 };
 
-export function ServiceCard({ service, index }: ServiceCardProps) {
+export function ServiceCard({
+  service,
+  index,
+  titleAs = "h2",
+}: ServiceCardProps) {
   const [open, setOpen] = useState(false);
+  const Title = titleAs;
 
   return (
     <FadeUp delay={index * 0.05} className="h-full">
@@ -36,9 +42,9 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
         </button>
 
         <div className="flex flex-1 flex-col items-center px-4 py-4 text-center sm:px-5 sm:py-5">
-          <h2 className="flex min-h-[2.5rem] items-center justify-center font-[family-name:var(--font-cormorant)] text-xl leading-tight tracking-[-0.02em] text-[var(--heading)] sm:min-h-[2.75rem] sm:text-2xl">
+          <Title className="flex min-h-[2.5rem] items-center justify-center font-[family-name:var(--font-cormorant)] text-xl leading-tight tracking-[-0.02em] text-[var(--heading)] sm:min-h-[2.75rem] sm:text-2xl">
             {service.name}
-          </h2>
+          </Title>
 
           <div className="mt-1.5 flex items-center justify-center gap-2.5 text-sm">
             <p className="inline-flex items-center gap-1.5 text-[var(--subtle)]">
