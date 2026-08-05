@@ -17,7 +17,7 @@ export function GalleryGrid({ items, onOpen }: GalleryGridProps) {
           Bu kategoride henüz çalışma yok.
         </p>
       ) : (
-        <div className="columns-1 gap-4 sm:columns-2 lg:columns-4">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
           <AnimatePresence mode="popLayout">
             {items.map((item, index) => (
               <GalleryCard

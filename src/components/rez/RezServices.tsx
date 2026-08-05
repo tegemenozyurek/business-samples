@@ -2,10 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { rezImages } from "@/lib/rez-content";
 import { FadeUp } from "./FadeUp";
+import { ImageLightbox } from "./ImageLightbox";
 
 export function RezServices() {
+  const [active, setActive] = useState<{
+    src: string;
+    alt: string;
+  } | null>(null);
+
   return (
     <section className="bg-[var(--background)] px-6 py-24 lg:px-10 lg:py-28">
       <div className="mx-auto max-w-7xl">
@@ -18,25 +25,33 @@ export function RezServices() {
           </h2>
         </FadeUp>
 
-        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
           {rezImages.services.map((service, index) => (
             <FadeUp key={service.title} delay={index * 0.05}>
-              <article className="group overflow-hidden rounded-[1.5rem] border border-[rgba(26,22,20,0.06)] bg-white shadow-[0_12px_40px_rgba(26,22,20,0.04)] transition-transform duration-500 hover:-translate-y-1">
-                <div className="relative aspect-[4/3] overflow-hidden">
+              <article className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] transition-shadow duration-500 hover:shadow-[0_18px_50px_rgba(0,0,0,0.08)]">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setActive({ src: service.src, alt: service.title })
+                  }
+                  className="relative aspect-[4/3] w-full overflow-hidden text-left sm:aspect-[5/4]"
+                  aria-label={`${service.title} görselini büyüt`}
+                >
                   <Image
                     src={service.src}
                     alt={service.title}
                     fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                   />
-                </div>
-                <div className="p-6">
+                </button>
+
+                <div className="flex flex-1 flex-col p-5 sm:p-6">
                   <div className="flex items-start justify-between gap-3">
-                    <h3 className="font-[family-name:var(--font-cormorant)] text-2xl text-[var(--heading)]">
+                    <h3 className="font-[family-name:var(--font-cormorant)] text-2xl tracking-[-0.02em] text-[var(--heading)]">
                       {service.title}
                     </h3>
-                    <p className="shrink-0 text-sm font-medium text-[var(--accent)]">
+                    <p className="shrink-0 pt-1 text-sm font-medium text-[var(--accent)]">
                       {service.price}
                     </p>
                   </div>
@@ -45,7 +60,7 @@ export function RezServices() {
                   </p>
                   <Link
                     href="/rez/randevu"
-                    className="mt-6 inline-flex text-[12px] font-medium tracking-[0.16em] text-[var(--heading)] uppercase transition-opacity hover:opacity-70"
+                    className="rez-btn-primary mt-6 w-full text-center"
                   >
                     Randevu Al
                   </Link>
@@ -55,6 +70,13 @@ export function RezServices() {
           ))}
         </div>
       </div>
+
+      <ImageLightbox
+        open={Boolean(active)}
+        src={active?.src ?? ""}
+        alt={active?.alt ?? ""}
+        onClose={() => setActive(null)}
+      />
     </section>
   );
 }

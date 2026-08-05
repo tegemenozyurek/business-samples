@@ -66,65 +66,54 @@ export function GalleryLightbox({
         >
           <button
             type="button"
-            className="absolute inset-0 bg-black/75 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/80"
             aria-label="Kapat"
             onClick={onClose}
           />
 
-          <motion.div
-            className="relative z-10 flex w-full max-w-5xl flex-col overflow-hidden rounded-[1.5rem] bg-[#111] shadow-[0_30px_80px_rgba(0,0,0,0.45)]"
-            initial={{ opacity: 0, y: 16, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 12, scale: 0.98 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute top-4 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 sm:top-6 sm:right-6"
+            aria-label="Kapat"
           >
-            <div className="relative aspect-[4/3] w-full sm:aspect-[16/10]">
+            <X className="h-5 w-5" strokeWidth={1.5} />
+          </button>
+
+          <button
+            type="button"
+            onClick={onPrev}
+            className="absolute left-3 z-20 flex h-10 w-10 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 sm:left-6"
+            aria-label="Önceki"
+          >
+            <ChevronLeft className="h-6 w-6" strokeWidth={1.5} />
+          </button>
+
+          <button
+            type="button"
+            onClick={onNext}
+            className="absolute right-3 z-20 flex h-10 w-10 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 sm:right-6"
+            aria-label="Sonraki"
+          >
+            <ChevronRight className="h-6 w-6" strokeWidth={1.5} />
+          </button>
+
+          <motion.div
+            className="relative z-10 w-full max-w-4xl"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.25 }}
+          >
+            <div className="relative aspect-[4/5] w-full max-h-[80svh] sm:aspect-[4/3]">
               <Image
                 src={active.src}
                 alt={active.title}
                 fill
                 priority
-                sizes="(max-width: 1280px) 100vw, 1024px"
-                className="object-cover"
+                sizes="(max-width: 1280px) 100vw, 896px"
+                className="object-contain"
               />
-            </div>
-
-            <div className="flex items-center justify-between gap-4 px-5 py-4 sm:px-6">
-              <div className="min-w-0">
-                <p className="text-[10px] font-medium tracking-[0.18em] text-white/55 uppercase">
-                  {active.category}
-                </p>
-                <h2 className="mt-1 truncate font-[family-name:var(--font-cormorant)] text-2xl text-white">
-                  {active.title}
-                </h2>
-              </div>
-
-              <div className="flex shrink-0 items-center gap-2">
-                <button
-                  type="button"
-                  onClick={onPrev}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white transition-colors hover:bg-white/10"
-                  aria-label="Önceki"
-                >
-                  <ChevronLeft className="h-5 w-5" strokeWidth={1.5} />
-                </button>
-                <button
-                  type="button"
-                  onClick={onNext}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white transition-colors hover:bg-white/10"
-                  aria-label="Sonraki"
-                >
-                  <ChevronRight className="h-5 w-5" strokeWidth={1.5} />
-                </button>
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white transition-colors hover:bg-white/10"
-                  aria-label="Kapat"
-                >
-                  <X className="h-5 w-5" strokeWidth={1.5} />
-                </button>
-              </div>
             </div>
           </motion.div>
         </motion.div>

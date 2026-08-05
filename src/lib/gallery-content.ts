@@ -162,6 +162,3 @@ export const galleryItems: GalleryItem[] = [
     height: "medium",
   },
 ];
-
-export const galleryHeroImage =
-  "https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=2000&q=80";
