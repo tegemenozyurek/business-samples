@@ -3,9 +3,10 @@ export const navCopy = {
     ariaLabel: "Ana navigasyon",
     openMenu: "Menüyü aç",
     closeMenu: "Menüyü kapat",
+    cta: "Randevu Al",
     links: [
       { label: "Ana Sayfa", href: "/" },
-      { label: "Hakkımızda", href: "/hakkimizda" },
+      { label: "Galeri", href: "/gallery" },
       { label: "Hizmetler", href: "/hizmetler" },
       { label: "İletişim", href: "/iletisim" },
     ],
@@ -14,9 +15,10 @@ export const navCopy = {
     ariaLabel: "Main navigation",
     openMenu: "Open menu",
     closeMenu: "Close menu",
+    cta: "Book Now",
     links: [
       { label: "Home", href: "/" },
-      { label: "About", href: "/hakkimizda" },
+      { label: "Gallery", href: "/gallery" },
       { label: "Services", href: "/hizmetler" },
       { label: "Contact", href: "/iletisim" },
     ],
