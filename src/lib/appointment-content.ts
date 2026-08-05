@@ -60,26 +60,3 @@ export const bookingInfoCards = [
       "Randevu oluşturulunca SMS / WhatsApp ile onay mesajı gönderilir.",
   },
 ] as const;
-
-export const appointmentFaq = [
-  {
-    question: "Randevumu nasıl iptal ederim?",
-    answer:
-      "WhatsApp veya telefon üzerinden en az 24 saat önce haber vermeniz yeterli.",
-  },
-  {
-    question: "Randevumu erteleyebilir miyim?",
-    answer:
-      "Evet. Müsaitlik durumuna göre tarih ve saatinizi birlikte güncelleyebiliriz.",
-  },
-  {
-    question: "İlham görselleri getirebilir miyim?",
-    answer:
-      "Kesinlikle. Pinterest / Instagram referanslarınızı danışmanlıkta birlikte inceleriz.",
-  },
-  {
-    question: "Randevu ne kadar sürer?",
-    answer:
-      "Seçtiğiniz hizmete göre 30–120 dakika arasında değişir. Özet kartında tahmini süreyi görürsünüz.",
-  },
-] as const;

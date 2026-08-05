@@ -59,26 +59,3 @@ export const workingHours: {
     days: [0],
   },
 ];
-
-export const contactFaq = [
-  {
-    question: "Nasıl randevu alabilirim?",
-    answer:
-      "Randevu Al butonuyla online formu doldurabilir veya WhatsApp / telefon üzerinden hızlıca yer ayırtabilirsiniz.",
-  },
-  {
-    question: "Randevumu iptal edebilir miyim?",
-    answer:
-      "Evet. Randevunuzdan en az 24 saat önce haber vermeniz yeterli. Geç iptallerde aynı gün için yeni slot açılamayabilir.",
-  },
-  {
-    question: "Walk-in kabul ediyor musunuz?",
-    answer:
-      "Yoğunluğa göre kabul edebiliyoruz; ancak hizmet kalitesi için randevu almanızı öneririz.",
-  },
-  {
-    question: "Hangi ödeme yöntemlerini kabul ediyorsunuz?",
-    answer:
-      "Nakit, kredi / banka kartı ve bilinen mobil ödeme yöntemlerini kabul ediyoruz.",
-  },
-] as const;

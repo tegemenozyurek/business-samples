@@ -1,35 +1,29 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { contactHeroImage } from "@/lib/contact-content";
 
 export function ContactHero() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <section className="relative isolate min-h-[58svh] overflow-hidden bg-[var(--salon-beige)] sm:min-h-[64svh]">
-      <div className="absolute inset-0">
-        <Image
-          src={contactHeroImage}
-          alt="Luxury nail salon reception"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-center"
-        />
-        <div className="rez-hero-wash absolute inset-0" />
-        <div className="rez-hero-fade absolute inset-0" />
-      </div>
+    <section className="relative overflow-hidden bg-[var(--salon-beige)] px-6 pt-28 pb-14 lg:px-10 lg:pt-36 lg:pb-16">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-24 top-10 h-72 w-72 rounded-full bg-[color-mix(in_srgb,var(--accent)_18%,transparent)] blur-3xl"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -left-16 bottom-0 h-56 w-56 rounded-full bg-[color-mix(in_srgb,var(--heading)_6%,transparent)] blur-3xl"
+      />
 
-      <div className="relative z-10 mx-auto flex min-h-[58svh] max-w-7xl flex-col justify-end px-6 pb-14 pt-28 sm:min-h-[64svh] lg:px-10 lg:pb-16">
+      <div className="relative mx-auto max-w-5xl">
         <motion.div
-          initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
-          <nav aria-label="Breadcrumb" className="mb-6">
+          <nav aria-label="Breadcrumb" className="mb-8">
             <ol className="flex items-center gap-2 text-[11px] tracking-[0.18em] text-[var(--muted)] uppercase">
               <li>
                 <Link
@@ -44,12 +38,12 @@ export function ContactHero() {
             </ol>
           </nav>
 
-          <h1 className="font-[family-name:var(--font-cormorant)] text-5xl tracking-[-0.02em] text-[var(--heading)] sm:text-6xl lg:text-7xl">
-            İletişim
-          </h1>
-          <p className="mt-5 max-w-xl text-base leading-relaxed text-[var(--muted)] sm:text-lg">
-            Sorularınız mı var? Size yardımcı olmaktan mutluluk duyarız.
+          <p className="font-[family-name:var(--font-cormorant)] text-2xl tracking-[-0.02em] text-[var(--heading)] sm:text-3xl">
+            Qeva Nail Studio
           </p>
+          <h1 className="mt-4 max-w-3xl font-[family-name:var(--font-cormorant)] text-[2.75rem] leading-[1.08] tracking-[-0.03em] text-[var(--heading)] sm:text-6xl lg:text-[4.25rem]">
+            Güzelliğinize profesyonel bir dokunuş katmaya hazır mısınız?
+          </h1>
         </motion.div>
       </div>
     </section>

@@ -1,37 +1,70 @@
 "use client";
 
-import { MessageCircle, Phone } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Phone } from "lucide-react";
 import { contactDetails } from "@/lib/contact-content";
 import { FadeUp } from "@/components/rez/FadeUp";
 
 export function AppointmentCta() {
   return (
-    <section className="bg-[var(--heading)] px-6 py-24 text-[#fbf9f7] lg:px-10 lg:py-28">
-      <div className="mx-auto max-w-3xl text-center">
+    <section className="border-t border-[rgba(26,22,20,0.06)] bg-[var(--background)] px-6 py-20 lg:px-10 lg:py-28">
+      <div className="mx-auto grid max-w-7xl items-end gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-20">
         <FadeUp>
-          <h2 className="font-[family-name:var(--font-cormorant)] text-4xl tracking-[-0.02em] sm:text-5xl lg:text-6xl">
-            Sorularınız mı var?
-          </h2>
-          <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-white/70">
-            Randevu öncesi netleştirmek istediğiniz bir şey varsa hemen yazın
-            veya arayın.
+          <p className="text-[11px] font-medium tracking-[0.24em] text-[var(--accent)] uppercase">
+            Destek
           </p>
-          <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <h2 className="mt-3 max-w-xl font-[family-name:var(--font-cormorant)] text-4xl tracking-[-0.02em] text-[var(--heading)] sm:text-5xl lg:text-6xl">
+            Sorularınız için.
+          </h2>
+          <p className="mt-5 max-w-md text-base leading-relaxed text-[var(--muted)]">
+            Randevu öncesi emin olmak istediğiniz bir detay varsa WhatsApp’tan
+            yazın ya da doğrudan arayın.
+          </p>
+        </FadeUp>
+
+        <FadeUp delay={0.08}>
+          <div className="divide-y divide-[rgba(26,22,20,0.08)] border-y border-[rgba(26,22,20,0.08)]">
             <a
               href={contactDetails.whatsappHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-w-[180px] items-center justify-center gap-2 rounded-2xl bg-white px-8 py-3.5 text-[12px] font-medium tracking-[0.16em] text-[var(--heading)] uppercase transition-opacity hover:opacity-90"
+              className="group flex items-center gap-4 py-6 transition-colors"
             >
-              <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
-              WhatsApp
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center text-[var(--heading)] transition-transform duration-500 group-hover:-translate-y-0.5">
+                <MessageCircle className="h-[18px] w-[18px]" strokeWidth={1.5} />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[11px] font-medium tracking-[0.18em] text-[var(--accent)] uppercase">
+                  WhatsApp
+                </span>
+                <span className="mt-1.5 block font-[family-name:var(--font-cormorant)] text-xl tracking-[-0.01em] text-[var(--heading)] sm:text-2xl">
+                  Hemen yazın
+                </span>
+              </span>
+              <ArrowUpRight
+                className="h-4 w-4 shrink-0 text-[var(--muted)] transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[var(--heading)]"
+                strokeWidth={1.5}
+              />
             </a>
+
             <a
               href={contactDetails.phoneHref}
-              className="inline-flex min-w-[180px] items-center justify-center gap-2 rounded-2xl border border-white/25 px-8 py-3.5 text-[12px] font-medium tracking-[0.16em] text-white uppercase transition-colors hover:bg-white/10"
+              className="group flex items-center gap-4 py-6 transition-colors"
             >
-              <Phone className="h-4 w-4" strokeWidth={1.5} />
-              Telefon Et
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center text-[var(--heading)] transition-transform duration-500 group-hover:-translate-y-0.5">
+                <Phone className="h-[18px] w-[18px]" strokeWidth={1.5} />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[11px] font-medium tracking-[0.18em] text-[var(--accent)] uppercase">
+                  Telefon
+                </span>
+                <span className="mt-1.5 block font-[family-name:var(--font-cormorant)] text-xl tracking-[-0.01em] text-[var(--heading)] sm:text-2xl">
+                  {contactDetails.phone}
+                </span>
+              </span>
+              <ArrowUpRight
+                className="h-4 w-4 shrink-0 text-[var(--muted)] transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[var(--heading)]"
+                strokeWidth={1.5}
+              />
             </a>
           </div>
         </FadeUp>
