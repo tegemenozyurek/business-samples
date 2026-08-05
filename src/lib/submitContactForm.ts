@@ -1,6 +1,3 @@
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { getFirebaseFirestore } from "./firebase";
-
 export type ContactFormData = {
   name: string;
   company: string;
@@ -10,16 +7,6 @@ export type ContactFormData = {
   message: string;
 };
 
-export async function submitContactForm(data: ContactFormData) {
-  const db = getFirebaseFirestore();
-
-  await addDoc(collection(db, "website-form"), {
-    name: data.name.trim(),
-    company: data.company.trim(),
-    email: data.email.trim(),
-    phone: data.phone.trim(),
-    serviceType: data.service,
-    message: data.message.trim(),
-    createdAt: serverTimestamp(),
-  });
+export async function submitContactForm(_data: ContactFormData) {
+  throw new Error("Contact form backend is not configured.");
 }

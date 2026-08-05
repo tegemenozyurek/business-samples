@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { FirebaseAnalytics } from "@/components/FirebaseAnalytics";
 import { LayoutShell } from "@/components/LayoutShell";
 import "./globals.css";
 
@@ -42,7 +41,6 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="flex min-h-full flex-col bg-background text-foreground">
-        <FirebaseAnalytics />
         <LayoutShell>{children}</LayoutShell>
       </body>
     </html>
