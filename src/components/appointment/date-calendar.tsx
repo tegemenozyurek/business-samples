@@ -114,18 +114,18 @@ export function DateCalendar({ value, onChange }: DateCalendarProps) {
         </button>
       </div>
 
-      <div className="mt-5 grid grid-cols-7 gap-1 text-center text-[10px] tracking-[0.12em] text-[var(--muted)] uppercase sm:gap-1.5">
+      <div className="mt-4 grid grid-cols-7 gap-0.5 text-center text-[10px] tracking-[0.12em] text-[var(--muted)] uppercase">
         {weekDays.map((day) => (
-          <span key={day} className="py-1">
+          <span key={day} className="py-0.5">
             {day}
           </span>
         ))}
       </div>
 
-      <div className="mt-1 grid grid-cols-7 gap-1 sm:gap-1.5">
+      <div className="mt-0.5 grid grid-cols-7 gap-0.5">
         {cells.map((cell, index) => {
           if (cell.type === "empty") {
-            return <div key={`empty-${index}`} className="aspect-square" />;
+            return <div key={`empty-${index}`} className="h-10 sm:h-11" />;
           }
 
           const { date, key } = cell;
@@ -146,7 +146,7 @@ export function DateCalendar({ value, onChange }: DateCalendarProps) {
               onClick={() => onChange(key)}
               aria-pressed={selected}
               aria-label={`${key}, ${densityLegend.find((item) => item.level === density)?.label}`}
-              className={`flex aspect-square flex-col items-center justify-center rounded-xl border text-sm transition-all duration-300 ${
+              className={`flex h-10 flex-col items-center justify-center rounded-lg border text-[13px] transition-all duration-300 sm:h-11 ${
                 cannotSelect
                   ? "cursor-not-allowed border-transparent text-[var(--faint)]"
                   : selected
@@ -156,7 +156,7 @@ export function DateCalendar({ value, onChange }: DateCalendarProps) {
             >
               <span className="leading-none">{date.getDate()}</span>
               <span
-                className={`mt-1 h-1.5 w-1.5 rounded-full ${
+                className={`mt-0.5 h-1.5 w-1.5 rounded-full ${
                   outOfRange
                     ? "bg-[rgba(26,22,20,0.12)]"
                     : selected

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -69,6 +69,8 @@ export function BookingForm() {
     date: string;
     time: string;
   } | null>(null);
+  const timeSectionRef = useRef<HTMLDivElement>(null);
+  const shouldScrollToTime = useRef(false);
 
   const {
     register,
@@ -104,6 +106,15 @@ export function BookingForm() {
   const selectedService = appointmentServices.find(
     (service) => service.id === serviceId,
   );
+
+  useEffect(() => {
+    if (!shouldScrollToTime.current || !date) return;
+    shouldScrollToTime.current = false;
+    timeSectionRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, [date]);
 
   const goNext = () => {
     if (step === 1) {
@@ -231,7 +242,7 @@ export function BookingForm() {
           <form
             onSubmit={handleSubmit(onSubmit)}
             noValidate
-            className="flex min-h-[42rem] flex-col sm:min-h-[46rem]"
+            className="flex min-h-[36rem] flex-col sm:min-h-[40rem]"
           >
             <div className="flex-1">
             {step === 1 ? (
@@ -291,6 +302,7 @@ export function BookingForm() {
                     <DateCalendar
                       value={date}
                       onChange={(nextDate) => {
+                        shouldScrollToTime.current = true;
                         setValue("date", nextDate, { shouldDirty: true });
                         setValue("time", "", { shouldDirty: true });
                         clearErrors(["date", "time"]);
@@ -304,7 +316,7 @@ export function BookingForm() {
                   </div>
 
                   {date ? (
-                    <div>
+                    <div ref={timeSectionRef} className="scroll-mt-28">
                       <TimeSlotPicker
                         date={date}
                         value={time}
@@ -319,11 +331,7 @@ export function BookingForm() {
                         </p>
                       ) : null}
                     </div>
-                  ) : (
-                    <p className="text-sm text-[var(--muted)]">
-                      Saat seçmek için önce bir gün seçin.
-                    </p>
-                  )}
+                  ) : null}
                 </div>
               </div>
             ) : null}
