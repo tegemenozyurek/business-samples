@@ -12,9 +12,31 @@ export const appointmentServices = servicesList.map((service) => ({
   image: service.image,
 }));
 
-export const timeSlots = [
-  "09:00",
-  "09:30",
+/** Matches contact working hours: weekdays 10–20, Saturday 10–19, Sunday closed. */
+const weekdaySlots = [
+  "10:00",
+  "10:30",
+  "11:00",
+  "11:30",
+  "12:00",
+  "12:30",
+  "13:00",
+  "13:30",
+  "14:00",
+  "14:30",
+  "15:00",
+  "15:30",
+  "16:00",
+  "16:30",
+  "17:00",
+  "17:30",
+  "18:00",
+  "18:30",
+  "19:00",
+  "19:30",
+] as const;
+
+const saturdaySlots = [
   "10:00",
   "10:30",
   "11:00",
@@ -56,6 +78,14 @@ function hashDate(dateKey: string) {
   return hash;
 }
 
+/** Available slots for a date based on contact working hours. */
+export function getTimeSlotsForDate(dateKey: string): string[] {
+  const day = new Date(`${dateKey}T12:00:00`).getDay();
+  if (day === 0) return [];
+  if (day === 6) return [...saturdaySlots];
+  return [...weekdaySlots];
+}
+
 /** Mock occupancy for a day — stable per date. */
 export function getDayDensity(dateKey: string): DensityLevel {
   const day = new Date(`${dateKey}T12:00:00`).getDay();
@@ -70,25 +100,28 @@ export function getDayDensity(dateKey: string): DensityLevel {
 
 /** Mock booked slots for a selected date. */
 export function getBookedSlotsForDate(dateKey: string): string[] {
+  const slots = getTimeSlotsForDate(dateKey);
+  if (slots.length === 0) return [];
+
   const density = getDayDensity(dateKey);
   const hash = hashDate(dateKey);
   const count =
     density === "green"
       ? 2
       : density === "yellow"
-        ? 6
+        ? Math.max(4, Math.floor(slots.length * 0.35))
         : density === "orange"
-          ? 11
-          : timeSlots.length;
+          ? Math.max(7, Math.floor(slots.length * 0.6))
+          : slots.length;
 
-  if (count >= timeSlots.length) {
-    return [...timeSlots];
+  if (count >= slots.length) {
+    return [...slots];
   }
 
   const booked = new Set<string>();
   let cursor = hash;
   while (booked.size < count) {
-    booked.add(timeSlots[cursor % timeSlots.length]);
+    booked.add(slots[cursor % slots.length]);
     cursor = (cursor * 17 + 5) >>> 0;
   }
   return [...booked];

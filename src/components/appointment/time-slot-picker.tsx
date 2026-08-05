@@ -1,6 +1,9 @@
 "use client";
 
-import { getBookedSlotsForDate, timeSlots } from "@/lib/appointment-content";
+import {
+  getBookedSlotsForDate,
+  getTimeSlotsForDate,
+} from "@/lib/appointment-content";
 
 type TimeSlotPickerProps = {
   date: string;
@@ -9,7 +12,12 @@ type TimeSlotPickerProps = {
 };
 
 export function TimeSlotPicker({ date, value, onChange }: TimeSlotPickerProps) {
+  const slots = getTimeSlotsForDate(date);
   const bookedSlots = getBookedSlotsForDate(date);
+
+  if (slots.length === 0) {
+    return null;
+  }
 
   return (
     <div>
@@ -17,7 +25,7 @@ export function TimeSlotPicker({ date, value, onChange }: TimeSlotPickerProps) {
         Saat
       </p>
       <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
-        {timeSlots.map((slot) => {
+        {slots.map((slot) => {
           const booked = bookedSlots.includes(slot);
           const selected = value === slot;
 
