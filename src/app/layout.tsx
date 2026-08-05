@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import { LayoutShell } from "@/components/LayoutShell";
 import "./globals.css";
 
@@ -37,10 +38,12 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${inter.variable} h-full antialiased`}
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-      </head>
       <body className="flex min-h-full flex-col bg-background text-foreground">
+        <Script
+          id="qeva-theme-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: themeInitScript }}
+        />
         <LayoutShell>{children}</LayoutShell>
       </body>
     </html>

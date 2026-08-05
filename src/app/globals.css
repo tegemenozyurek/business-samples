@@ -158,6 +158,21 @@ body {
   animation: floating-quote-in 0.7s ease-out 0.4s both;
 }
 
+@keyframes floating-colors-in {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.floating-colors-btn {
+  animation: floating-colors-in 0.7s ease-out 0.4s both;
+}
+
 .service-glass-card {
   border: 1px solid rgba(255, 255, 255, 0.16);
   background: rgba(22, 22, 22, 0.72);
@@ -202,7 +217,8 @@ body {
   .contact-fade-up,
   .contact-fade-up-delay,
   .scroll-reveal,
-  .floating-quote-btn {
+  .floating-quote-btn,
+  .floating-colors-btn {
     animation: none !important;
     transition: none !important;
   }
