@@ -17,12 +17,12 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
   const [open, setOpen] = useState(false);
 
   return (
-    <FadeUp delay={index * 0.05}>
-      <article className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] transition-shadow duration-500 hover:shadow-[0_18px_50px_rgba(0,0,0,0.08)]">
+    <FadeUp delay={index * 0.05} className="h-full">
+      <article className="group flex h-full flex-col overflow-hidden rounded-[1.25rem] border border-[var(--border)] bg-[var(--surface)] transition-shadow duration-500 hover:shadow-[0_14px_40px_rgba(0,0,0,0.07)]">
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="relative aspect-[4/3] w-full overflow-hidden text-left sm:aspect-[5/4]"
+          className="relative aspect-[16/10] w-full shrink-0 overflow-hidden text-left sm:aspect-[3/2]"
           aria-label={`${service.name} görselini büyüt`}
         >
           <Image
@@ -35,31 +35,31 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
           />
         </button>
 
-        <div className="flex flex-1 flex-col p-5 sm:p-6">
-          <div className="flex items-start justify-between gap-3">
-            <h2 className="font-[family-name:var(--font-cormorant)] text-2xl tracking-[-0.02em] text-[var(--heading)] sm:text-[1.7rem]">
-              {service.name}
-            </h2>
-            <p className="shrink-0 pt-1 text-sm font-medium text-[var(--accent)]">
-              {service.price}
+        <div className="flex flex-1 flex-col items-center px-4 py-4 text-center sm:px-5 sm:py-5">
+          <h2 className="flex min-h-[2.5rem] items-center justify-center font-[family-name:var(--font-cormorant)] text-xl leading-tight tracking-[-0.02em] text-[var(--heading)] sm:min-h-[2.75rem] sm:text-2xl">
+            {service.name}
+          </h2>
+
+          <div className="mt-1.5 flex items-center justify-center gap-2.5 text-sm">
+            <p className="inline-flex items-center gap-1.5 text-[var(--subtle)]">
+              <Clock className="h-3.5 w-3.5" strokeWidth={1.5} />
+              {service.duration}
             </p>
+            <p className="font-medium text-[var(--accent)]">{service.price}</p>
           </div>
 
-          <p className="mt-3 text-sm leading-relaxed text-[var(--muted)]">
+          <p className="mt-2 line-clamp-2 min-h-[2.25rem] text-sm leading-snug text-[var(--muted)]">
             {service.description}
           </p>
 
-          <p className="mt-4 inline-flex items-center gap-2 text-xs text-[var(--subtle)]">
-            <Clock className="h-3.5 w-3.5" strokeWidth={1.5} />
-            {service.duration}
-          </p>
-
-          <Link
-            href="/rez/randevu"
-            className="rez-btn-primary mt-6 w-full text-center"
-          >
-            Randevu Al
-          </Link>
+          <div className="mt-auto w-full pt-4">
+            <Link
+              href="/rez/randevu"
+              className="rez-btn-primary w-full px-4 py-3 text-center"
+            >
+              Randevu Al
+            </Link>
+          </div>
         </div>
       </article>
 
