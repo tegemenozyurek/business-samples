@@ -1,21 +1,49 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import { ArrowUpRight } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
+import { ArrowUpRight, MapPin, Phone } from "lucide-react";
 import {
   contactDetails,
-  contactHeroImage,
   getDirectionsUrl,
 } from "@/lib/contact-content";
 import { FadeUp } from "@/components/rez/FadeUp";
+
+function InstagramIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      aria-hidden="true"
+    >
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="0.75" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function WhatsAppIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
+    </svg>
+  );
+}
 
 type ContactLink = {
   label: string;
   value: string;
   href: string;
   external?: boolean;
-  hint: string;
+  icon: ReactNode;
 };
 
 export function ContactInfo() {
@@ -30,105 +58,67 @@ export function ContactInfo() {
       label: "Telefon",
       value: contactDetails.phone,
       href: contactDetails.phoneHref,
-      hint: "Hemen ara",
+      icon: <Phone className="h-5 w-5" strokeWidth={1.5} />,
     },
     {
       label: "WhatsApp",
-      value: contactDetails.phone,
+      value: contactDetails.whatsapp,
       href: contactDetails.whatsappHref,
       external: true,
-      hint: "Mesaj yaz",
+      icon: <WhatsAppIcon className="h-5 w-5" />,
     },
     {
       label: "Instagram",
       value: contactDetails.instagram,
       href: contactDetails.instagramHref,
       external: true,
-      hint: "Profili aç",
+      icon: <InstagramIcon className="h-5 w-5" />,
     },
     {
       label: "Adres",
       value: contactDetails.addressFull,
       href: mapsHref,
       external: true,
-      hint: "Yol tarifi",
+      icon: <MapPin className="h-5 w-5" strokeWidth={1.5} />,
     },
   ];
 
   return (
-    <section className="bg-[var(--background)] px-6 py-16 lg:px-10 lg:py-20">
-      <div className="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-14 lg:items-stretch">
-        <FadeUp className="relative min-h-[320px] overflow-hidden rounded-[1.75rem] lg:min-h-full">
-          <Image
-            src={contactHeroImage}
-            alt="Qeva Nail Studio stüdyo atmosferi"
-            fill
-            sizes="(max-width: 1024px) 100vw, 40vw"
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[rgba(26,22,20,0.72)] via-[rgba(26,22,20,0.18)] to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 p-7 sm:p-8">
-            <p className="text-[11px] font-medium tracking-[0.22em] text-white/65 uppercase">
-              Stüdyo
-            </p>
-            <p className="mt-2 font-[family-name:var(--font-cormorant)] text-3xl leading-tight tracking-[-0.02em] text-white">
-              Nişantaşı
-            </p>
-            <p className="mt-2 max-w-xs text-sm leading-relaxed text-white/75">
-              {contactDetails.addressFull}
-            </p>
-          </div>
+    <section className="bg-[var(--background)] px-6 pt-28 pb-14 lg:px-10 lg:pt-32 lg:pb-16">
+      <div className="mx-auto max-w-5xl">
+        <FadeUp className="mb-8 max-w-xl">
+          <h1 className="font-[family-name:var(--font-cormorant)] text-4xl tracking-[-0.02em] text-[var(--heading)] sm:text-5xl">
+            İletişim
+          </h1>
         </FadeUp>
 
-        <div>
-          <FadeUp>
-            <p className="text-[11px] font-medium tracking-[0.24em] text-[var(--accent)] uppercase">
-              Ulaşın
-            </p>
-            <h2 className="mt-3 font-[family-name:var(--font-cormorant)] text-4xl tracking-[-0.02em] text-[var(--heading)]">
-              Bir dokunuş yeter.
-            </h2>
-          </FadeUp>
-
-          <ul className="mt-8">
-            {items.map((item, index) => (
-              <li key={item.label}>
-                <FadeUp delay={index * 0.06}>
-                  <ContactRow item={item} />
-                </FadeUp>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <ul className="divide-y divide-[rgba(26,22,20,0.08)] border-y border-[rgba(26,22,20,0.08)]">
+          {items.map((item, index) => (
+            <li key={item.label}>
+              <FadeUp delay={index * 0.04}>
+                <a
+                  href={item.href}
+                  target={item.external ? "_blank" : undefined}
+                  rel={item.external ? "noopener noreferrer" : undefined}
+                  aria-label={item.label}
+                  className="group flex items-center gap-4 py-5 transition-opacity hover:opacity-70"
+                >
+                  <span className="shrink-0 text-[var(--heading)]">
+                    {item.icon}
+                  </span>
+                  <span className="min-w-0 flex-1 text-base leading-snug text-[var(--heading)] sm:text-lg">
+                    {item.value}
+                  </span>
+                  <ArrowUpRight
+                    className="h-4 w-4 shrink-0 text-[var(--muted)] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                    strokeWidth={1.5}
+                  />
+                </a>
+              </FadeUp>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
-  );
-}
-
-function ContactRow({ item }: { item: ContactLink }) {
-  return (
-    <a
-      href={item.href}
-      target={item.external ? "_blank" : undefined}
-      rel={item.external ? "noopener noreferrer" : undefined}
-      className="group flex items-end justify-between gap-4 border-b border-[rgba(26,22,20,0.1)] py-6 first:border-t transition-colors"
-    >
-      <span className="min-w-0">
-        <span className="flex items-center gap-3">
-          <span className="text-[11px] font-medium tracking-[0.18em] text-[var(--accent)] uppercase">
-            {item.label}
-          </span>
-          <span className="hidden text-[11px] tracking-[0.08em] text-[var(--muted)] sm:inline">
-            {item.hint}
-          </span>
-        </span>
-        <span className="mt-2 block font-[family-name:var(--font-cormorant)] text-[1.65rem] leading-none tracking-[-0.02em] text-[var(--heading)] transition-transform duration-500 group-hover:translate-x-1 sm:text-[2rem]">
-          {item.value}
-        </span>
-      </span>
-      <span className="mb-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[rgba(26,22,20,0.12)] text-[var(--heading)] transition-all duration-500 group-hover:border-[var(--heading)] group-hover:bg-[var(--heading)] group-hover:text-[var(--background)]">
-        <ArrowUpRight className="h-4 w-4" strokeWidth={1.5} />
-      </span>
-    </a>
   );
 }
