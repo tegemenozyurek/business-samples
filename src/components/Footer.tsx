@@ -1,5 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useLanguage } from "@/lib/language";
+import { useTemplate } from "@/lib/template";
+import { getNavCopy } from "@/lib/translations";
 
 const instagramUrl = "https://www.instagram.com/qeva_digital/";
 const tiktokUrl = "https://www.tiktok.com/@qeva_digital";
@@ -36,6 +41,9 @@ function TikTokIcon({ className }: { className?: string }) {
 
 export function Footer() {
   const year = new Date().getFullYear();
+  const { lang } = useLanguage();
+  const template = useTemplate();
+  const { homeHref } = getNavCopy(template, lang);
 
   return (
     <footer className="mt-auto border-t border-border bg-background">
@@ -46,7 +54,7 @@ export function Footer() {
 
         <p className="text-center text-xs tracking-wide text-faint">
           {"©"} {year}{" "}
-          <Link href="/" className="transition-colors hover:text-muted">
+          <Link href={homeHref} className="transition-colors hover:text-muted">
             Qeva Digital
           </Link>
         </p>

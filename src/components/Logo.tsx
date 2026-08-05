@@ -4,12 +4,13 @@ import logoImage from "@/images/logoDarkTheme.webp";
 
 type LogoProps = {
   className?: string;
+  href?: string;
 };
 
-export function Logo({ className = "" }: LogoProps) {
+export function Logo({ className = "", href = "/" }: LogoProps) {
   return (
     <Link
-      href="/"
+      href={href}
       className={`inline-flex items-center transition-opacity duration-300 hover:opacity-80 ${className}`}
       aria-label="Qeva - Ana Sayfa"
     >

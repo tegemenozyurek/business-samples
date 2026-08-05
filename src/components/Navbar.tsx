@@ -4,18 +4,24 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/lib/language";
-import { navCopy } from "@/lib/translations";
+import { useTemplate } from "@/lib/template";
+import { getNavCopy } from "@/lib/translations";
 import { Logo } from "./Logo";
 
 export function Navbar() {
   const { lang } = useLanguage();
-  const copy = navCopy[lang];
+  const template = useTemplate();
+  const copy = getNavCopy(template, lang);
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href);
+  const isActive = (href: string) => {
+    if (href === copy.homeHref) {
+      return pathname === href || pathname === `${href}/`;
+    }
+    return pathname.startsWith(href);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,7 +57,7 @@ export function Navbar() {
         className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-6 lg:px-10"
         aria-label={copy.ariaLabel}
       >
-        <Logo />
+        <Logo href={copy.homeHref} />
 
         <ul className="hidden items-center gap-10 md:flex">
           {copy.links.map((link) => {
@@ -80,7 +86,7 @@ export function Navbar() {
             );
           })}
           <li>
-            <Link href="/randevu" className={ctaClassName}>
+            <Link href={copy.ctaHref} className={ctaClassName}>
               {copy.cta}
             </Link>
           </li>
@@ -184,7 +190,7 @@ export function Navbar() {
               }}
             >
               <Link
-                href="/randevu"
+                href={copy.ctaHref}
                 onClick={closeMenu}
                 className={`${ctaClassName} w-full`}
               >

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
-import { LayoutShell } from "@/components/LayoutShell";
+import { Providers } from "@/components/TemplateShell";
 import "./globals.css";
 
 const inter = Inter({
@@ -44,7 +44,7 @@ export default function RootLayout({
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: themeInitScript }}
         />
-        <LayoutShell>{children}</LayoutShell>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
