@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { appointmentServices } from "@/lib/appointment-content";
-import { BookingSummary } from "./booking-summary";
 import { ServiceSelector } from "./service-selector";
 import { TimeSlotPicker } from "./time-slot-picker";
 import { SuccessDialog } from "./success-dialog";
@@ -33,13 +32,17 @@ const bookingSchema = z.object({
 
 type BookingFormValues = z.infer<typeof bookingSchema>;
 
+const steps = [
+  { id: 1, label: "Hizmet" },
+  { id: 2, label: "Tarih & Saat" },
+  { id: 3, label: "Bilgiler" },
+] as const;
+
 const fieldClass =
   "w-full rounded-2xl border border-[rgba(26,22,20,0.1)] bg-[var(--salon-gray)] px-4 py-3.5 text-sm text-[var(--heading)] outline-none transition-colors placeholder:text-[var(--faint)] focus:border-[var(--accent)] focus:bg-white";
 
 function formatDisplayDate(value: string) {
-  if (!value) {
-    return "";
-  }
+  if (!value) return "";
   const date = new Date(`${value}T00:00:00`);
   return new Intl.DateTimeFormat("tr-TR", {
     day: "numeric",
@@ -55,6 +58,7 @@ function createAppointmentNumber() {
 }
 
 export function BookingForm() {
+  const [step, setStep] = useState(1);
   const [appointmentNo, setAppointmentNo] = useState<string | null>(null);
   const [successPayload, setSuccessPayload] = useState<{
     service: string;
@@ -70,6 +74,7 @@ export function BookingForm() {
     setValue,
     watch,
     reset,
+    trigger,
     formState: { errors, isSubmitting },
   } = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
@@ -83,15 +88,34 @@ export function BookingForm() {
       notes: "",
       privacy: false,
     },
+    mode: "onTouched",
   });
 
   const serviceId = watch("serviceId");
   const date = watch("date");
   const time = watch("time");
+  const name = watch("name");
+  const phone = watch("phone");
 
   const selectedService = appointmentServices.find(
     (service) => service.id === serviceId,
   );
+
+  const goNext = async () => {
+    if (step === 1) {
+      const ok = await trigger("serviceId");
+      if (ok) setStep(2);
+      return;
+    }
+    if (step === 2) {
+      const ok = await trigger(["date", "time"]);
+      if (ok) setStep(3);
+    }
+  };
+
+  const goBack = () => {
+    setStep((current) => Math.max(1, current - 1));
+  };
 
   const onSubmit = async (data: BookingFormValues) => {
     await new Promise((resolve) => window.setTimeout(resolve, 900));
@@ -102,6 +126,7 @@ export function BookingForm() {
       date: formatDisplayDate(data.date),
       time: data.time,
     });
+    setStep(1);
     reset({
       name: "",
       phone: "",
@@ -116,182 +141,323 @@ export function BookingForm() {
 
   return (
     <>
-      <section className="bg-[var(--background)] px-6 py-16 lg:px-10 lg:py-20">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.35fr_0.85fr] lg:gap-12">
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="space-y-10"
-            noValidate
-          >
-            <ServiceSelector
-              value={serviceId}
-              onChange={(id) =>
-                setValue("serviceId", id, { shouldValidate: true })
-              }
-            />
-            {errors.serviceId ? (
-              <p className="-mt-6 text-xs text-red-600">
-                {errors.serviceId.message}
-              </p>
-            ) : null}
+      <section className="bg-[var(--background)] px-6 py-14 lg:px-10 lg:py-16">
+        <div className="mx-auto max-w-3xl">
+          <nav aria-label="Randevu adımları" className="mb-12">
+            <ol className="flex items-start">
+              {steps.map((item, index) => {
+                const active = step === item.id;
+                const done = step > item.id;
 
-            <div className="rounded-[1.75rem] border border-[rgba(26,22,20,0.06)] bg-white p-6 shadow-[0_12px_40px_rgba(26,22,20,0.04)] sm:p-8">
-              <h2 className="font-[family-name:var(--font-cormorant)] text-2xl text-[var(--heading)] sm:text-3xl">
-                Bilgileriniz
-              </h2>
-
-              <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                <div className="sm:col-span-2">
-                  <label
-                    htmlFor="name"
-                    className="mb-2 block text-[11px] tracking-[0.14em] text-[var(--subtle)] uppercase"
+                return (
+                  <li
+                    key={item.id}
+                    className={`flex items-start ${
+                      index < steps.length - 1 ? "flex-1" : ""
+                    }`}
                   >
-                    Ad Soyad
-                  </label>
-                  <input
-                    id="name"
-                    type="text"
-                    autoComplete="name"
-                    className={fieldClass}
-                    placeholder="Adınız Soyadınız"
-                    {...register("name")}
-                  />
-                  {errors.name ? (
-                    <p className="mt-1.5 text-xs text-red-600">
-                      {errors.name.message}
-                    </p>
-                  ) : null}
-                </div>
+                    <div className="flex w-[4.5rem] flex-col items-center text-center sm:w-24">
+                      <span
+                        className={`font-[family-name:var(--font-cormorant)] text-2xl tracking-[-0.03em] transition-colors duration-300 sm:text-3xl ${
+                          active
+                            ? "text-[var(--heading)]"
+                            : done
+                              ? "text-[var(--heading)]"
+                              : "text-[rgba(26,22,20,0.22)]"
+                        }`}
+                      >
+                        0{item.id}
+                      </span>
+                      <span
+                        className={`mt-1 text-[10px] tracking-[0.18em] uppercase transition-colors duration-300 sm:text-[11px] ${
+                          active
+                            ? "text-[var(--heading)]"
+                            : done
+                              ? "text-[var(--heading)]/70"
+                              : "text-[var(--muted)]"
+                        }`}
+                      >
+                        {item.label}
+                      </span>
+                    </div>
 
-                <div>
-                  <label
-                    htmlFor="phone"
-                    className="mb-2 block text-[11px] tracking-[0.14em] text-[var(--subtle)] uppercase"
-                  >
-                    Telefon
-                  </label>
-                  <input
-                    id="phone"
-                    type="tel"
-                    autoComplete="tel"
-                    className={fieldClass}
-                    placeholder="05xx xxx xx xx"
-                    {...register("phone")}
-                  />
-                  {errors.phone ? (
-                    <p className="mt-1.5 text-xs text-red-600">
-                      {errors.phone.message}
-                    </p>
-                  ) : null}
-                </div>
+                    {index < steps.length - 1 ? (
+                      <span
+                        aria-hidden="true"
+                        className="mt-4 mx-2 h-px flex-1 self-start"
+                      >
+                        <span
+                          className={`block h-px w-full transition-colors duration-500 ${
+                            done
+                              ? "bg-[var(--heading)]"
+                              : "bg-[rgba(26,22,20,0.12)]"
+                          }`}
+                        />
+                      </span>
+                    ) : null}
+                  </li>
+                );
+              })}
+            </ol>
+          </nav>
 
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="mb-2 block text-[11px] tracking-[0.14em] text-[var(--subtle)] uppercase"
-                  >
-                    Email <span className="normal-case">(opsiyonel)</span>
-                  </label>
-                  <input
-                    id="email"
-                    type="email"
-                    autoComplete="email"
-                    className={fieldClass}
-                    placeholder="ornek@mail.com"
-                    {...register("email")}
-                  />
-                  {errors.email ? (
-                    <p className="mt-1.5 text-xs text-red-600">
-                      {errors.email.message}
-                    </p>
-                  ) : null}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="date"
-                    className="mb-2 block text-[11px] tracking-[0.14em] text-[var(--subtle)] uppercase"
-                  >
-                    Tarih
-                  </label>
-                  <input
-                    id="date"
-                    type="date"
-                    min={today}
-                    className={fieldClass}
-                    {...register("date")}
-                  />
-                  {errors.date ? (
-                    <p className="mt-1.5 text-xs text-red-600">
-                      {errors.date.message}
-                    </p>
-                  ) : null}
-                </div>
-
-                <div className="sm:col-span-2">
-                  <TimeSlotPicker
-                    value={time}
-                    onChange={(slot) =>
-                      setValue("time", slot, { shouldValidate: true })
+          <form onSubmit={handleSubmit(onSubmit)} noValidate>
+            {step === 1 ? (
+              <div>
+                <h2 className="font-[family-name:var(--font-cormorant)] text-3xl tracking-[-0.02em] text-[var(--heading)] sm:text-4xl">
+                  Hizmet seçin
+                </h2>
+                <p className="mt-2 text-sm text-[var(--muted)]">
+                  Randevu almak istediğiniz hizmeti seçerek devam edin.
+                </p>
+                <div className="mt-8">
+                  <ServiceSelector
+                    value={serviceId}
+                    onChange={(id) =>
+                      setValue("serviceId", id, { shouldValidate: true })
                     }
                   />
-                  {errors.time ? (
-                    <p className="mt-1.5 text-xs text-red-600">
-                      {errors.time.message}
-                    </p>
-                  ) : null}
                 </div>
+                {errors.serviceId ? (
+                  <p className="mt-3 text-xs text-red-600">
+                    {errors.serviceId.message}
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
 
-                <div className="sm:col-span-2">
-                  <label
-                    htmlFor="notes"
-                    className="mb-2 block text-[11px] tracking-[0.14em] text-[var(--subtle)] uppercase"
-                  >
-                    Not <span className="normal-case">(opsiyonel)</span>
-                  </label>
-                  <textarea
-                    id="notes"
-                    rows={3}
-                    className={`${fieldClass} resize-none`}
-                    placeholder="İsteklerinizi yazabilirsiniz..."
-                    {...register("notes")}
-                  />
+            {step === 2 ? (
+              <div>
+                <h2 className="font-[family-name:var(--font-cormorant)] text-3xl tracking-[-0.02em] text-[var(--heading)] sm:text-4xl">
+                  Tarih ve saat seçin
+                </h2>
+                <p className="mt-2 text-sm text-[var(--muted)]">
+                  Uygun günü ve saati belirleyin.
+                </p>
+
+                <div className="mt-8 space-y-8">
+                  <div>
+                    <label
+                      htmlFor="date"
+                      className="mb-2 block text-[11px] tracking-[0.14em] text-[var(--subtle)] uppercase"
+                    >
+                      Tarih
+                    </label>
+                    <input
+                      id="date"
+                      type="date"
+                      min={today}
+                      className={fieldClass}
+                      {...register("date", {
+                        onChange: () =>
+                          setValue("time", "", { shouldValidate: false }),
+                      })}
+                    />
+                    {errors.date ? (
+                      <p className="mt-1.5 text-xs text-red-600">
+                        {errors.date.message}
+                      </p>
+                    ) : null}
+                  </div>
+
+                  <div>
+                    <TimeSlotPicker
+                      value={time}
+                      onChange={(slot) =>
+                        setValue("time", slot, { shouldValidate: true })
+                      }
+                    />
+                    {errors.time ? (
+                      <p className="mt-1.5 text-xs text-red-600">
+                        {errors.time.message}
+                      </p>
+                    ) : null}
+                  </div>
                 </div>
               </div>
+            ) : null}
 
-              <label className="mt-5 flex items-start gap-3 text-sm text-[var(--muted)]">
-                <input
-                  type="checkbox"
-                  className="mt-1 h-4 w-4 rounded border-[rgba(26,22,20,0.2)]"
-                  {...register("privacy")}
-                />
-                <span>
-                  Gizlilik politikasını okudum ve kabul ediyorum.
-                </span>
-              </label>
-              {errors.privacy ? (
-                <p className="mt-1.5 text-xs text-red-600">
-                  {errors.privacy.message}
+            {step === 3 ? (
+              <div>
+                <h2 className="font-[family-name:var(--font-cormorant)] text-3xl tracking-[-0.02em] text-[var(--heading)] sm:text-4xl">
+                  Bilgileriniz
+                </h2>
+                <p className="mt-2 text-sm text-[var(--muted)]">
+                  Son adım: iletişim bilgilerinizi girin ve randevuyu onaylayın.
                 </p>
-              ) : null}
 
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="rez-btn-primary mt-7 w-full disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {isSubmitting ? "Oluşturuluyor..." : "Randevuyu Oluştur"}
-              </button>
+                <div className="mt-8 grid gap-4 sm:grid-cols-2">
+                  <div className="sm:col-span-2">
+                    <label
+                      htmlFor="name"
+                      className="mb-2 block text-[11px] tracking-[0.14em] text-[var(--subtle)] uppercase"
+                    >
+                      Ad Soyad
+                    </label>
+                    <input
+                      id="name"
+                      type="text"
+                      autoComplete="name"
+                      className={fieldClass}
+                      placeholder="Adınız Soyadınız"
+                      {...register("name")}
+                    />
+                    {errors.name ? (
+                      <p className="mt-1.5 text-xs text-red-600">
+                        {errors.name.message}
+                      </p>
+                    ) : null}
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="phone"
+                      className="mb-2 block text-[11px] tracking-[0.14em] text-[var(--subtle)] uppercase"
+                    >
+                      Telefon
+                    </label>
+                    <input
+                      id="phone"
+                      type="tel"
+                      autoComplete="tel"
+                      className={fieldClass}
+                      placeholder="05xx xxx xx xx"
+                      {...register("phone")}
+                    />
+                    {errors.phone ? (
+                      <p className="mt-1.5 text-xs text-red-600">
+                        {errors.phone.message}
+                      </p>
+                    ) : null}
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="mb-2 block text-[11px] tracking-[0.14em] text-[var(--subtle)] uppercase"
+                    >
+                      Email <span className="normal-case">(opsiyonel)</span>
+                    </label>
+                    <input
+                      id="email"
+                      type="email"
+                      autoComplete="email"
+                      className={fieldClass}
+                      placeholder="ornek@mail.com"
+                      {...register("email")}
+                    />
+                    {errors.email ? (
+                      <p className="mt-1.5 text-xs text-red-600">
+                        {errors.email.message}
+                      </p>
+                    ) : null}
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label
+                      htmlFor="notes"
+                      className="mb-2 block text-[11px] tracking-[0.14em] text-[var(--subtle)] uppercase"
+                    >
+                      Not <span className="normal-case">(opsiyonel)</span>
+                    </label>
+                    <textarea
+                      id="notes"
+                      rows={3}
+                      className={`${fieldClass} resize-none`}
+                      placeholder="İsteklerinizi yazabilirsiniz..."
+                      {...register("notes")}
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-8 rounded-[1.25rem] border border-[rgba(26,22,20,0.08)] bg-[var(--salon-beige)] px-5 py-5">
+                  <p className="text-[11px] font-medium tracking-[0.16em] text-[var(--accent)] uppercase">
+                    Özet
+                  </p>
+                  <dl className="mt-4 space-y-3 text-sm">
+                    <div className="flex justify-between gap-4">
+                      <dt className="text-[var(--muted)]">Hizmet</dt>
+                      <dd className="text-right font-medium text-[var(--heading)]">
+                        {selectedService?.name}
+                      </dd>
+                    </div>
+                    <div className="flex justify-between gap-4">
+                      <dt className="text-[var(--muted)]">Tarih</dt>
+                      <dd className="text-right font-medium text-[var(--heading)]">
+                        {formatDisplayDate(date)}
+                      </dd>
+                    </div>
+                    <div className="flex justify-between gap-4">
+                      <dt className="text-[var(--muted)]">Saat</dt>
+                      <dd className="text-right font-medium text-[var(--heading)]">
+                        {time}
+                      </dd>
+                    </div>
+                    <div className="flex justify-between gap-4">
+                      <dt className="text-[var(--muted)]">Süre / Fiyat</dt>
+                      <dd className="text-right font-medium text-[var(--heading)]">
+                        {selectedService?.duration} · {selectedService?.price}
+                      </dd>
+                    </div>
+                    {name || phone ? (
+                      <div className="flex justify-between gap-4 border-t border-[rgba(26,22,20,0.08)] pt-3">
+                        <dt className="text-[var(--muted)]">İletişim</dt>
+                        <dd className="text-right font-medium text-[var(--heading)]">
+                          {[name, phone].filter(Boolean).join(" · ")}
+                        </dd>
+                      </div>
+                    ) : null}
+                  </dl>
+                </div>
+
+                <label className="mt-6 flex items-start gap-3 text-sm text-[var(--muted)]">
+                  <input
+                    type="checkbox"
+                    className="mt-1 h-4 w-4 rounded border-[rgba(26,22,20,0.2)]"
+                    {...register("privacy")}
+                  />
+                  <span>Gizlilik politikasını okudum ve kabul ediyorum.</span>
+                </label>
+                {errors.privacy ? (
+                  <p className="mt-1.5 text-xs text-red-600">
+                    {errors.privacy.message}
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
+
+            <div className="mt-10 flex items-center justify-between gap-3">
+              {step > 1 ? (
+                <button
+                  type="button"
+                  onClick={goBack}
+                  className="rez-btn-secondary min-w-[120px]"
+                >
+                  Geri
+                </button>
+              ) : (
+                <span />
+              )}
+
+              {step < 3 ? (
+                <button
+                  type="button"
+                  onClick={goNext}
+                  className="rez-btn-primary min-w-[140px]"
+                >
+                  Devam
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="rez-btn-primary min-w-[180px] disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {isSubmitting ? "Oluşturuluyor..." : "Randevuyu Oluştur"}
+                </button>
+              )}
             </div>
           </form>
-
-          <BookingSummary
-            serviceName={selectedService?.name}
-            date={formatDisplayDate(date)}
-            time={time}
-            duration={selectedService?.duration}
-            price={selectedService?.price}
-          />
         </div>
       </section>
 

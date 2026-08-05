@@ -10,10 +10,10 @@ type TimeSlotPickerProps = {
 export function TimeSlotPicker({ value, onChange }: TimeSlotPickerProps) {
   return (
     <div>
-      <h3 className="text-[11px] font-medium tracking-[0.16em] text-[var(--subtle)] uppercase">
-        Saat seçin
-      </h3>
-      <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
+      <p className="mb-3 text-[11px] font-medium tracking-[0.16em] text-[var(--subtle)] uppercase">
+        Saat
+      </p>
+      <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
         {timeSlots.map((slot) => {
           const booked = bookedSlots.includes(slot);
           const selected = value === slot;
@@ -38,9 +38,6 @@ export function TimeSlotPicker({ value, onChange }: TimeSlotPickerProps) {
           );
         })}
       </div>
-      <p className="mt-3 text-xs text-[var(--faint)]">
-        Gri slotlar dolu. Seçilebilir saatler vurgulanır.
-      </p>
     </div>
   );
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { AppointmentCta } from "./appointment-cta";
 import { AppointmentHero } from "./appointment-hero";
 import { BookingForm } from "./booking-form";
 import { BookingInfo } from "./booking-info";
@@ -11,7 +10,6 @@ export function AppointmentPageView() {
       <AppointmentHero />
       <BookingForm />
       <BookingInfo />
-      <AppointmentCta />
     </main>
   );
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { appointmentHeroImage } from "@/lib/appointment-content";
 
@@ -29,21 +28,6 @@ export function AppointmentHero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
-          <nav aria-label="Breadcrumb" className="mb-6">
-            <ol className="flex items-center gap-2 text-[11px] tracking-[0.18em] text-[var(--muted)] uppercase">
-              <li>
-                <Link
-                  href="/rez"
-                  className="transition-colors hover:text-[var(--heading)]"
-                >
-                  Ana Sayfa
-                </Link>
-              </li>
-              <li aria-hidden="true">/</li>
-              <li className="text-[var(--heading)]">Randevu Al</li>
-            </ol>
-          </nav>
-
           <h1 className="font-[family-name:var(--font-cormorant)] text-5xl tracking-[-0.02em] text-[var(--heading)] sm:text-6xl lg:text-7xl">
             Randevu Al
           </h1>
