@@ -35,8 +35,82 @@ export const timeSlots = [
   "18:30",
 ] as const;
 
-/** Demo booked slots for visual state */
-export const bookedSlots: string[] = ["10:00", "13:30", "16:00"];
+export type DensityLevel = "green" | "yellow" | "orange" | "red";
+
+export const densityLegend: {
+  level: DensityLevel;
+  label: string;
+  className: string;
+}[] = [
+  { level: "green", label: "Müsait", className: "bg-emerald-500" },
+  { level: "yellow", label: "Orta", className: "bg-amber-400" },
+  { level: "orange", label: "Yoğun", className: "bg-orange-500" },
+  { level: "red", label: "Dolu", className: "bg-red-500" },
+];
+
+function hashDate(dateKey: string) {
+  let hash = 0;
+  for (let i = 0; i < dateKey.length; i += 1) {
+    hash = (hash * 31 + dateKey.charCodeAt(i)) >>> 0;
+  }
+  return hash;
+}
+
+/** Mock occupancy for a day — stable per date. */
+export function getDayDensity(dateKey: string): DensityLevel {
+  const day = new Date(`${dateKey}T12:00:00`).getDay();
+  if (day === 0) return "red";
+
+  const bucket = hashDate(dateKey) % 10;
+  if (bucket <= 3) return "green";
+  if (bucket <= 6) return "yellow";
+  if (bucket <= 8) return "orange";
+  return "red";
+}
+
+/** Mock booked slots for a selected date. */
+export function getBookedSlotsForDate(dateKey: string): string[] {
+  const density = getDayDensity(dateKey);
+  const hash = hashDate(dateKey);
+  const count =
+    density === "green"
+      ? 2
+      : density === "yellow"
+        ? 6
+        : density === "orange"
+          ? 11
+          : timeSlots.length;
+
+  if (count >= timeSlots.length) {
+    return [...timeSlots];
+  }
+
+  const booked = new Set<string>();
+  let cursor = hash;
+  while (booked.size < count) {
+    booked.add(timeSlots[cursor % timeSlots.length]);
+    cursor = (cursor * 17 + 5) >>> 0;
+  }
+  return [...booked];
+}
+
+export function toDateKey(date: Date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+export function startOfDay(date: Date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+/** Selectable range: today → end of next month. */
+export function getSelectableRange(now = new Date()) {
+  const today = startOfDay(now);
+  const end = new Date(today.getFullYear(), today.getMonth() + 2, 0);
+  return { today, end };
+}
 
 export const bookingInfoCards = [
   {

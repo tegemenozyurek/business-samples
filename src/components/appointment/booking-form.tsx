@@ -1,10 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { appointmentServices } from "@/lib/appointment-content";
+import {
+  appointmentServices,
+  densityLegend,
+} from "@/lib/appointment-content";
+import { DateCalendar } from "./date-calendar";
 import { ServiceSelector } from "./service-selector";
 import { TimeSlotPicker } from "./time-slot-picker";
 import { SuccessDialog } from "./success-dialog";
@@ -66,15 +70,14 @@ export function BookingForm() {
     time: string;
   } | null>(null);
 
-  const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
-
   const {
     register,
     handleSubmit,
     setValue,
+    setError,
+    clearErrors,
     watch,
     reset,
-    trigger,
     formState: { errors, isSubmitting },
   } = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
@@ -88,7 +91,8 @@ export function BookingForm() {
       notes: "",
       privacy: false,
     },
-    mode: "onTouched",
+    mode: "onSubmit",
+    shouldUnregister: false,
   });
 
   const serviceId = watch("serviceId");
@@ -101,19 +105,42 @@ export function BookingForm() {
     (service) => service.id === serviceId,
   );
 
-  const goNext = async () => {
+  const goNext = () => {
     if (step === 1) {
-      const ok = await trigger("serviceId");
-      if (ok) setStep(2);
+      if (!serviceId) {
+        setError("serviceId", {
+          type: "manual",
+          message: "Lütfen bir hizmet seçin.",
+        });
+        return;
+      }
+      clearErrors();
+      setStep(2);
       return;
     }
+
     if (step === 2) {
-      const ok = await trigger(["date", "time"]);
-      if (ok) setStep(3);
+      let valid = true;
+      if (!date) {
+        setError("date", { type: "manual", message: "Tarih seçin." });
+        valid = false;
+      } else {
+        clearErrors("date");
+      }
+      if (!time) {
+        setError("time", { type: "manual", message: "Saat seçin." });
+        valid = false;
+      } else {
+        clearErrors("time");
+      }
+      if (!valid) return;
+      clearErrors();
+      setStep(3);
     }
   };
 
   const goBack = () => {
+    clearErrors();
     setStep((current) => Math.max(1, current - 1));
   };
 
@@ -204,7 +231,7 @@ export function BookingForm() {
           <form
             onSubmit={handleSubmit(onSubmit)}
             noValidate
-            className="flex min-h-[34rem] flex-col sm:min-h-[38rem]"
+            className="flex min-h-[42rem] flex-col sm:min-h-[46rem]"
           >
             <div className="flex-1">
             {step === 1 ? (
@@ -218,9 +245,10 @@ export function BookingForm() {
                 <div className="mt-8">
                   <ServiceSelector
                     value={serviceId}
-                    onChange={(id) =>
-                      setValue("serviceId", id, { shouldValidate: true })
-                    }
+                    onChange={(id) => {
+                      setValue("serviceId", id, { shouldDirty: true });
+                      clearErrors("serviceId");
+                    }}
                   />
                 </div>
                 {errors.serviceId ? (
@@ -237,47 +265,65 @@ export function BookingForm() {
                   Tarih ve saat seçin
                 </h2>
                 <p className="mt-2 text-sm text-[var(--muted)]">
-                  Uygun günü ve saati belirleyin.
+                  Önce günü seçin, ardından uygun saati belirleyin.
                 </p>
 
-                <div className="mt-8 space-y-8">
+                <div className="mt-8 space-y-10">
                   <div>
-                    <label
-                      htmlFor="date"
-                      className="mb-2 block text-[11px] tracking-[0.14em] text-[var(--subtle)] uppercase"
-                    >
-                      Tarih
-                    </label>
-                    <input
-                      id="date"
-                      type="date"
-                      min={today}
-                      className={fieldClass}
-                      {...register("date", {
-                        onChange: () =>
-                          setValue("time", "", { shouldValidate: false }),
-                      })}
+                    <div className="mb-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+                      <p className="text-[11px] font-medium tracking-[0.14em] text-[var(--subtle)] uppercase">
+                        Tarih
+                      </p>
+                      <ul className="flex flex-wrap items-center justify-end gap-x-3 gap-y-1.5">
+                        {densityLegend.map((item) => (
+                          <li
+                            key={item.level}
+                            className="inline-flex items-center gap-1.5 text-[11px] text-[var(--muted)]"
+                          >
+                            <span
+                              className={`h-2 w-2 rounded-full ${item.className}`}
+                            />
+                            {item.label}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <DateCalendar
+                      value={date}
+                      onChange={(nextDate) => {
+                        setValue("date", nextDate, { shouldDirty: true });
+                        setValue("time", "", { shouldDirty: true });
+                        clearErrors(["date", "time"]);
+                      }}
                     />
                     {errors.date ? (
-                      <p className="mt-1.5 text-xs text-red-600">
+                      <p className="mt-3 text-xs text-red-600">
                         {errors.date.message}
                       </p>
                     ) : null}
                   </div>
 
-                  <div>
-                    <TimeSlotPicker
-                      value={time}
-                      onChange={(slot) =>
-                        setValue("time", slot, { shouldValidate: true })
-                      }
-                    />
-                    {errors.time ? (
-                      <p className="mt-1.5 text-xs text-red-600">
-                        {errors.time.message}
-                      </p>
-                    ) : null}
-                  </div>
+                  {date ? (
+                    <div>
+                      <TimeSlotPicker
+                        date={date}
+                        value={time}
+                        onChange={(slot) => {
+                          setValue("time", slot, { shouldDirty: true });
+                          clearErrors("time");
+                        }}
+                      />
+                      {errors.time ? (
+                        <p className="mt-1.5 text-xs text-red-600">
+                          {errors.time.message}
+                        </p>
+                      ) : null}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-[var(--muted)]">
+                      Saat seçmek için önce bir gün seçin.
+                    </p>
+                  )}
                 </div>
               </div>
             ) : null}

@@ -1,13 +1,16 @@
 "use client";
 
-import { bookedSlots, timeSlots } from "@/lib/appointment-content";
+import { getBookedSlotsForDate, timeSlots } from "@/lib/appointment-content";
 
 type TimeSlotPickerProps = {
+  date: string;
   value: string;
   onChange: (time: string) => void;
 };
 
-export function TimeSlotPicker({ value, onChange }: TimeSlotPickerProps) {
+export function TimeSlotPicker({ date, value, onChange }: TimeSlotPickerProps) {
+  const bookedSlots = getBookedSlotsForDate(date);
+
   return (
     <div>
       <p className="mb-3 text-[11px] font-medium tracking-[0.16em] text-[var(--subtle)] uppercase">
@@ -27,7 +30,7 @@ export function TimeSlotPicker({ value, onChange }: TimeSlotPickerProps) {
               aria-pressed={selected}
               className={`rounded-xl border px-2 py-2.5 text-sm transition-all duration-300 ${
                 booked
-                  ? "cursor-not-allowed border-transparent bg-[var(--salon-gray)] text-[var(--faint)]"
+                  ? "cursor-not-allowed border-transparent bg-[var(--salon-gray)] text-[var(--faint)] line-through"
                   : selected
                     ? "border-[var(--heading)] bg-[var(--heading)] text-[#fbf9f7]"
                     : "border-[rgba(26,22,20,0.1)] bg-white text-[var(--heading)] hover:border-[rgba(26,22,20,0.2)]"
