@@ -290,6 +290,43 @@ body {
   animation: floating-colors-in 0.7s ease-out 0.4s both;
 }
 
+@keyframes landing-choice-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes landing-glow-drift {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(18px, -12px);
+  }
+}
+
+.landing-choice {
+  animation: landing-choice-in 0.7s ease-out both;
+}
+
+.landing-choice-delay {
+  animation-delay: 120ms;
+}
+
+.landing-glow-a {
+  animation: landing-glow-drift 12s ease-in-out infinite;
+}
+
+.landing-glow-b {
+  animation: landing-glow-drift 15s ease-in-out infinite reverse;
+}
+
 .service-glass-card {
   border: 1px solid rgba(255, 255, 255, 0.16);
   background: rgba(22, 22, 22, 0.72);
@@ -341,7 +378,11 @@ body {
   .contact-fade-up-delay,
   .scroll-reveal,
   .floating-quote-btn,
-  .floating-colors-btn {
+  .floating-colors-btn,
+  .landing-choice,
+  .landing-choice-delay,
+  .landing-glow-a,
+  .landing-glow-b {
     animation: none !important;
     transition: none !important;
   }

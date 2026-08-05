@@ -1,0 +1,79 @@
+.rez-home {
+  --background: #fbf9f7;
+  --foreground: #2a2420;
+  --heading: #1a1614;
+  --muted: #7a6e66;
+  --subtle: #9a8d84;
+  --faint: #b5a9a0;
+  --border: rgba(26, 22, 20, 0.08);
+  --border-strong: rgba(26, 22, 20, 0.14);
+  --surface: #ffffff;
+  --surface-soft: rgba(26, 22, 20, 0.03);
+  --surface-hover: rgba(26, 22, 20, 0.05);
+  --nav-bg: rgba(251, 249, 247, 0.86);
+  --nav-shadow: rgba(26, 22, 20, 0.08);
+  --icon-border: rgba(26, 22, 20, 0.1);
+  --icon-bg: rgba(26, 22, 20, 0.03);
+  --icon-hover-border: rgba(196, 164, 132, 0.55);
+  --icon-hover-bg: rgba(196, 164, 132, 0.12);
+  --selection-bg: rgba(196, 164, 132, 0.22);
+  --selection-fg: #1a1614;
+  --switcher-active: #5c4a3d;
+  --switcher-idle: #b5a9a0;
+  --switcher-hover: #7a6e66;
+  --switcher-divider: #e4d8ce;
+  --accent: #c4a484;
+  --salon-nude: #e8d5c4;
+  --salon-beige: #f3ebe3;
+  --salon-gray: #f0eeec;
+  color-scheme: light;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-manrope), system-ui, sans-serif;
+}
+
+.rez-home .theme-light\:brightness-0,
+.rez-home img[alt="Qeva"] {
+  filter: brightness(0);
+}
+
+.rez-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  background: var(--heading);
+  padding: 0.9rem 1.75rem;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #fbf9f7;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.rez-btn-primary:hover {
+  opacity: 0.9;
+}
+
+.rez-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  border: 1px solid rgba(26, 22, 20, 0.14);
+  background: rgba(255, 255, 255, 0.55);
+  padding: 0.9rem 1.75rem;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--heading);
+  backdrop-filter: blur(10px);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.rez-btn-secondary:hover {
+  background: #fff;
+  border-color: rgba(26, 22, 20, 0.22);
+}
