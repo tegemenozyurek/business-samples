@@ -201,7 +201,12 @@ export function BookingForm() {
             </ol>
           </nav>
 
-          <form onSubmit={handleSubmit(onSubmit)} noValidate>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            noValidate
+            className="flex min-h-[34rem] flex-col sm:min-h-[38rem]"
+          >
+            <div className="flex-1">
             {step === 1 ? (
               <div>
                 <h2 className="font-[family-name:var(--font-cormorant)] text-3xl tracking-[-0.02em] text-[var(--heading)] sm:text-4xl">
@@ -425,13 +430,14 @@ export function BookingForm() {
                 ) : null}
               </div>
             ) : null}
+            </div>
 
-            <div className="mt-10 flex items-center justify-between gap-3">
+            <div className="mt-auto flex items-center justify-between gap-4 border-t border-[rgba(26,22,20,0.08)] pt-8">
               {step > 1 ? (
                 <button
                   type="button"
                   onClick={goBack}
-                  className="rez-btn-secondary min-w-[120px]"
+                  className="inline-flex min-w-[132px] items-center justify-center rounded-2xl border border-[rgba(26,22,20,0.18)] bg-transparent px-7 py-3.5 text-[12px] font-medium tracking-[0.16em] text-[var(--heading)] uppercase transition-colors hover:border-[var(--heading)] hover:bg-[var(--salon-beige)]"
                 >
                   Geri
                 </button>
@@ -443,7 +449,7 @@ export function BookingForm() {
                 <button
                   type="button"
                   onClick={goNext}
-                  className="rez-btn-primary min-w-[140px]"
+                  className="inline-flex min-w-[148px] items-center justify-center rounded-2xl bg-[var(--heading)] px-7 py-3.5 text-[12px] font-medium tracking-[0.16em] text-[var(--background)] uppercase transition-opacity hover:opacity-90"
                 >
                   Devam
                 </button>
@@ -451,7 +457,7 @@ export function BookingForm() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="rez-btn-primary min-w-[180px] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex min-w-[190px] items-center justify-center rounded-2xl bg-[var(--heading)] px-7 py-3.5 text-[12px] font-medium tracking-[0.16em] text-[var(--background)] uppercase transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {isSubmitting ? "Oluşturuluyor..." : "Randevuyu Oluştur"}
                 </button>
