@@ -68,7 +68,7 @@ export function Navbar() {
                   {link.label}
                   <span
                     aria-hidden="true"
-                    className={`absolute -bottom-1 left-0 h-px w-full origin-left bg-heading transition-transform duration-300 ease-out ${
+                    className={`absolute -bottom-1 left-0 h-px w-full origin-left bg-[var(--accent)] transition-transform duration-300 ease-out ${
                       active ? "scale-x-100" : "scale-x-0"
                     }`}
                   />

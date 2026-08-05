@@ -29,7 +29,7 @@
   --orb: rgba(255, 255, 255, 0.04);
   --grid-line: rgba(255, 255, 255, 0.03);
   --hairline: rgba(255, 255, 255, 0.1);
-  --accent: #a3a3a3;
+  --accent: #ffffff;
 }
 
 [data-theme="light"] {
@@ -60,7 +60,7 @@
   --orb: rgba(0, 0, 0, 0.04);
   --grid-line: rgba(0, 0, 0, 0.05);
   --hairline: rgba(0, 0, 0, 0.12);
-  --accent: #52525b;
+  --accent: #090909;
 }
 
 /* Cozy latte — light cream + soft coffee */
