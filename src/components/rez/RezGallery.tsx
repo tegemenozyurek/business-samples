@@ -15,7 +15,7 @@ export function RezGallery() {
               Galeri
             </p>
             <h2 className="mt-3 font-[family-name:var(--font-cormorant)] text-4xl tracking-[-0.02em] text-[var(--heading)] sm:text-5xl">
-              Seçilmiş işlerimiz.
+              Güzel dokunuşlarımız.
             </h2>
           </div>
           <Link href="/rez/gallery" className="rez-btn-secondary self-start sm:self-auto">

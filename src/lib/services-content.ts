@@ -17,7 +17,7 @@ export const servicesList: ServiceItem[] = [
     name: "Manikür",
     description: "Profesyonel tırnak bakımı ve şekillendirme.",
     duration: "30–45 dk",
-    price: "₺450'den",
+    price: "₺450 – ₺650",
     features: [
       "Premium Products",
       "Sterile Equipment",
@@ -32,7 +32,7 @@ export const servicesList: ServiceItem[] = [
     name: "Pedikür",
     description: "Ayak bakımı ve estetik görünüm.",
     duration: "45–60 dk",
-    price: "₺550'den",
+    price: "₺550 – ₺850",
     features: [
       "Premium Products",
       "Sterile Equipment",
@@ -47,7 +47,7 @@ export const servicesList: ServiceItem[] = [
     name: "Kalıcı Oje",
     description: "Uzun süre dayanıklı parlak görünüm.",
     duration: "60 dk",
-    price: "₺650'den",
+    price: "₺650 – ₺900",
     features: [
       "Premium Products",
       "Sterile Equipment",
@@ -62,7 +62,7 @@ export const servicesList: ServiceItem[] = [
     name: "Jel Tırnak",
     description: "Doğal görünümlü güçlü tırnaklar.",
     duration: "90 dk",
-    price: "₺900'den",
+    price: "₺900 – ₺1.400",
     features: [
       "Premium Products",
       "Sterile Equipment",
@@ -77,7 +77,7 @@ export const servicesList: ServiceItem[] = [
     name: "Protez Tırnak",
     description: "Kişisel ölçülere uygun profesyonel uygulama.",
     duration: "120 dk",
-    price: "₺1.200'den",
+    price: "₺1.200 – ₺2.000",
     features: [
       "Premium Products",
       "Sterile Equipment",
@@ -92,7 +92,7 @@ export const servicesList: ServiceItem[] = [
     name: "French",
     description: "Zamansız ve zarif görünüm.",
     duration: "75 dk",
-    price: "₺750'den",
+    price: "₺750 – ₺1.100",
     features: [
       "Premium Products",
       "Sterile Equipment",
@@ -107,7 +107,7 @@ export const servicesList: ServiceItem[] = [
     name: "Nail Art",
     description: "Kişiye özel tırnak tasarımları.",
     duration: "30–90 dk",
-    price: "₺350'den",
+    price: "₺350 – ₺1.200",
     features: [
       "Premium Products",
       "Sterile Equipment",

@@ -1,9 +1,8 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { MessageCircle } from "lucide-react";
-import logoImage from "@/images/logoDarkTheme.webp";
+import { rezInstagram } from "@/lib/rez-content";
+
+const tiktokUrl = "https://www.tiktok.com/@esrakzlts_nailartist";
 
 function InstagramIcon({ className }: { className?: string }) {
   return (
@@ -22,115 +21,51 @@ function InstagramIcon({ className }: { className?: string }) {
   );
 }
 
-const links = [
-  { label: "Ana Sayfa", href: "/rez" },
-  { label: "Hizmetler", href: "/rez/hizmetler" },
-  { label: "Galeri", href: "/rez/gallery" },
-  { label: "İletişim", href: "/rez/iletisim" },
-  { label: "Randevu Al", href: "/rez/randevu" },
-] as const;
+function TikTokIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 0 0-.79-.05A6.34 6.34 0 0 0 3.15 15.4a6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.73a8.19 8.19 0 0 0 4.76 1.52V6.84a4.84 4.84 0 0 1-1-.15Z" />
+    </svg>
+  );
+}
 
 export function RezFooter() {
   const year = new Date().getFullYear();
 
   return (
     <footer className="border-t border-[rgba(26,22,20,0.08)] bg-[var(--background)] text-[var(--foreground)]">
-      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-14 sm:grid-cols-2 lg:grid-cols-4 lg:px-10">
-        <div>
-          <Link href="/rez" className="inline-flex" aria-label="Qeva Nail Studio">
-            <Image
-              src={logoImage}
-              alt="Qeva"
-              width={140}
-              height={94}
-              className="h-12 w-auto theme-light:brightness-0"
-            />
-          </Link>
-          <p className="mt-4 max-w-xs text-sm leading-relaxed text-[var(--muted)]">
-            Premium nail studio. Soft nude estetik, steril protokol, kişiye özel
-            bakım.
-          </p>
-        </div>
+      <div className="mx-auto grid max-w-7xl grid-cols-3 items-center gap-4 px-6 py-5 lg:px-10">
+        <div />
 
-        <div>
-          <h3 className="text-[11px] font-medium tracking-[0.2em] text-[var(--accent)] uppercase">
-            Hızlı Bağlantılar
-          </h3>
-          <ul className="mt-4 space-y-2.5">
-            {links.map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  className="text-sm text-[var(--muted)] transition-colors hover:text-[var(--heading)]"
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <p className="text-center text-xs tracking-wide text-[var(--faint)]">
+          © {year} Qeva Nail Studio
+        </p>
 
-        <div>
-          <h3 className="text-[11px] font-medium tracking-[0.2em] text-[var(--accent)] uppercase">
-            İletişim
-          </h3>
-          <ul className="mt-4 space-y-2.5 text-sm text-[var(--muted)]">
-            <li>
-              <a
-                href="mailto:qevadigital@gmail.com"
-                className="transition-colors hover:text-[var(--heading)]"
-              >
-                qevadigital@gmail.com
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://wa.me/905000000000"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 transition-colors hover:text-[var(--heading)]"
-              >
-                <MessageCircle className="h-4 w-4" strokeWidth={1.5} />
-                WhatsApp
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://www.instagram.com/qeva_digital/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 transition-colors hover:text-[var(--heading)]"
-              >
-                <InstagramIcon className="h-4 w-4" />
-                Instagram
-              </a>
-            </li>
-          </ul>
+        <div className="flex shrink-0 items-center justify-end gap-3">
+          <a
+            href={rezInstagram.profileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--icon-border)] bg-[var(--icon-bg)] text-[var(--muted)] transition-all duration-300 hover:border-[var(--icon-hover-border)] hover:bg-[var(--icon-hover-bg)] hover:text-[var(--heading)]"
+            aria-label="Instagram"
+          >
+            <InstagramIcon className="h-[18px] w-[18px]" />
+          </a>
+          <a
+            href={tiktokUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--icon-border)] bg-[var(--icon-bg)] text-[var(--muted)] transition-all duration-300 hover:border-[var(--icon-hover-border)] hover:bg-[var(--icon-hover-bg)] hover:text-[var(--heading)]"
+            aria-label="TikTok"
+          >
+            <TikTokIcon className="h-[18px] w-[18px]" />
+          </a>
         </div>
-
-        <div>
-          <h3 className="text-[11px] font-medium tracking-[0.2em] text-[var(--accent)] uppercase">
-            Çalışma Saatleri
-          </h3>
-          <ul className="mt-4 space-y-2 text-sm text-[var(--muted)]">
-            <li className="flex justify-between gap-4">
-              <span>Pzt – Cum</span>
-              <span>10:00 – 20:00</span>
-            </li>
-            <li className="flex justify-between gap-4">
-              <span>Cumartesi</span>
-              <span>10:00 – 19:00</span>
-            </li>
-            <li className="flex justify-between gap-4">
-              <span>Pazar</span>
-              <span>Kapalı</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <div className="border-t border-[rgba(26,22,20,0.08)] px-6 py-5 text-center text-xs text-[var(--faint)] lg:px-10">
-        © {year} Qeva Nail Studio. Tüm hakları saklıdır.
       </div>
     </footer>
   );

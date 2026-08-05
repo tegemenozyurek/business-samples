@@ -163,14 +163,5 @@ export const galleryItems: GalleryItem[] = [
   },
 ];
 
-export const galleryInstagram = [
-  "https://images.unsplash.com/photo-1607779097040-26e80aa78e66?auto=format&fit=crop&w=700&q=80",
-  "https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&w=700&q=80",
-  "https://images.unsplash.com/photo-1630843599725-32ead7671867?auto=format&fit=crop&w=700&q=80",
-  "https://images.unsplash.com/photo-1612887390768-fb02affea7a6?auto=format&fit=crop&w=700&q=80",
-  "https://images.unsplash.com/photo-1599206676335-193c82b13c9e?auto=format&fit=crop&w=700&q=80",
-  "https://images.unsplash.com/photo-1571290274554-6a2eaa771e5f?auto=format&fit=crop&w=700&q=80",
-] as const;
-
 export const galleryHeroImage =
   "https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=2000&q=80";

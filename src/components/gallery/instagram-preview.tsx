@@ -1,10 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { galleryInstagram } from "@/lib/gallery-content";
+import { rezInstagram } from "@/lib/rez-content";
 import { FadeUp } from "@/components/rez/FadeUp";
-
-const instagramUrl = "https://www.instagram.com/qeva_digital/";
 
 function InstagramIcon({ className }: { className?: string }) {
   return (
@@ -37,7 +35,7 @@ export function InstagramPreview() {
             </h2>
           </div>
           <a
-            href={instagramUrl}
+            href={rezInstagram.profileUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="rez-btn-primary inline-flex items-center gap-2 self-start sm:self-auto"
@@ -48,16 +46,16 @@ export function InstagramPreview() {
         </FadeUp>
 
         <div className="mt-12 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
-          {galleryInstagram.map((src, index) => (
-            <FadeUp key={src} delay={index * 0.04}>
+          {rezInstagram.posts.map((post, index) => (
+            <FadeUp key={post.src} delay={index * 0.04}>
               <a
-                href={instagramUrl}
+                href={post.href}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group relative block aspect-square overflow-hidden rounded-[1.25rem] shadow-[0_10px_30px_rgba(26,22,20,0.05)]"
               >
                 <Image
-                  src={src}
+                  src={post.src}
                   alt={`Instagram galeri önizleme ${index + 1}`}
                   fill
                   loading="lazy"

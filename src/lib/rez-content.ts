@@ -6,37 +6,37 @@ export const rezImages = {
       src: "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=900&q=80",
       title: "Manikür",
       description: "Şekillendirme, bakım ve soft nude tonlarla zarif bir bitiş.",
-      price: "₺450'den",
+      price: "₺450 – ₺650",
     },
     {
       src: "https://images.unsplash.com/photo-1610992015762-45dca7fa3a85?auto=format&fit=crop&w=900&q=80",
       title: "Pedikür",
       description: "Rahatlatıcı spa pedikür ve uzun süre kalıcı bakım.",
-      price: "₺550'den",
+      price: "₺550 – ₺850",
     },
     {
       src: "https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&w=900&q=80",
       title: "Kalıcı Oje",
       description: "Parlak, çatlaksız ve haftalarca dayanan kalıcı oje uygulaması.",
-      price: "₺650'den",
+      price: "₺650 – ₺900",
     },
     {
       src: "https://images.unsplash.com/photo-1630843599725-32ead7671867?auto=format&fit=crop&w=900&q=80",
       title: "Jel Tırnak",
       description: "Doğal görünümlü güçlendirme ve kusursuz form.",
-      price: "₺900'den",
+      price: "₺900 – ₺1.400",
     },
     {
       src: "https://images.unsplash.com/photo-1571290274554-6a2eaa771e5f?auto=format&fit=crop&w=900&q=80",
       title: "Protez Tırnak",
       description: "İnce yapı, dengeli uzunluk ve premium bitiş.",
-      price: "₺1.200'den",
+      price: "₺1.200 – ₺2.000",
     },
     {
       src: "https://images.unsplash.com/photo-1607779097040-26e80aa78e66?auto=format&fit=crop&w=900&q=80",
       title: "Nail Art",
       description: "Minimal çizgilerden detaylı sanat çalışmalarınıza özel tasarım.",
-      price: "₺350'den",
+      price: "₺350 – ₺1.200",
     },
   ],
   gallery: [
@@ -69,13 +69,37 @@ export const rezImages = {
         "Kalıcı oje rengi haftalarca ilk günkü gibi kaldı. Kesinlikle premium bir deneyim.",
     },
   ],
-  instagram: [
-    "https://images.unsplash.com/photo-1607779097040-26e80aa78e66?auto=format&fit=crop&w=700&q=80",
-    "https://images.unsplash.com/photo-1519014816548-bf5fe059798b?auto=format&fit=crop&w=700&q=80",
-    "https://images.unsplash.com/photo-1630843599725-32ead7671867?auto=format&fit=crop&w=700&q=80",
-    "https://images.unsplash.com/photo-1612887390768-fb02affea7a6?auto=format&fit=crop&w=700&q=80",
-    "https://images.unsplash.com/photo-1599206676335-193c82b13c9e?auto=format&fit=crop&w=700&q=80",
-    "https://images.unsplash.com/photo-1571290274554-6a2eaa771e5f?auto=format&fit=crop&w=700&q=80",
+} as const;
+
+/** Preview posts from https://www.instagram.com/esrakzlts_nailartist */
+export const rezInstagram = {
+  handle: "@esrakzlts_nailartist",
+  profileUrl: "https://www.instagram.com/esrakzlts_nailartist/",
+  posts: [
+    {
+      src: "/instagram/1.jpg",
+      href: "https://www.instagram.com/p/Dbq_XZpAvWQ/",
+    },
+    {
+      src: "/instagram/2.jpg",
+      href: "https://www.instagram.com/p/Dbq_UjCi81R/",
+    },
+    {
+      src: "/instagram/3.jpg",
+      href: "https://www.instagram.com/p/Dbq_JWgArP0/",
+    },
+    {
+      src: "/instagram/4.jpg",
+      href: "https://www.instagram.com/p/Dbq_FWciYUs/",
+    },
+    {
+      src: "/instagram/5.jpg",
+      href: "https://www.instagram.com/p/Dbq_Fl3C1pJ/",
+    },
+    {
+      src: "/instagram/6.jpg",
+      href: "https://www.instagram.com/p/Dbq_BSdAuGs/",
+    },
   ],
 } as const;
 
