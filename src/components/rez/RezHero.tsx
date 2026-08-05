@@ -19,8 +19,8 @@ export function RezHero() {
           sizes="100vw"
           className="object-cover object-[center_30%]"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#fbf9f7] via-[#fbf9f7]/78 to-[#fbf9f7]/20" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#fbf9f7] via-transparent to-[#fbf9f7]/35" />
+        <div className="rez-hero-fade-side absolute inset-0" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--background)] via-transparent to-[color-mix(in_srgb,var(--background)_35%,transparent)]" />
       </div>
 
       <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-7xl items-end px-6 pb-20 pt-32 lg:items-center lg:px-10 lg:pb-24 lg:pt-28">

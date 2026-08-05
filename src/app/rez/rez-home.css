@@ -1,40 +1,57 @@
 .rez-home {
-  --background: #fbf9f7;
-  --foreground: #2a2420;
-  --heading: #1a1614;
-  --muted: #7a6e66;
-  --subtle: #9a8d84;
-  --faint: #b5a9a0;
-  --border: rgba(26, 22, 20, 0.08);
-  --border-strong: rgba(26, 22, 20, 0.14);
-  --surface: #ffffff;
-  --surface-soft: rgba(26, 22, 20, 0.03);
-  --surface-hover: rgba(26, 22, 20, 0.05);
-  --nav-bg: rgba(251, 249, 247, 0.86);
-  --nav-shadow: rgba(26, 22, 20, 0.08);
-  --icon-border: rgba(26, 22, 20, 0.1);
-  --icon-bg: rgba(26, 22, 20, 0.03);
-  --icon-hover-border: rgba(196, 164, 132, 0.55);
-  --icon-hover-bg: rgba(196, 164, 132, 0.12);
-  --selection-bg: rgba(196, 164, 132, 0.22);
-  --selection-fg: #1a1614;
-  --switcher-active: #5c4a3d;
-  --switcher-idle: #b5a9a0;
-  --switcher-hover: #7a6e66;
-  --switcher-divider: #e4d8ce;
-  --accent: #c4a484;
-  --salon-nude: #e8d5c4;
-  --salon-beige: #f3ebe3;
-  --salon-gray: #f0eeec;
-  color-scheme: light;
+  --salon-nude: color-mix(in srgb, var(--accent) 18%, var(--background));
+  --salon-beige: color-mix(in srgb, var(--accent) 10%, var(--background));
+  --salon-gray: color-mix(in srgb, var(--foreground) 4%, var(--background));
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-manrope), system-ui, sans-serif;
 }
 
-.rez-home .theme-light\:brightness-0,
-.rez-home img[alt="Qeva"] {
-  filter: brightness(0);
+html[data-theme="dark"] .rez-home {
+  --salon-nude: #2a241f;
+  --salon-beige: #141210;
+  --salon-gray: #191614;
+}
+
+html[data-theme="light"] .rez-home,
+html[data-theme="latte"] .rez-home {
+  --salon-nude: #e8d5c4;
+  --salon-beige: #f3ebe3;
+  --salon-gray: #f0eeec;
+}
+
+html[data-theme="mint"] .rez-home {
+  --salon-nude: #d5ebe3;
+  --salon-beige: #e8f5f0;
+  --salon-gray: #eef6f3;
+}
+
+html[data-theme="corporate"] .rez-home {
+  --salon-nude: color-mix(in srgb, var(--accent) 12%, #ffffff);
+  --salon-beige: #f7f7f7;
+  --salon-gray: #f2f2f2;
+}
+
+.rez-hero-wash {
+  background: color-mix(in srgb, var(--background) 72%, transparent);
+}
+
+.rez-hero-fade {
+  background: linear-gradient(
+    to top,
+    var(--background),
+    color-mix(in srgb, var(--background) 55%, transparent),
+    color-mix(in srgb, var(--background) 35%, transparent)
+  );
+}
+
+.rez-hero-fade-side {
+  background: linear-gradient(
+    to right,
+    var(--background),
+    color-mix(in srgb, var(--background) 78%, transparent),
+    color-mix(in srgb, var(--background) 20%, transparent)
+  );
 }
 
 .rez-btn-primary {
@@ -48,7 +65,7 @@
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #fbf9f7;
+  color: var(--background);
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
@@ -61,8 +78,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 1rem;
-  border: 1px solid rgba(26, 22, 20, 0.14);
-  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid var(--border-strong);
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
   padding: 0.9rem 1.75rem;
   font-size: 12px;
   font-weight: 500;
@@ -74,6 +91,6 @@
 }
 
 .rez-btn-secondary:hover {
-  background: #fff;
-  border-color: rgba(26, 22, 20, 0.22);
+  background: var(--surface);
+  border-color: var(--border-strong);
 }

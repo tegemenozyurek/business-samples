@@ -19,8 +19,8 @@ export function AppointmentHero() {
           sizes="100vw"
           className="object-cover object-center"
         />
-        <div className="absolute inset-0 bg-[#fbf9f7]/72" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#fbf9f7] via-[#fbf9f7]/55 to-[#fbf9f7]/35" />
+        <div className="rez-hero-wash absolute inset-0" />
+        <div className="rez-hero-fade absolute inset-0" />
       </div>
 
       <div className="relative z-10 mx-auto flex min-h-[52svh] max-w-7xl flex-col justify-end px-6 pb-12 pt-28 sm:min-h-[58svh] lg:px-10 lg:pb-14">

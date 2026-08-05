@@ -11,7 +11,10 @@ import { ThemeProvider } from "@/lib/theme";
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider>
-      <LanguageProvider>{children}</LanguageProvider>
+      <LanguageProvider>
+        {children}
+        <FloatingColorsButton />
+      </LanguageProvider>
     </ThemeProvider>
   );
 }
@@ -30,7 +33,6 @@ export function TemplateShell({
       <Navbar />
       {children}
       {footer ?? <Footer />}
-      <FloatingColorsButton />
     </TemplateProvider>
   );
 }

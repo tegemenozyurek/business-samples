@@ -43,7 +43,7 @@ export function RezFooter() {
               alt="Qeva"
               width={140}
               height={94}
-              className="h-12 w-auto brightness-0"
+              className="h-12 w-auto theme-light:brightness-0"
             />
           </Link>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-[var(--muted)]">
