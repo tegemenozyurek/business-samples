@@ -5,24 +5,21 @@ import { FadeUp } from "./FadeUp";
 
 export function RezFinalCta() {
   return (
-    <section className="bg-[var(--heading)] px-6 py-24 text-[var(--background)] lg:px-10 lg:py-28">
-      <div className="mx-auto max-w-3xl text-center">
-        <FadeUp>
-          <h2 className="font-[family-name:var(--font-cormorant)] text-4xl tracking-[-0.02em] sm:text-5xl lg:text-6xl">
-            Bir sonraki randevunuz sizi bekliyor.
-          </h2>
-          <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-white/70">
-            Birkaç dakikada yerinizi ayırtın; stüdyomuzda sakin, steril ve size
-            özel bir bakım deneyimi sizi karşılıyor.
-          </p>
-          <Link
-            href="/rez/randevu"
-            className="mt-9 inline-flex items-center justify-center rounded-2xl bg-white px-8 py-3.5 text-[12px] font-medium tracking-[0.16em] text-[var(--heading)] uppercase transition-opacity hover:opacity-90"
-          >
+    <section className="bg-[var(--salon-beige)] px-6 py-16 lg:px-10 lg:py-20">
+      <FadeUp className="mx-auto flex max-w-3xl flex-col items-center text-center">
+        <h2 className="font-[family-name:var(--font-cormorant)] text-[2.35rem] leading-[1.12] tracking-[-0.03em] text-[var(--heading)] sm:text-5xl">
+          Bir sonraki randevunuz
+          <br className="hidden sm:block" /> sizi bekliyor.
+        </h2>
+        <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
+          <Link href="/rez/randevu" className="rez-btn-primary min-w-[160px]">
             Randevu Al
           </Link>
-        </FadeUp>
-      </div>
+          <Link href="/rez/hizmetler" className="rez-btn-secondary min-w-[160px]">
+            Hizmetler
+          </Link>
+        </div>
+      </FadeUp>
     </section>
   );
 }

@@ -31,7 +31,7 @@ export function RezHero() {
           fill
           priority
           sizes="100vw"
-          className="object-cover object-[center_28%]"
+          className="object-cover object-[center_28%] opacity-[0.82]"
         />
         <div className="absolute inset-0 bg-[linear-gradient(105deg,color-mix(in_srgb,var(--background)_92%,transparent)_0%,color-mix(in_srgb,var(--background)_72%,transparent)_38%,color-mix(in_srgb,var(--background)_28%,transparent)_68%,transparent_100%)]" />
         <div className="absolute inset-0 bg-gradient-to-t from-[var(--background)] via-transparent to-[color-mix(in_srgb,var(--background)_40%,transparent)]" />

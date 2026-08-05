@@ -92,14 +92,6 @@ export const rezInstagram = {
       src: "/instagram/4.jpg",
       href: "https://www.instagram.com/p/Dbq_FWciYUs/",
     },
-    {
-      src: "/instagram/5.jpg",
-      href: "https://www.instagram.com/p/Dbq_Fl3C1pJ/",
-    },
-    {
-      src: "/instagram/6.jpg",
-      href: "https://www.instagram.com/p/Dbq_BSdAuGs/",
-    },
   ],
 } as const;
 

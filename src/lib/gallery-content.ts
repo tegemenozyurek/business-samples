@@ -5,10 +5,7 @@ export type GalleryCategory =
   | "Kalıcı Oje"
   | "Jel Tırnak"
   | "Protez Tırnak"
-  | "French"
-  | "Nail Art"
-  | "Minimal"
-  | "Seasonal";
+  | "Minimal";
 
 export type GalleryItem = {
   id: string;
@@ -26,10 +23,7 @@ export const galleryCategories: GalleryCategory[] = [
   "Kalıcı Oje",
   "Jel Tırnak",
   "Protez Tırnak",
-  "French",
-  "Nail Art",
   "Minimal",
-  "Seasonal",
 ];
 
 export const galleryItems: GalleryItem[] = [
@@ -70,7 +64,7 @@ export const galleryItems: GalleryItem[] = [
     src: "https://images.unsplash.com/photo-1607779097040-26e80aa78e66?auto=format&fit=crop&w=1000&q=80",
     title: "Blush Art",
     description: "Minimal çizgilerle modern nail art detayı.",
-    category: "Nail Art",
+    category: "Minimal",
     height: "medium",
   },
   {
@@ -86,7 +80,7 @@ export const galleryItems: GalleryItem[] = [
     src: "https://images.unsplash.com/photo-1612887390768-fb02affea7a6?auto=format&fit=crop&w=1000&q=80",
     title: "Classic French",
     description: "Temiz white tip ile zamansız french görünüm.",
-    category: "French",
+    category: "Kalıcı Oje",
     height: "tall",
   },
   {
@@ -102,7 +96,7 @@ export const galleryItems: GalleryItem[] = [
     src: "https://images.unsplash.com/photo-1610992015836-7c249d75782d?auto=format&fit=crop&w=1000&q=80",
     title: "Champagne Glow",
     description: "Sezonluk soft shimmer dokunuşlar.",
-    category: "Seasonal",
+    category: "Kalıcı Oje",
     height: "square",
   },
   {
@@ -126,7 +120,7 @@ export const galleryItems: GalleryItem[] = [
     src: "https://images.unsplash.com/photo-1619607146034-5a05296c8f9a?auto=format&fit=crop&w=1000&q=80",
     title: "Color Ritual",
     description: "Sezon paletinden seçilmiş soft tonlar.",
-    category: "Seasonal",
+    category: "Kalıcı Oje",
     height: "square",
   },
   {
@@ -142,7 +136,7 @@ export const galleryItems: GalleryItem[] = [
     src: "https://images.unsplash.com/photo-1630843599725-32ead7671867?auto=format&fit=crop&w=1000&q=80",
     title: "Porcelain Tips",
     description: "İnce french çizgisiyle modern yorum.",
-    category: "French",
+    category: "Kalıcı Oje",
     height: "tall",
   },
   {
@@ -150,7 +144,7 @@ export const galleryItems: GalleryItem[] = [
     src: "https://images.unsplash.com/photo-1607779097040-26e80aa78e66?auto=format&fit=crop&w=1000&q=80",
     title: "Line Study",
     description: "İnce art detaylarıyla kişiselleştirilmiş tasarım.",
-    category: "Nail Art",
+    category: "Minimal",
     height: "square",
   },
   {

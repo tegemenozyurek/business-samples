@@ -54,14 +54,6 @@ export function ServiceCard({ service, index }: ServiceCardProps) {
             {service.duration}
           </p>
 
-          <ul className="mt-4 space-y-1.5 border-t border-[var(--border)] pt-4">
-            {service.features.map((feature) => (
-              <li key={feature} className="text-xs text-[var(--muted)]">
-                {feature}
-              </li>
-            ))}
-          </ul>
-
           <Link
             href="/rez/randevu"
             className="rez-btn-primary mt-6 w-full text-center"
