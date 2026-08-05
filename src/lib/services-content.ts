@@ -57,15 +57,6 @@ export const servicesList: ServiceItem[] = [
       "https://images.unsplash.com/photo-1571290274554-6a2eaa771e5f?auto=format&fit=crop&w=1000&q=80",
   },
   {
-    id: "french",
-    name: "French",
-    description: "Zamansız ve zarif görünüm.",
-    duration: "75 dk",
-    price: "₺750 – ₺1.100",
-    image:
-      "https://images.unsplash.com/photo-1612887390768-fb02affea7a6?auto=format&fit=crop&w=1000&q=80",
-  },
-  {
     id: "nail-art",
     name: "Nail Art",
     description: "Kişiye özel tırnak tasarımları.",

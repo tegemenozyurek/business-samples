@@ -1,5 +1,4 @@
 import { RezAbout } from "./RezAbout";
-import { RezFinalCta } from "./RezFinalCta";
 import { RezGallery } from "./RezGallery";
 import { RezHero } from "./RezHero";
 import { RezInstagram } from "./RezInstagram";
@@ -17,7 +16,6 @@ export function RezHomePage() {
       <RezGallery />
       <RezTestimonials />
       <RezInstagram />
-      <RezFinalCta />
     </main>
   );
 }
