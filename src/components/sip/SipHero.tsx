@@ -72,7 +72,7 @@ export function SipHero() {
           >
             <Image
               src={sipImages.hero}
-              alt="Taze hazırlanmış premium burger"
+              alt="Snack bar mekanının dış görünümü"
               fill
               priority
               sizes="(max-width: 1024px) 360px, 400px"
