@@ -1,40 +1,48 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { FadeUp } from "@/components/rez/FadeUp";
+import { sipImages } from "@/lib/sip-content";
 
 export function SipCta() {
   return (
-    <section className="sip-section bg-[var(--background)]">
+    <section className="sip-section bg-[var(--sip-alt)]">
       <div className="mx-auto max-w-7xl">
         <FadeUp>
-          <div className="relative overflow-hidden rounded-[2rem] border border-[var(--border)] bg-[color-mix(in_srgb,var(--heading)_92%,var(--background))] px-6 py-16 text-center sm:px-10 sm:py-20 lg:px-16">
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -top-20 left-1/4 h-56 w-56 rounded-full bg-[radial-gradient(circle,color-mix(in_srgb,var(--accent)_45%,transparent),transparent_70%)] blur-3xl"
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute right-[18%] -bottom-24 h-64 w-64 rounded-full bg-[radial-gradient(circle,color-mix(in_srgb,var(--accent)_28%,transparent),transparent_72%)] blur-3xl"
-            />
+          <div className="overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] shadow-[0_20px_60px_color-mix(in_srgb,var(--foreground)_6%,transparent)] sm:rounded-[2rem]">
+            <div className="grid lg:grid-cols-2">
+              <div className="relative order-2 min-h-[240px] sm:min-h-[300px] lg:order-1 lg:min-h-[380px]">
+                <Image
+                  src={sipImages.popular[2].src}
+                  alt="Taze hazırlanmış burger"
+                  fill
+                  loading="lazy"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[color-mix(in_srgb,var(--heading)_35%,transparent)] via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-[color-mix(in_srgb,var(--surface)_55%,transparent)]" />
+              </div>
 
-            <div className="relative z-10 mx-auto max-w-2xl">
-              <h2 className="sip-display text-3xl tracking-[-0.03em] text-[var(--background)] sm:text-4xl lg:text-5xl">
-                Bugün Ne Yiyeceğine Karar Ver!
-              </h2>
-              <p className="mt-4 text-base text-[color-mix(in_srgb,var(--background)_72%,transparent)] sm:text-lg">
-                Taptaze ürünlerimiz seni bekliyor.
-              </p>
-              <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                <Link href="/sip/menu" className="sip-btn-primary">
-                  Menüyü İncele
-                </Link>
-                <Link
-                  href="/sip/iletisim"
-                  className="inline-flex items-center justify-center rounded-[1rem] border border-[color-mix(in_srgb,var(--background)_35%,transparent)] bg-transparent px-[1.8rem] py-[0.95rem] text-[12px] font-semibold tracking-[0.14em] text-[var(--background)] uppercase transition-all duration-300 hover:bg-[color-mix(in_srgb,var(--background)_12%,transparent)]"
-                >
-                  İletişime Geç
-                </Link>
+              <div className="order-1 flex flex-col justify-center px-6 py-10 sm:px-10 sm:py-14 lg:order-2 lg:px-12 xl:px-16">
+                <p className="text-[11px] font-semibold tracking-[0.22em] text-[var(--accent)] uppercase">
+                  Sipariş Zamanı
+                </p>
+                <h2 className="sip-display mt-3 max-w-md text-3xl leading-[1.08] tracking-[-0.03em] text-[var(--heading)] sm:text-4xl lg:text-[2.75rem]">
+                  Bugün Ne Yiyeceğine Karar Ver!
+                </h2>
+                <p className="mt-4 max-w-sm text-base leading-relaxed text-[var(--muted)] sm:text-lg">
+                  Taptaze ürünlerimiz seni bekliyor.
+                </p>
+
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <Link href="/sip/menu" className="sip-btn-primary">
+                    Menüyü İncele
+                  </Link>
+                  <Link href="/sip/iletisim" className="sip-btn-secondary">
+                    İletişime Geç
+                  </Link>
+                </div>
               </div>
             </div>
           </div>

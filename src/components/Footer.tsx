@@ -1,11 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { LanguageSwitcher } from "./LanguageSwitcher";
-import { useLanguage } from "@/lib/language";
-import { useTemplate } from "@/lib/template";
-import { getNavCopy } from "@/lib/translations";
-
 const instagramUrl = "https://www.instagram.com/qeva_digital/";
 const tiktokUrl = "https://www.tiktok.com/@qeva_digital";
 
@@ -40,23 +34,23 @@ function TikTokIcon({ className }: { className?: string }) {
 }
 
 export function Footer() {
-  const year = new Date().getFullYear();
-  const { lang } = useLanguage();
-  const template = useTemplate();
-  const { homeHref } = getNavCopy(template, lang);
-
   return (
     <footer className="mt-auto border-t border-border bg-background">
       <div className="mx-auto grid max-w-7xl grid-cols-3 items-center gap-4 px-6 py-5 lg:px-10">
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <LanguageSwitcher />
-        </div>
+        <p className="text-xs tracking-wide text-faint">
+          by{" "}
+          <a
+            href="https://qeva-website.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-colors hover:text-muted"
+          >
+            Qeva Digital
+          </a>
+        </p>
 
         <p className="text-center text-xs tracking-wide text-faint">
-          {"©"} {year}{" "}
-          <Link href={homeHref} className="transition-colors hover:text-muted">
-            Qeva Digital
-          </Link>
+          {"©"} ABC Büfe
         </p>
 
         <div className="flex shrink-0 items-center justify-end gap-3">

@@ -35,15 +35,23 @@ function TikTokIcon({ className }: { className?: string }) {
 }
 
 export function RezFooter() {
-  const year = new Date().getFullYear();
-
   return (
     <footer className="border-t border-[var(--border)] bg-[var(--background)] text-[var(--foreground)]">
       <div className="mx-auto grid max-w-7xl grid-cols-3 items-center gap-4 px-6 py-5 lg:px-10">
-        <div />
+        <p className="text-xs tracking-wide text-[var(--faint)]">
+          by{" "}
+          <a
+            href="https://qeva-website.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-colors hover:text-[var(--muted)]"
+          >
+            Qeva Digital
+          </a>
+        </p>
 
         <p className="text-center text-xs tracking-wide text-[var(--faint)]">
-          © {year} Qeva Nail Studio
+          © ABC Nail Studio
         </p>
 
         <div className="flex shrink-0 items-center justify-end gap-3">
