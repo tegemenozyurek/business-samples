@@ -264,26 +264,28 @@ export function Navbar() {
                 </li>
               );
             })}
-            <li
-              className={`pt-4 transition-all duration-500 ease-out ${
-                isMenuOpen
-                  ? "translate-y-0 opacity-100"
-                  : "-translate-y-2 opacity-0"
-              }`}
-              style={{
-                transitionDelay: isMenuOpen
-                  ? `${copy.links.length * 60 + 80}ms`
-                  : "0ms",
-              }}
-            >
-              <Link
-                href={copy.ctaHref}
-                onClick={closeMenu}
-                className={`${ctaClassName} w-full`}
+            {!showCartIcon ? (
+              <li
+                className={`pt-4 transition-all duration-500 ease-out ${
+                  isMenuOpen
+                    ? "translate-y-0 opacity-100"
+                    : "-translate-y-2 opacity-0"
+                }`}
+                style={{
+                  transitionDelay: isMenuOpen
+                    ? `${copy.links.length * 60 + 80}ms`
+                    : "0ms",
+                }}
               >
-                {ctaContent}
-              </Link>
-            </li>
+                <Link
+                  href={copy.ctaHref}
+                  onClick={closeMenu}
+                  className={`${ctaClassName} w-full`}
+                >
+                  {ctaContent}
+                </Link>
+              </li>
+            ) : null}
           </ul>
         </div>
       </div>
