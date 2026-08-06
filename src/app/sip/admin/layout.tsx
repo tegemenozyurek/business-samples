@@ -1,4 +1,4 @@
-export default function SipLayout({
+export default function SipAdminLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

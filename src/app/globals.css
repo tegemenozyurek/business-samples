@@ -325,8 +325,16 @@ body {
   animation: landing-choice-in 0.7s ease-out both;
 }
 
-.landing-choice-delay {
-  animation-delay: 120ms;
+.landing-choice-delay-1 {
+  animation-delay: 80ms;
+}
+
+.landing-choice-delay-2 {
+  animation-delay: 160ms;
+}
+
+.landing-choice-delay-3 {
+  animation-delay: 240ms;
 }
 
 .landing-glow-a {
@@ -406,7 +414,9 @@ body {
   .floating-quote-btn,
   .floating-colors-btn,
   .landing-choice,
-  .landing-choice-delay,
+  .landing-choice-delay-1,
+  .landing-choice-delay-2,
+  .landing-choice-delay-3,
   .landing-glow-a,
   .landing-glow-b {
     animation: none !important;

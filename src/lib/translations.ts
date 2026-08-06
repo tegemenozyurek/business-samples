@@ -18,11 +18,15 @@ export type NavCopy = {
 export const landingCopy = {
   tr: {
     rezervasyon: "Rezervasyon",
-    siparis: "Siparis",
+    rezervasyonAdmin: "Rezervasyon - Admin",
+    siparis: "Sipariş",
+    siparisAdmin: "Sipariş - Admin",
   },
   en: {
     rezervasyon: "Reservation",
+    rezervasyonAdmin: "Reservation - Admin",
     siparis: "Order",
+    siparisAdmin: "Order - Admin",
   },
 } as const;
 
@@ -62,7 +66,7 @@ export const sipNavCopy: Record<"tr" | "en", NavCopy> = {
     ariaLabel: "Ana navigasyon",
     openMenu: "Menüyü aç",
     closeMenu: "Menüyü kapat",
-    cta: "Siparis Ver",
+    cta: "Sipariş Ver",
     ctaHref: "/sip/siparis",
     homeHref: "/sip",
     links: [

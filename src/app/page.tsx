@@ -4,6 +4,33 @@ import Link from "next/link";
 import { useLanguage } from "@/lib/language";
 import { landingCopy } from "@/lib/translations";
 
+const choices = [
+  {
+    href: "/rez",
+    labelKey: "rezervasyon" as const,
+    accent: "#ef4444",
+    delayClass: "",
+  },
+  {
+    href: "/rez/admin",
+    labelKey: "rezervasyonAdmin" as const,
+    accent: "#f97316",
+    delayClass: "landing-choice-delay-1",
+  },
+  {
+    href: "/sip",
+    labelKey: "siparis" as const,
+    accent: "#3b82f6",
+    delayClass: "landing-choice-delay-2",
+  },
+  {
+    href: "/sip/admin",
+    labelKey: "siparisAdmin" as const,
+    accent: "#6366f1",
+    delayClass: "landing-choice-delay-3",
+  },
+];
+
 export default function LandingPage() {
   const { lang } = useLanguage();
   const copy = landingCopy[lang];
@@ -20,39 +47,26 @@ export default function LandingPage() {
       </div>
 
       <div className="relative z-10 flex w-full max-w-sm flex-col gap-4">
-        <Link
-          href="/rez"
-          className="landing-choice group relative flex min-h-[88px] items-center justify-center overflow-hidden rounded-[1.75rem] border border-border bg-[var(--nav-bg)] px-7 py-6 shadow-[0_20px_60px_var(--nav-shadow)] backdrop-blur-xl transition-all duration-500 ease-out hover:-translate-y-0.5 hover:border-[var(--icon-hover-border)] hover:bg-surface-hover"
-        >
-          <span
-            aria-hidden="true"
-            className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--hairline)] to-transparent opacity-70"
-          />
-          <span
-            aria-hidden="true"
-            className="absolute bottom-0 left-0 h-[3px] w-full origin-left scale-x-0 bg-[#ef4444] transition-transform duration-500 ease-out group-hover:scale-x-100"
-          />
-          <span className="text-[1.25rem] font-medium tracking-[0.02em] text-heading capitalize">
-            {copy.rezervasyon}
-          </span>
-        </Link>
-
-        <Link
-          href="/sip"
-          className="landing-choice landing-choice-delay group relative flex min-h-[88px] items-center justify-center overflow-hidden rounded-[1.75rem] border border-border bg-[var(--nav-bg)] px-7 py-6 shadow-[0_20px_60px_var(--nav-shadow)] backdrop-blur-xl transition-all duration-500 ease-out hover:-translate-y-0.5 hover:border-[var(--icon-hover-border)] hover:bg-surface-hover"
-        >
-          <span
-            aria-hidden="true"
-            className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--hairline)] to-transparent opacity-70"
-          />
-          <span
-            aria-hidden="true"
-            className="absolute bottom-0 left-0 h-[3px] w-full origin-left scale-x-0 bg-[#3b82f6] transition-transform duration-500 ease-out group-hover:scale-x-100"
-          />
-          <span className="text-[1.25rem] font-medium tracking-[0.02em] text-heading capitalize">
-            {copy.siparis}
-          </span>
-        </Link>
+        {choices.map((choice) => (
+          <Link
+            key={choice.href}
+            href={choice.href}
+            className={`landing-choice ${choice.delayClass} group relative flex min-h-[88px] items-center justify-center overflow-hidden rounded-[1.75rem] border border-border bg-[var(--nav-bg)] px-7 py-6 shadow-[0_20px_60px_var(--nav-shadow)] backdrop-blur-xl transition-all duration-500 ease-out hover:-translate-y-0.5 hover:border-[var(--icon-hover-border)] hover:bg-surface-hover`}
+          >
+            <span
+              aria-hidden="true"
+              className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--hairline)] to-transparent opacity-70"
+            />
+            <span
+              aria-hidden="true"
+              className="absolute bottom-0 left-0 h-[3px] w-full origin-left scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100"
+              style={{ backgroundColor: choice.accent }}
+            />
+            <span className="text-[1.25rem] font-medium tracking-[0.02em] text-heading capitalize">
+              {copy[choice.labelKey]}
+            </span>
+          </Link>
+        ))}
       </div>
     </main>
   );
