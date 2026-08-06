@@ -1,6 +1,4 @@
 import { Cormorant_Garamond, Manrope } from "next/font/google";
-import { TemplateShell } from "@/components/TemplateShell";
-import { RezFooter } from "@/components/rez/RezFooter";
 import "./rez-home.css";
 
 const manrope = Manrope({
@@ -23,9 +21,7 @@ export default function RezLayout({
 }>) {
   return (
     <div className={`${manrope.variable} ${cormorant.variable} rez-home min-h-full`}>
-      <TemplateShell template="rez" footer={<RezFooter />}>
-        {children}
-      </TemplateShell>
+      {children}
     </div>
   );
 }

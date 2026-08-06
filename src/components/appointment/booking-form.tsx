@@ -9,6 +9,7 @@ import {
   appointmentServices,
   densityLegend,
 } from "@/lib/appointment-content";
+import { addAppointment } from "@/lib/appointments-store";
 import { DateCalendar } from "./date-calendar";
 import { ServiceSelector } from "./service-selector";
 import { TimeSlotPicker } from "./time-slot-picker";
@@ -190,6 +191,17 @@ export function BookingForm() {
   const onSubmit = async (data: BookingFormValues) => {
     await new Promise((resolve) => window.setTimeout(resolve, 900));
     const number = createAppointmentNumber();
+    addAppointment({
+      appointmentNo: number,
+      name: data.name.trim(),
+      phone: data.phone.trim(),
+      email: data.email?.trim() || undefined,
+      serviceId: data.serviceId,
+      serviceName: selectedService?.name ?? data.serviceId,
+      date: data.date,
+      time: data.time,
+      notes: data.notes?.trim() || undefined,
+    });
     setAppointmentNo(number);
     setSuccessPayload({
       service: selectedService?.name ?? data.serviceId,

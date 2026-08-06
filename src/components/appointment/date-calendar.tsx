@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   densityLegend,
+  getAdminCalendarRange,
   getDayDensity,
   getSelectableRange,
   toDateKey,
@@ -22,6 +23,8 @@ const beadClass: Record<DensityLevel, string> = {
 type DateCalendarProps = {
   value: string;
   onChange: (dateKey: string) => void;
+  mode?: "booking" | "admin";
+  showLegend?: boolean;
 };
 
 function monthLabel(year: number, month: number) {
@@ -31,15 +34,30 @@ function monthLabel(year: number, month: number) {
   }).format(new Date(year, month, 1));
 }
 
-export function DateCalendar({ value, onChange }: DateCalendarProps) {
-  const { today, end } = useMemo(() => getSelectableRange(), []);
+export function DateCalendar({
+  value,
+  onChange,
+  mode = "booking",
+  showLegend = false,
+}: DateCalendarProps) {
+  const isAdmin = mode === "admin";
+  const range = useMemo(
+    () => (isAdmin ? getAdminCalendarRange() : getSelectableRange()),
+    [isAdmin],
+  );
+  const today = range.today;
+  const start = isAdmin
+    ? (range as ReturnType<typeof getAdminCalendarRange>).start
+    : today;
+  const end = range.end;
+
   const [view, setView] = useState(() => ({
     year: today.getFullYear(),
     month: today.getMonth(),
   }));
 
-  const minMonth = today.getMonth();
-  const minYear = today.getFullYear();
+  const minMonth = start.getMonth();
+  const minYear = start.getFullYear();
   const maxMonth = end.getMonth();
   const maxYear = end.getFullYear();
 
@@ -51,7 +69,6 @@ export function DateCalendar({ value, onChange }: DateCalendarProps) {
   const cells = useMemo(() => {
     const first = new Date(view.year, view.month, 1);
     const daysInMonth = new Date(view.year, view.month + 1, 0).getDate();
-    // Monday-first: JS Sunday=0 → convert
     const startOffset = (first.getDay() + 6) % 7;
     const items: ({ type: "empty" } | { type: "day"; date: Date; key: string })[] =
       [];
@@ -129,14 +146,16 @@ export function DateCalendar({ value, onChange }: DateCalendarProps) {
           }
 
           const { date, key } = cell;
-          const beforeToday = date < today;
+          const beforeStart = date < start;
           const afterEnd = date > end;
           const isSunday = date.getDay() === 0;
-          const outOfRange = beforeToday || afterEnd || isSunday;
+          const outOfRange = beforeStart || afterEnd || (!isAdmin && isSunday);
           const selected = value === key;
           const density = getDayDensity(key);
           const fullyBooked = !outOfRange && density === "red";
-          const cannotSelect = outOfRange || fullyBooked;
+          const cannotSelect = isAdmin
+            ? beforeStart || afterEnd
+            : outOfRange || fullyBooked;
 
           return (
             <button
@@ -157,7 +176,7 @@ export function DateCalendar({ value, onChange }: DateCalendarProps) {
               <span className="leading-none">{date.getDate()}</span>
               <span
                 className={`mt-0.5 h-1.5 w-1.5 rounded-full ${
-                  outOfRange
+                  beforeStart || afterEnd || (!isAdmin && isSunday)
                     ? "bg-[rgba(26,22,20,0.12)]"
                     : selected
                       ? "bg-white/90"
@@ -168,6 +187,20 @@ export function DateCalendar({ value, onChange }: DateCalendarProps) {
           );
         })}
       </div>
+
+      {showLegend ? (
+        <ul className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+          {densityLegend.map((item) => (
+            <li
+              key={item.level}
+              className="inline-flex items-center gap-1.5 text-[11px] text-[var(--muted)]"
+            >
+              <span className={`h-2 w-2 rounded-full ${item.className}`} />
+              {item.label}
+            </li>
+          ))}
+        </ul>
+      ) : null}
     </div>
   );
 }

@@ -145,6 +145,14 @@ export function getSelectableRange(now = new Date()) {
   return { today, end };
 }
 
+/** Admin calendar range: start of previous month → end of next month. */
+export function getAdminCalendarRange(now = new Date()) {
+  const today = startOfDay(now);
+  const start = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+  const end = new Date(today.getFullYear(), today.getMonth() + 2, 0);
+  return { today, start, end };
+}
+
 export const bookingInfoCards = [
   {
     title: "İptal Politikası",
