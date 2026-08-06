@@ -24,6 +24,7 @@ import {
   findProductByName,
   formatPrice,
   parsePrice,
+  sipImages,
 } from "@/lib/sip-content";
 import {
   getIzmirNeighborhoods,
@@ -253,19 +254,134 @@ export function SipCartPage() {
   }
 
   if (lines.length === 0) {
+    const highlights = sipImages.popular.slice(0, 3);
+
     return (
       <main>
-        <section className="bg-[var(--background)]">
-          <div className="mx-auto flex min-h-[70svh] max-w-7xl flex-col items-center justify-center px-6 py-24 text-center lg:px-10">
-            <h1 className="sip-display text-4xl tracking-[-0.03em] text-[var(--heading)] sm:text-5xl">
-              Sepetin Boş
-            </h1>
-            <p className="mt-4 max-w-md text-base leading-relaxed text-[var(--muted)] sm:text-lg">
-              Henüz ürün eklemedin. Menüden favorilerini seçip sepete ekleyebilirsin.
-            </p>
-            <Link href="/sip/menu" className="sip-btn-primary mt-8">
-              Menüyü İncele
-            </Link>
+        <section className="relative overflow-hidden bg-[var(--background)]">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -top-24 right-[-10%] h-72 w-72 rounded-full bg-[radial-gradient(circle,color-mix(in_srgb,var(--accent)_22%,transparent),transparent_70%)] blur-3xl"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute bottom-0 left-[-8%] h-64 w-64 rounded-full bg-[radial-gradient(circle,color-mix(in_srgb,var(--heading)_8%,transparent),transparent_70%)] blur-3xl"
+          />
+
+          <div className="sip-section relative z-10 mx-auto grid max-w-7xl items-center gap-12 !pt-36 sm:!pt-40 lg:grid-cols-2 lg:gap-16 lg:!pt-36">
+            <div>
+              <p className="text-[11px] font-semibold tracking-[0.22em] text-[var(--accent)] uppercase">
+                Sepet
+              </p>
+              <h1 className="sip-display mt-3 text-4xl leading-[1.05] tracking-[-0.03em] text-[var(--heading)] sm:text-5xl lg:text-6xl">
+                Henüz bir şey yok
+              </h1>
+              <p className="mt-5 max-w-md text-base leading-relaxed text-[var(--muted)] sm:text-lg">
+                Menüden tost, burger veya içecek seçip sepetini doldur.
+                Kapıda nakit veya kart ile ödeyebilirsiniz.
+              </p>
+
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <Link href="/sip/menu" className="sip-btn-primary">
+                  Menüyü İncele
+                </Link>
+                <Link href="/sip" className="sip-btn-secondary">
+                  Ana Sayfa
+                </Link>
+              </div>
+            </div>
+
+            <div className="relative mx-auto w-full max-w-md lg:max-w-none">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] sm:rounded-[1.75rem]">
+                  <Image
+                    src={highlights[0].src}
+                    alt={highlights[0].name}
+                    fill
+                    priority
+                    sizes="(max-width: 1024px) 45vw, 240px"
+                    className="object-cover"
+                  />
+                </div>
+                <div className="flex flex-col gap-3 sm:gap-4">
+                  <div className="relative aspect-square overflow-hidden rounded-[1.5rem] sm:rounded-[1.75rem]">
+                    <Image
+                      src={highlights[1].src}
+                      alt={highlights[1].name}
+                      fill
+                      sizes="(max-width: 1024px) 40vw, 200px"
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="relative min-h-[7.5rem] flex-1 overflow-hidden rounded-[1.5rem] sm:rounded-[1.75rem]">
+                    <Image
+                      src={highlights[2].src}
+                      alt={highlights[2].name}
+                      fill
+                      sizes="(max-width: 1024px) 40vw, 200px"
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[color-mix(in_srgb,var(--heading)_55%,transparent)] to-transparent" />
+                    <p className="absolute inset-x-0 bottom-0 p-4 text-[11px] font-semibold tracking-[0.14em] text-white uppercase">
+                      Bugünün favorileri
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="sip-section bg-[var(--sip-alt)] !pt-2 sm:!pt-4">
+          <div className="mx-auto max-w-7xl">
+            <div className="flex items-end justify-between gap-4">
+              <div>
+                <p className="text-[11px] font-semibold tracking-[0.22em] text-[var(--accent)] uppercase">
+                  Öneri
+                </p>
+                <h2 className="sip-display mt-2 text-3xl tracking-[-0.03em] text-[var(--heading)] sm:text-4xl">
+                  Nereden başlasan?
+                </h2>
+              </div>
+              <Link
+                href="/sip/menu"
+                className="hidden text-[11px] font-semibold tracking-[0.14em] text-[var(--muted)] uppercase transition-colors hover:text-[var(--heading)] sm:inline"
+              >
+                Tüm menü
+              </Link>
+            </div>
+
+            <ul className="mt-8 grid gap-4 sm:grid-cols-3">
+              {highlights.map((item) => (
+                <li key={item.name}>
+                  <Link
+                    href="/sip/menu"
+                    className="group flex h-full items-center gap-4 rounded-[1.25rem] border border-[var(--border)] bg-[var(--surface)] p-3 transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--border-strong)] sm:p-4"
+                  >
+                    <span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl sm:h-[4.5rem] sm:w-[4.5rem]">
+                      <Image
+                        src={item.src}
+                        alt={item.name}
+                        fill
+                        sizes="72px"
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-[10px] font-semibold tracking-[0.14em] text-[var(--muted)] uppercase">
+                        {item.category}
+                      </span>
+                      <span className="sip-display mt-1 block truncate text-xl tracking-[-0.02em] text-[var(--heading)]">
+                        {item.name}
+                      </span>
+                      <span className="mt-1 block text-sm text-[var(--muted)]">
+                        {item.price}
+                      </span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
       </main>
