@@ -3,18 +3,44 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ShoppingCart } from "lucide-react";
+import { useCart } from "@/lib/cart";
 import { useLanguage } from "@/lib/language";
 import { useTemplate } from "@/lib/template";
 import { getNavCopy } from "@/lib/translations";
 import { Logo } from "./Logo";
+
+function CartBadge({ count, pulse }: { count: number; pulse: number }) {
+  if (count <= 0) return null;
+
+  return (
+    <AnimatePresence mode="popLayout">
+      <motion.span
+        key={`${count}-${pulse}`}
+        className="absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--background)] px-1 text-[10px] font-bold text-[var(--accent)] ring-2 ring-[var(--accent)]"
+        initial={{ scale: 0.4, opacity: 0 }}
+        animate={{ scale: [0.4, 1.2, 1], opacity: 1 }}
+        exit={{ scale: 0.4, opacity: 0 }}
+        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      >
+        {count > 99 ? "99+" : count}
+      </motion.span>
+    </AnimatePresence>
+  );
+}
 
 export function Navbar() {
   const { lang } = useLanguage();
   const template = useTemplate();
   const copy = getNavCopy(template, lang);
   const pathname = usePathname();
+  const cart = useCart();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const showCartIcon = template === "sip";
+  const cartCount = cart?.count ?? 0;
+  const cartPulse = cart?.pulse ?? 0;
 
   const isActive = (href: string) => {
     if (href === copy.homeHref) {
@@ -43,7 +69,19 @@ export function Navbar() {
   const closeMenu = () => setIsMenuOpen(false);
 
   const ctaClassName =
-    "inline-flex items-center justify-center rounded-full border border-accent bg-accent px-5 py-2.5 text-[12px] font-medium tracking-[0.14em] text-background uppercase transition-all duration-300 hover:opacity-90";
+    "relative inline-flex items-center justify-center gap-2 rounded-full border border-accent bg-accent px-5 py-2.5 text-[12px] font-medium tracking-[0.14em] text-background uppercase transition-all duration-300 hover:opacity-90";
+
+  const ctaContent = (
+    <>
+      {copy.cta}
+      {showCartIcon ? (
+        <span className="relative inline-flex">
+          <ShoppingCart className="h-3.5 w-3.5" strokeWidth={2} aria-hidden="true" />
+        </span>
+      ) : null}
+      {showCartIcon ? <CartBadge count={cartCount} pulse={cartPulse} /> : null}
+    </>
+  );
 
   return (
     <header
@@ -88,43 +126,78 @@ export function Navbar() {
             );
           })}
           <li>
-            <Link href={copy.ctaHref} className={ctaClassName}>
-              {copy.cta}
-            </Link>
+            <motion.div
+              animate={cartPulse > 0 ? { scale: [1, 1.08, 1] } : { scale: 1 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <Link
+                href={copy.ctaHref}
+                className={ctaClassName}
+                data-cart-target={showCartIcon ? "true" : undefined}
+                aria-label={
+                  showCartIcon && cartCount > 0
+                    ? `${copy.cta}, ${cartCount} ürün`
+                    : copy.cta
+                }
+              >
+                {ctaContent}
+              </Link>
+            </motion.div>
           </li>
         </ul>
 
-        <button
-          type="button"
-          className="relative z-50 flex h-11 w-11 items-center justify-center rounded-full border border-[var(--icon-border)] bg-[var(--icon-bg)] transition-colors duration-300 hover:border-[var(--icon-hover-border)] hover:bg-[var(--icon-hover-bg)] md:hidden"
-          onClick={() => setIsMenuOpen((open) => !open)}
-          aria-expanded={isMenuOpen}
-          aria-controls="mobile-menu"
-          aria-label={isMenuOpen ? copy.closeMenu : copy.openMenu}
-        >
-          <span className="sr-only">
-            {isMenuOpen ? copy.closeMenu : copy.openMenu}
-          </span>
-          <span className="relative h-3.5 w-5">
-            <span
-              className={`absolute left-0 h-px w-full bg-heading transition-all duration-300 ease-out ${
-                isMenuOpen ? "top-1/2 -translate-y-1/2 rotate-45" : "top-0"
-              }`}
-            />
-            <span
-              className={`absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-heading transition-all duration-300 ease-out ${
-                isMenuOpen ? "scale-x-0 opacity-0" : "scale-x-100 opacity-100"
-              }`}
-            />
-            <span
-              className={`absolute left-0 h-px w-full bg-heading transition-all duration-300 ease-out ${
-                isMenuOpen
-                  ? "top-1/2 -translate-y-1/2 -rotate-45"
-                  : "bottom-0"
-              }`}
-            />
-          </span>
-        </button>
+        <div className="flex items-center gap-2 md:hidden">
+          {showCartIcon ? (
+            <motion.div
+              animate={cartPulse > 0 ? { scale: [1, 1.1, 1] } : { scale: 1 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <Link
+                href={copy.ctaHref}
+                data-cart-target="true"
+                aria-label={
+                  cartCount > 0 ? `${copy.cta}, ${cartCount} ürün` : copy.cta
+                }
+                className="relative z-50 flex h-11 w-11 items-center justify-center rounded-full border border-accent bg-accent text-background transition-opacity duration-300 hover:opacity-90"
+              >
+                <ShoppingCart className="h-4 w-4" strokeWidth={2} />
+                <CartBadge count={cartCount} pulse={cartPulse} />
+              </Link>
+            </motion.div>
+          ) : null}
+
+          <button
+            type="button"
+            className="relative z-50 flex h-11 w-11 items-center justify-center rounded-full border border-[var(--icon-border)] bg-[var(--icon-bg)] transition-colors duration-300 hover:border-[var(--icon-hover-border)] hover:bg-[var(--icon-hover-bg)]"
+            onClick={() => setIsMenuOpen((open) => !open)}
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-menu"
+            aria-label={isMenuOpen ? copy.closeMenu : copy.openMenu}
+          >
+            <span className="sr-only">
+              {isMenuOpen ? copy.closeMenu : copy.openMenu}
+            </span>
+            <span className="relative h-3.5 w-5">
+              <span
+                className={`absolute left-0 h-px w-full bg-heading transition-all duration-300 ease-out ${
+                  isMenuOpen ? "top-1/2 -translate-y-1/2 rotate-45" : "top-0"
+                }`}
+              />
+              <span
+                className={`absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-heading transition-all duration-300 ease-out ${
+                  isMenuOpen ? "scale-x-0 opacity-0" : "scale-x-100 opacity-100"
+                }`}
+              />
+              <span
+                className={`absolute left-0 h-px w-full bg-heading transition-all duration-300 ease-out ${
+                  isMenuOpen
+                    ? "top-1/2 -translate-y-1/2 -rotate-45"
+                    : "bottom-0"
+                }`}
+              />
+            </span>
+          </button>
+        </div>
       </nav>
 
       <div
@@ -196,7 +269,7 @@ export function Navbar() {
                 onClick={closeMenu}
                 className={`${ctaClassName} w-full`}
               >
-                {copy.cta}
+                {ctaContent}
               </Link>
             </li>
           </ul>

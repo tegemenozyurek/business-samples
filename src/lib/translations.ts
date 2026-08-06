@@ -66,7 +66,7 @@ export const sipNavCopy: Record<"tr" | "en", NavCopy> = {
     ariaLabel: "Ana navigasyon",
     openMenu: "Menüyü aç",
     closeMenu: "Menüyü kapat",
-    cta: "Sipariş Ver",
+    cta: "Sepet",
     ctaHref: "/sip/siparis",
     homeHref: "/sip",
     links: [
@@ -79,7 +79,7 @@ export const sipNavCopy: Record<"tr" | "en", NavCopy> = {
     ariaLabel: "Main navigation",
     openMenu: "Open menu",
     closeMenu: "Close menu",
-    cta: "Place Order",
+    cta: "Cart",
     ctaHref: "/sip/siparis",
     homeHref: "/sip",
     links: [

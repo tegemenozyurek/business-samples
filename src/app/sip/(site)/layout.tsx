@@ -1,9 +1,16 @@
+"use client";
+
 import { TemplateShell } from "@/components/TemplateShell";
+import { CartProvider } from "@/lib/cart";
 
 export default function SipSiteLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <TemplateShell template="sip">{children}</TemplateShell>;
+  return (
+    <CartProvider>
+      <TemplateShell template="sip">{children}</TemplateShell>
+    </CartProvider>
+  );
 }
