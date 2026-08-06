@@ -264,3 +264,20 @@ export const sipImages = {
 export function getMenuByCategory(category: string): SipProduct[] {
   return sipImages.menu.filter((item) => item.category === category);
 }
+
+export function parsePrice(price: string): number {
+  const digits = price.replace(/[^\d]/g, "");
+  return Number.parseInt(digits, 10) || 0;
+}
+
+export function formatPrice(amount: number): string {
+  return `₺${amount.toLocaleString("tr-TR")}`;
+}
+
+export function findProductByName(name: string): SipProduct | undefined {
+  return (
+    sipImages.menu.find((item) => item.name === name) ??
+    sipImages.popular.find((item) => item.name === name)
+  );
+}
+

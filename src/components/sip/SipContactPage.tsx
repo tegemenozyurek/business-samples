@@ -120,10 +120,7 @@ export function SipContactPage() {
         <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-2 lg:gap-6">
           <FadeUp>
             <article className="flex h-full flex-col rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[0_14px_40px_color-mix(in_srgb,var(--foreground)_5%,transparent)] sm:rounded-[1.75rem] sm:p-8">
-              <p className="text-[11px] font-semibold tracking-[0.22em] text-[var(--accent)] uppercase">
-                Bağlantı
-              </p>
-              <h2 className="sip-display mt-2 text-3xl tracking-[-0.03em] text-[var(--heading)] sm:text-4xl">
+              <h2 className="sip-display text-3xl tracking-[-0.03em] text-[var(--heading)] sm:text-4xl">
                 İletişim Bilgileri
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-[var(--muted)] sm:text-base">
@@ -164,10 +161,7 @@ export function SipContactPage() {
 
           <FadeUp delay={0.06}>
             <article className="flex h-full flex-col rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[0_14px_40px_color-mix(in_srgb,var(--foreground)_5%,transparent)] sm:rounded-[1.75rem] sm:p-8">
-              <p className="text-[11px] font-semibold tracking-[0.22em] text-[var(--accent)] uppercase">
-                Program
-              </p>
-              <h2 className="sip-display mt-2 text-3xl tracking-[-0.03em] text-[var(--heading)] sm:text-4xl">
+              <h2 className="sip-display text-3xl tracking-[-0.03em] text-[var(--heading)] sm:text-4xl">
                 Çalışma Saatleri
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-[var(--muted)] sm:text-base">

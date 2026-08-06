@@ -13,12 +13,15 @@ import {
 type CartItems = Record<string, number>;
 
 type CartContextValue = {
+  items: CartItems;
   count: number;
   pulse: number;
   getQty: (id: string) => number;
   addItem: (id: string) => void;
   increment: (id: string) => void;
   decrement: (id: string) => void;
+  removeItem: (id: string) => void;
+  clear: () => void;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -93,13 +96,49 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [bumpPulse],
   );
 
+  const removeItem = useCallback(
+    (id: string) => {
+      setItems((current) => {
+        const { [id]: _, ...rest } = current;
+        return rest;
+      });
+      bumpPulse();
+    },
+    [bumpPulse],
+  );
+
+  const clear = useCallback(() => {
+    setItems({});
+    bumpPulse();
+  }, [bumpPulse]);
+
   const getQty = useCallback((id: string) => items[id] ?? 0, [items]);
 
   const count = useMemo(() => totalCount(items), [items]);
 
   const value = useMemo(
-    () => ({ count, pulse, getQty, addItem, increment, decrement }),
-    [count, pulse, getQty, addItem, increment, decrement],
+    () => ({
+      items,
+      count,
+      pulse,
+      getQty,
+      addItem,
+      increment,
+      decrement,
+      removeItem,
+      clear,
+    }),
+    [
+      items,
+      count,
+      pulse,
+      getQty,
+      addItem,
+      increment,
+      decrement,
+      removeItem,
+      clear,
+    ],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
