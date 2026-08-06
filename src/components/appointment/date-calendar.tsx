@@ -147,7 +147,7 @@ export function DateCalendar({
       <div className="mt-0.5 grid grid-cols-7 gap-0.5">
         {cells.map((cell, index) => {
           if (cell.type === "empty") {
-            return <div key={`empty-${index}`} className="h-10 sm:h-11" />;
+            return <div key={`empty-${index}`} className="h-11 sm:h-12 md:h-[3.25rem]" />;
           }
 
           const { date, key } = cell;
@@ -182,7 +182,7 @@ export function DateCalendar({
                   ? "Kapalı"
                   : densityLegend.find((item) => item.level === density)?.label
               }`}
-              className={`flex h-10 flex-col items-center justify-center rounded-lg border text-[13px] transition-all duration-300 sm:h-11 ${
+              className={`flex h-11 flex-col items-center justify-center rounded-lg border text-sm font-medium transition-all duration-300 sm:h-12 sm:text-base md:h-[3.25rem] ${
                 cannotSelect
                   ? "cursor-not-allowed border-transparent text-[var(--faint)]"
                   : selected
@@ -192,7 +192,7 @@ export function DateCalendar({
             >
               <span className="leading-none">{date.getDate()}</span>
               <span
-                className={`mt-0.5 h-1.5 w-1.5 rounded-full ${
+                className={`mt-1 h-1.5 w-1.5 rounded-full ${
                   mutedBead
                     ? "bg-[var(--surface-hover)]"
                     : selected

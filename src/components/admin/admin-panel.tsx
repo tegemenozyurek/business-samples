@@ -55,10 +55,10 @@ function StatusMark({
 
   return (
     <span
-      className={`flex ${box} shrink-0 animate-bounce items-center justify-center rounded-full bg-sky-500 ${q} font-semibold text-white`}
+      className={`flex ${box} shrink-0 animate-[admin-tab-blink_1.4s_ease-in-out_infinite] items-center justify-center rounded-full bg-amber-400 ${q} font-semibold text-white`}
       aria-label="Onay bekliyor"
     >
-      ?
+      !
     </span>
   );
 }
@@ -141,13 +141,13 @@ function AppointmentDetailModal({
               Randevu detayı
             </p>
             <div className="mt-1 flex items-center gap-2">
+              <StatusMark status={item.status} size="md" />
               <h3
                 id="appointment-detail-title"
                 className="min-w-0 font-[family-name:var(--font-cormorant)] text-3xl tracking-[-0.02em] text-[var(--heading)]"
               >
                 {item.name}
               </h3>
-              <StatusMark status={item.status} size="md" />
             </div>
           </div>
           <button
@@ -231,21 +231,36 @@ function AppointmentDetailModal({
 function AppointmentCard({
   item,
   onOpen,
+  showDate = false,
 }: {
   item: StoredAppointment;
   onOpen: () => void;
+  showDate?: boolean;
 }) {
+  const shortDate = new Intl.DateTimeFormat("tr-TR", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(new Date(`${item.date}T12:00:00`));
+
   return (
     <article className="flex items-center gap-3 rounded-[1.15rem] border border-[var(--border)] bg-[var(--surface)] px-4 py-3.5 sm:gap-4 sm:px-5">
       <div className="flex min-w-0 flex-1 items-center gap-2">
+        <StatusMark status={item.status} />
         <h2 className="truncate font-[family-name:var(--font-cormorant)] text-xl tracking-[-0.02em] text-[var(--heading)] sm:text-2xl">
           {item.name}
         </h2>
-        <StatusMark status={item.status} />
       </div>
-      <p className="shrink-0 text-sm font-medium tracking-[0.04em] text-[var(--heading)]">
-        {item.time}
-      </p>
+      <div className="flex shrink-0 items-baseline gap-2.5 text-right">
+        {showDate ? (
+          <p className="text-sm font-medium tracking-[0.02em] text-[var(--muted)]">
+            {shortDate}
+          </p>
+        ) : null}
+        <p className="text-sm font-medium tracking-[0.04em] text-[var(--heading)]">
+          {item.time}
+        </p>
+      </div>
       <button
         type="button"
         onClick={onOpen}
@@ -457,6 +472,7 @@ export function AdminPanel({ onLogout }: AdminPanelProps) {
                 <AppointmentCard
                   key={item.id}
                   item={item}
+                  showDate
                   onOpen={() => setDetailItem(item)}
                 />
               ))
