@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { useLanguage } from "@/lib/language";
@@ -11,22 +11,34 @@ import { useTemplate } from "@/lib/template";
 import { getNavCopy } from "@/lib/translations";
 import { Logo } from "./Logo";
 
-function CartBadge({ count, pulse }: { count: number; pulse: number }) {
+function CartCount({
+  count,
+  pulse,
+  overlay = false,
+}: {
+  count: number;
+  pulse: number;
+  overlay?: boolean;
+}) {
   if (count <= 0) return null;
 
+  const label = count > 99 ? "99+" : String(count);
+
   return (
-    <AnimatePresence mode="popLayout">
-      <motion.span
-        key={`${count}-${pulse}`}
-        className="absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--background)] px-1 text-[10px] font-bold text-[var(--accent)] ring-2 ring-[var(--accent)]"
-        initial={{ scale: 0.4, opacity: 0 }}
-        animate={{ scale: [0.4, 1.2, 1], opacity: 1 }}
-        exit={{ scale: 0.4, opacity: 0 }}
-        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      >
-        {count > 99 ? "99+" : count}
-      </motion.span>
-    </AnimatePresence>
+    <motion.span
+      key={`${count}-${pulse}`}
+      aria-hidden="true"
+      initial={{ scale: 0.7, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ type: "spring", stiffness: 480, damping: 24 }}
+      className={
+        overlay
+          ? "absolute -top-1 -right-1 z-10 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--background)] px-1 text-[10px] font-bold leading-none text-[var(--accent)] ring-2 ring-[var(--accent)]"
+          : "flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-[var(--background)] px-1.5 text-[10px] font-bold leading-none text-[var(--accent)]"
+      }
+    >
+      {label}
+    </motion.span>
   );
 }
 
@@ -69,17 +81,21 @@ export function Navbar() {
   const closeMenu = () => setIsMenuOpen(false);
 
   const ctaClassName =
-    "relative inline-flex items-center justify-center gap-2 rounded-full border border-accent bg-accent px-5 py-2.5 text-[12px] font-medium tracking-[0.14em] text-background uppercase transition-all duration-300 hover:opacity-90";
+    "relative inline-flex items-center justify-center gap-2 rounded-full border border-accent bg-accent px-4 py-2.5 text-[12px] font-medium tracking-[0.14em] text-background uppercase transition-all duration-300 hover:opacity-90 sm:px-5";
 
   const ctaContent = (
     <>
-      {copy.cta}
+      <span className="truncate">{copy.cta}</span>
       {showCartIcon ? (
-        <span className="relative inline-flex">
-          <ShoppingCart className="h-3.5 w-3.5" strokeWidth={2} aria-hidden="true" />
-        </span>
+        <ShoppingCart
+          className="h-3.5 w-3.5 shrink-0"
+          strokeWidth={2}
+          aria-hidden="true"
+        />
       ) : null}
-      {showCartIcon ? <CartBadge count={cartCount} pulse={cartPulse} /> : null}
+      {showCartIcon ? (
+        <CartCount count={cartCount} pulse={cartPulse} />
+      ) : null}
     </>
   );
 
@@ -125,10 +141,11 @@ export function Navbar() {
               </li>
             );
           })}
-          <li>
+          <li className="overflow-visible">
             <motion.div
-              animate={cartPulse > 0 ? { scale: [1, 1.08, 1] } : { scale: 1 }}
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              className="overflow-visible"
+              animate={cartPulse > 0 ? { scale: [1, 1.04, 1] } : { scale: 1 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             >
               <Link
                 href={copy.ctaHref}
@@ -149,8 +166,9 @@ export function Navbar() {
         <div className="flex items-center gap-2 md:hidden">
           {showCartIcon ? (
             <motion.div
-              animate={cartPulse > 0 ? { scale: [1, 1.1, 1] } : { scale: 1 }}
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              className="overflow-visible"
+              animate={cartPulse > 0 ? { scale: [1, 1.06, 1] } : { scale: 1 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             >
               <Link
                 href={copy.ctaHref}
@@ -158,10 +176,10 @@ export function Navbar() {
                 aria-label={
                   cartCount > 0 ? `${copy.cta}, ${cartCount} ürün` : copy.cta
                 }
-                className="relative z-50 flex h-11 w-11 items-center justify-center rounded-full border border-accent bg-accent text-background transition-opacity duration-300 hover:opacity-90"
+                className="relative z-50 flex h-11 w-11 shrink-0 items-center justify-center overflow-visible rounded-full border border-accent bg-accent text-background transition-opacity duration-300 hover:opacity-90"
               >
                 <ShoppingCart className="h-4 w-4" strokeWidth={2} />
-                <CartBadge count={cartCount} pulse={cartPulse} />
+                <CartCount count={cartCount} pulse={cartPulse} overlay />
               </Link>
             </motion.div>
           ) : null}
@@ -208,7 +226,7 @@ export function Navbar() {
         aria-hidden={!isMenuOpen}
       >
         <div
-          className={`absolute inset-0 bg-black/60 transition-opacity duration-500 ease-out theme-light:bg-black/30 ${
+          className={`absolute inset-0 transition-opacity duration-500 ease-out ${
             isMenuOpen ? "opacity-100" : "opacity-0"
           }`}
           onClick={closeMenu}
