@@ -60,7 +60,7 @@ export function ServiceCard({
 
           <div className="mt-auto w-full pt-4">
             <Link
-              href="/rez/randevu"
+              href={`/rez/randevu?service=${service.id}`}
               className="rez-btn-primary w-full px-4 py-3 text-center"
             >
               Randevu Al

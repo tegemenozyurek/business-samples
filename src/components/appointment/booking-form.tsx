@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,8 +19,10 @@ const bookingSchema = z.object({
   phone: z
     .string()
     .trim()
-    .min(10, "Geçerli bir telefon numarası girin.")
-    .max(20, "Telefon numarası çok uzun."),
+    .refine((value) => {
+      const digits = value.replace(/\D/g, "");
+      return digits.length === 11 && digits.startsWith("0");
+    }, "Geçerli bir telefon numarası girin."),
   email: z
     .string()
     .trim()
@@ -56,12 +59,24 @@ function formatDisplayDate(value: string) {
   }).format(date);
 }
 
+/** 0505 345 34 43 */
+function formatPhoneInput(value: string) {
+  const digits = value.replace(/\D/g, "").slice(0, 11);
+  const parts: string[] = [];
+  if (digits.length > 0) parts.push(digits.slice(0, 4));
+  if (digits.length > 4) parts.push(digits.slice(4, 7));
+  if (digits.length > 7) parts.push(digits.slice(7, 9));
+  if (digits.length > 9) parts.push(digits.slice(9, 11));
+  return parts.join(" ");
+}
+
 function createAppointmentNumber() {
   const stamp = Date.now().toString().slice(-6);
   return `QEVA-${stamp}`;
 }
 
 export function BookingForm() {
+  const searchParams = useSearchParams();
   const [step, setStep] = useState(1);
   const [appointmentNo, setAppointmentNo] = useState<string | null>(null);
   const [successPayload, setSuccessPayload] = useState<{
@@ -71,6 +86,8 @@ export function BookingForm() {
   } | null>(null);
   const timeSectionRef = useRef<HTMLDivElement>(null);
   const shouldScrollToTime = useRef(false);
+  const preselectedApplied = useRef(false);
+  const [step3Attempted, setStep3Attempted] = useState(false);
 
   const {
     register,
@@ -116,6 +133,19 @@ export function BookingForm() {
     });
   }, [date]);
 
+  useEffect(() => {
+    if (preselectedApplied.current) return;
+    const serviceParam = searchParams.get("service");
+    if (!serviceParam) return;
+    const exists = appointmentServices.some(
+      (service) => service.id === serviceParam,
+    );
+    if (!exists) return;
+    preselectedApplied.current = true;
+    setValue("serviceId", serviceParam, { shouldDirty: true });
+    setStep(2);
+  }, [searchParams, setValue]);
+
   const goNext = () => {
     if (step === 1) {
       if (!serviceId) {
@@ -146,12 +176,14 @@ export function BookingForm() {
       }
       if (!valid) return;
       clearErrors();
+      setStep3Attempted(false);
       setStep(3);
     }
   };
 
   const goBack = () => {
     clearErrors();
+    setStep3Attempted(false);
     setStep((current) => Math.max(1, current - 1));
   };
 
@@ -165,6 +197,7 @@ export function BookingForm() {
       time: data.time,
     });
     setStep(1);
+    setStep3Attempted(false);
     reset({
       name: "",
       phone: "",
@@ -351,7 +384,7 @@ export function BookingForm() {
                       htmlFor="name"
                       className="mb-2 block text-[11px] tracking-[0.14em] text-[var(--subtle)] uppercase"
                     >
-                      Ad Soyad
+                      Ad Soyad <span className="text-[var(--accent)]">*</span>
                     </label>
                     <input
                       id="name"
@@ -361,7 +394,7 @@ export function BookingForm() {
                       placeholder="Adınız Soyadınız"
                       {...register("name")}
                     />
-                    {errors.name ? (
+                    {step3Attempted && errors.name ? (
                       <p className="mt-1.5 text-xs text-red-600">
                         {errors.name.message}
                       </p>
@@ -373,17 +406,25 @@ export function BookingForm() {
                       htmlFor="phone"
                       className="mb-2 block text-[11px] tracking-[0.14em] text-[var(--subtle)] uppercase"
                     >
-                      Telefon
+                      Telefon <span className="text-[var(--accent)]">*</span>
                     </label>
                     <input
                       id="phone"
                       type="tel"
+                      inputMode="numeric"
                       autoComplete="tel"
                       className={fieldClass}
                       placeholder="05xx xxx xx xx"
-                      {...register("phone")}
+                      value={phone ?? ""}
+                      onChange={(event) => {
+                        setValue("phone", formatPhoneInput(event.target.value), {
+                          shouldDirty: true,
+                          shouldTouch: true,
+                        });
+                        clearErrors("phone");
+                      }}
                     />
-                    {errors.phone ? (
+                    {step3Attempted && errors.phone ? (
                       <p className="mt-1.5 text-xs text-red-600">
                         {errors.phone.message}
                       </p>
@@ -405,7 +446,7 @@ export function BookingForm() {
                       placeholder="ornek@mail.com"
                       {...register("email")}
                     />
-                    {errors.email ? (
+                    {step3Attempted && errors.email ? (
                       <p className="mt-1.5 text-xs text-red-600">
                         {errors.email.message}
                       </p>
@@ -475,9 +516,12 @@ export function BookingForm() {
                     className="mt-1 h-4 w-4 rounded border-[rgba(26,22,20,0.2)]"
                     {...register("privacy")}
                   />
-                  <span>Gizlilik politikasını okudum ve kabul ediyorum.</span>
+                  <span>
+                    Gizlilik politikasını okudum ve kabul ediyorum.{" "}
+                    <span className="text-[var(--accent)]">*</span>
+                  </span>
                 </label>
-                {errors.privacy ? (
+                {step3Attempted && errors.privacy ? (
                   <p className="mt-1.5 text-xs text-red-600">
                     {errors.privacy.message}
                   </p>
@@ -511,6 +555,7 @@ export function BookingForm() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
+                  onClick={() => setStep3Attempted(true)}
                   className="inline-flex min-w-[190px] items-center justify-center rounded-2xl bg-[var(--heading)] px-7 py-3.5 text-[12px] font-medium tracking-[0.16em] text-[var(--background)] uppercase transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {isSubmitting ? "Oluşturuluyor..." : "Randevuyu Oluştur"}

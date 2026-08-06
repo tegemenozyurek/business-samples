@@ -1,9 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, X } from "lucide-react";
-import { contactDetails } from "@/lib/contact-content";
 
 type SuccessDialogProps = {
   open: boolean;
@@ -48,22 +46,13 @@ export function SuccessDialog({
             role="dialog"
             aria-modal="true"
             aria-labelledby="booking-success-title"
-            className="relative z-10 flex max-h-[92svh] w-full max-w-lg flex-col overflow-y-auto rounded-t-[1.75rem] bg-[var(--background)] px-6 pt-5 pb-7 shadow-[0_30px_80px_rgba(26,22,20,0.2)] sm:rounded-[1.75rem] sm:px-8 sm:pt-8 sm:pb-8"
+            className="relative z-10 w-full max-w-lg overflow-y-auto rounded-t-[1.75rem] bg-[var(--background)] px-6 pt-5 pb-8 shadow-[0_30px_80px_rgba(26,22,20,0.2)] sm:rounded-[1.75rem] sm:px-8 sm:pt-7 sm:pb-9"
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 18 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           >
-            <div className="mb-5 flex items-start justify-between gap-4 sm:mb-6">
-              <motion.div
-                className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--heading)] text-[var(--background)] sm:h-14 sm:w-14"
-                initial={{ scale: 0.85, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.08, duration: 0.35 }}
-              >
-                <Check className="h-6 w-6 sm:h-7 sm:w-7" strokeWidth={1.75} />
-              </motion.div>
-
+            <div className="mb-4 flex justify-end">
               <button
                 type="button"
                 onClick={onClose}
@@ -74,12 +63,22 @@ export function SuccessDialog({
               </button>
             </div>
 
-            <h2
-              id="booking-success-title"
-              className="max-w-[16ch] font-[family-name:var(--font-cormorant)] text-[2rem] leading-[1.15] tracking-[-0.03em] text-[var(--heading)] sm:max-w-none sm:text-4xl"
-            >
-              Randevunuz başarıyla oluşturuldu.
-            </h2>
+            <div className="flex items-center gap-3 sm:gap-4">
+              <h2
+                id="booking-success-title"
+                className="min-w-0 flex-1 font-[family-name:var(--font-cormorant)] text-[2rem] leading-[1.15] tracking-[-0.03em] text-[var(--heading)] sm:text-4xl"
+              >
+                Randevu talebiniz alındı.
+              </h2>
+              <motion.div
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--heading)] text-[var(--background)] sm:h-12 sm:w-12"
+                initial={{ scale: 0.85, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.08, duration: 0.35 }}
+              >
+                <Check className="h-5 w-5 sm:h-6 sm:w-6" strokeWidth={1.75} />
+              </motion.div>
+            </div>
 
             <p className="mt-3 text-sm text-[var(--muted)]">
               Onay bilginiz kısa süre içinde iletilecektir.
@@ -105,24 +104,6 @@ export function SuccessDialog({
                 </div>
               ))}
             </dl>
-
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <Link
-                href="/rez"
-                className="inline-flex flex-1 items-center justify-center rounded-2xl bg-[var(--heading)] px-6 py-3.5 text-[12px] font-medium tracking-[0.16em] text-[var(--background)] uppercase transition-opacity hover:opacity-90"
-                onClick={onClose}
-              >
-                Ana Sayfaya Dön
-              </Link>
-              <a
-                href={contactDetails.whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex flex-1 items-center justify-center rounded-2xl border border-[rgba(26,22,20,0.18)] px-6 py-3.5 text-[12px] font-medium tracking-[0.16em] text-[var(--heading)] uppercase transition-colors hover:border-[var(--heading)] hover:bg-[var(--salon-beige)]"
-              >
-                WhatsApp
-              </a>
-            </div>
           </motion.div>
         </motion.div>
       ) : null}
