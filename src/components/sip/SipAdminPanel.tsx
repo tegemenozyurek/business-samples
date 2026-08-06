@@ -508,34 +508,28 @@ export function SipAdminPanel({ onLogout }: SipAdminPanelProps) {
   }, [ordersMenuOpen, menuMenuOpen]);
 
   return (
-    <section className="min-h-svh bg-[var(--background)]">
-      <div className="border-b border-[var(--border)] bg-[var(--sip-alt)]">
-        <div className="mx-auto flex max-w-3xl flex-wrap items-end justify-between gap-6 px-6 py-10 lg:px-10 lg:py-12">
-          <div className="max-w-lg">
-            <p className="text-[11px] font-semibold tracking-[0.22em] text-[var(--accent)] uppercase">
-              Yönetim
-            </p>
-            <h1 className="sip-display mt-3 text-4xl leading-[1.05] tracking-[-0.03em] text-[var(--heading)] sm:text-5xl">
-              Sipariş & Menü
+    <section className="min-h-svh bg-[var(--background)] px-6 py-8 lg:px-10 lg:py-10">
+      <div className="mx-auto max-w-5xl">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h1 className="font-[family-name:var(--font-cormorant)] text-4xl tracking-[-0.02em] text-[var(--heading)] sm:text-5xl">
+              Sipariş Paneli
             </h1>
-            <p className="mt-3 text-base leading-relaxed text-[var(--muted)]">
-              Gelen siparişleri takip edin, fiyatları düzenleyin, ürün
-              görünürlüğünü yönetin.
+            <p className="mt-2 text-sm text-[var(--muted)]">
+              Sipariş, fiyat ve menü takibi.
             </p>
           </div>
           <button
             type="button"
             onClick={onLogout}
-            className="text-[12px] font-semibold tracking-[0.14em] text-[var(--muted)] uppercase transition-colors hover:text-[var(--heading)]"
+            className="inline-flex items-center justify-center rounded-2xl border border-[var(--border-strong)] px-5 py-3 text-[12px] font-medium tracking-[0.14em] text-[var(--heading)] uppercase transition-colors hover:bg-[var(--salon-beige)]"
           >
-            Çıkış Yap
+            Çıkış
           </button>
         </div>
-      </div>
 
-      <div className="mx-auto max-w-3xl px-6 py-8 lg:px-10 lg:py-10">
         <div
-          className="flex gap-6 border-b border-[var(--border)]"
+          className="mt-8 flex gap-6 border-b border-[var(--border)]"
           role="tablist"
           aria-label="Admin sekmeleri"
         >

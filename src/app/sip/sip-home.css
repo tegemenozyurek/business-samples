@@ -1,6 +1,7 @@
 .sip-home {
   --sip-alt: color-mix(in srgb, var(--foreground) 3.5%, var(--background));
   --sip-panel: color-mix(in srgb, var(--surface) 88%, transparent);
+  --salon-beige: color-mix(in srgb, var(--accent) 10%, var(--background));
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-outfit), system-ui, sans-serif;
@@ -8,22 +9,27 @@
 
 html[data-theme="dark"] .sip-home {
   --sip-alt: #161616;
+  --salon-beige: #1c1916;
 }
 
 html[data-theme="light"] .sip-home {
   --sip-alt: #f3f3f4;
+  --salon-beige: #ececee;
 }
 
 html[data-theme="latte"] .sip-home {
   --sip-alt: #efe4d8;
+  --salon-beige: #e8d8c6;
 }
 
 html[data-theme="mint"] .sip-home {
   --sip-alt: #d9efe6;
+  --salon-beige: #cfe9df;
 }
 
 html[data-theme="corporate"] .sip-home {
   --sip-alt: color-mix(in srgb, var(--accent) 5%, #f4f4f4);
+  --salon-beige: color-mix(in srgb, var(--accent) 8%, #f7f7f7);
 }
 
 .sip-section {

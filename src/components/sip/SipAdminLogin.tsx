@@ -26,7 +26,7 @@ export function SipAdminLogin({ onSuccess }: SipAdminLoginProps) {
   return (
     <section className="flex min-h-svh items-center bg-[var(--background)] px-6 py-10 lg:px-10">
       <div className="mx-auto w-full max-w-md">
-        <h1 className="sip-display text-4xl tracking-[-0.02em] text-[var(--heading)] sm:text-5xl">
+        <h1 className="font-[family-name:var(--font-cormorant)] text-4xl tracking-[-0.02em] text-[var(--heading)] sm:text-5xl">
           Admin
         </h1>
         <p className="mt-2 text-sm text-[var(--muted)]">
