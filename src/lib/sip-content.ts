@@ -66,7 +66,7 @@ export const sipImages = {
       text: "Yanında paylaşmalık çıtır lezzetler.",
     },
     {
-      src: "https://images.unsplash.com/photo-1544145945-f904253e096c?auto=format&fit=crop&w=800&q=80",
+      src: "https://images.unsplash.com/photo-1546173159-315724a31696?auto=format&fit=crop&w=800&q=80",
       title: "İçecekler",
       text: "Sıcak kahveden soğuk içeceklere kadar.",
     },

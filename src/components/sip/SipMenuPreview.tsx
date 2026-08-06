@@ -18,29 +18,25 @@ export function SipMenuPreview() {
           </h2>
         </FadeUp>
 
-        <div className="mt-10 flex gap-4 overflow-x-auto pb-2 lg:mt-14 lg:grid lg:grid-cols-3 lg:overflow-visible lg:pb-0 xl:grid-cols-6">
+        <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:mt-14 xl:grid-cols-6">
           {sipImages.categories.map((item, index) => (
-            <FadeUp
-              key={item.title}
-              delay={index * 0.04}
-              className="min-w-[220px] shrink-0 lg:min-w-0"
-            >
-              <article className="group h-full overflow-hidden rounded-[1.35rem] border border-[var(--border)] bg-[var(--surface)] transition-transform duration-300 hover:-translate-y-1">
+            <FadeUp key={item.title} delay={index * 0.04}>
+              <article className="group h-full overflow-hidden rounded-[1.15rem] border border-[var(--border)] bg-[var(--surface)] transition-transform duration-300 hover:-translate-y-1 sm:rounded-[1.35rem]">
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <Image
                     src={item.src}
                     alt={item.title}
                     fill
                     loading="lazy"
-                    sizes="(max-width: 1024px) 220px, 16vw"
+                    sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 16vw"
                     className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
                   />
                 </div>
-                <div className="p-4">
-                  <h3 className="sip-display text-xl tracking-[-0.02em] text-[var(--heading)]">
+                <div className="p-3 sm:p-4">
+                  <h3 className="sip-display text-lg tracking-[-0.02em] text-[var(--heading)] sm:text-xl">
                     {item.title}
                   </h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-[var(--muted)]">
+                  <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-[var(--muted)] sm:mt-1.5 sm:text-sm">
                     {item.text}
                   </p>
                 </div>
