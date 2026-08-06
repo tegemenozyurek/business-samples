@@ -1,0 +1,99 @@
+.sip-home {
+  --sip-alt: color-mix(in srgb, var(--foreground) 3.5%, var(--background));
+  --sip-panel: color-mix(in srgb, var(--surface) 88%, transparent);
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-outfit), system-ui, sans-serif;
+}
+
+html[data-theme="dark"] .sip-home {
+  --sip-alt: #161616;
+}
+
+html[data-theme="light"] .sip-home {
+  --sip-alt: #f3f3f4;
+}
+
+html[data-theme="latte"] .sip-home {
+  --sip-alt: #efe4d8;
+}
+
+html[data-theme="mint"] .sip-home {
+  --sip-alt: #d9efe6;
+}
+
+html[data-theme="corporate"] .sip-home {
+  --sip-alt: color-mix(in srgb, var(--accent) 5%, #f4f4f4);
+}
+
+.sip-section {
+  padding-block: 3.75rem;
+  padding-inline: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .sip-section {
+    padding-block: 5rem;
+    padding-inline: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .sip-section {
+    padding-block: 7.5rem;
+  }
+}
+
+.sip-display {
+  font-family: var(--font-fraunces), Georgia, serif;
+}
+
+.sip-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  background: var(--accent);
+  padding: 0.95rem 1.8rem;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--background);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.sip-btn-primary:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.sip-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border-strong));
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  padding: 0.95rem 1.8rem;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--heading);
+  backdrop-filter: blur(10px);
+  transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+
+.sip-btn-secondary:hover {
+  background: var(--surface);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.sip-glass {
+  border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  backdrop-filter: blur(18px) saturate(1.2);
+  box-shadow: 0 16px 40px color-mix(in srgb, var(--foreground) 6%, transparent);
+}
