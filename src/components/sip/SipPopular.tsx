@@ -1,10 +1,20 @@
 "use client";
 
-import { sipImages } from "@/lib/sip-content";
+import { useMemo } from "react";
+import { getVisibleSipPopular } from "@/lib/sip-store";
+import { useSipMenuOverrides } from "@/lib/use-sip-store";
 import { FadeUp } from "@/components/rez/FadeUp";
 import { SipProductGrid } from "./SipProductCard";
 
 export function SipPopular() {
+  const { overrides, ready } = useSipMenuOverrides();
+  const products = useMemo(
+    () => (ready ? getVisibleSipPopular(overrides) : []),
+    [overrides, ready],
+  );
+
+  if (ready && products.length === 0) return null;
+
   return (
     <section className="sip-section bg-[var(--sip-alt)]">
       <div className="mx-auto max-w-7xl">
@@ -17,7 +27,7 @@ export function SipPopular() {
           </p>
         </FadeUp>
 
-        <SipProductGrid products={sipImages.popular} />
+        <SipProductGrid products={products} />
       </div>
     </section>
   );

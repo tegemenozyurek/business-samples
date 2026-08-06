@@ -21,11 +21,16 @@ import {
 } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import {
-  findProductByName,
   formatPrice,
   parsePrice,
   sipImages,
 } from "@/lib/sip-content";
+import {
+  createSipOrder,
+  getVisibleSipPopular,
+  resolveSipCartProduct,
+} from "@/lib/sip-store";
+import { useSipMenuOverrides } from "@/lib/use-sip-store";
 import {
   getIzmirNeighborhoods,
   getIzmirStreets,
@@ -185,6 +190,7 @@ function CompactSelect({
 
 export function SipCartPage() {
   const cart = useCart();
+  const { overrides, ready: menuReady } = useSipMenuOverrides();
   const [form, setForm] = useState<FormState>(initialForm);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
@@ -203,7 +209,7 @@ export function SipCartPage() {
     if (!cart) return [];
     return Object.entries(cart.items)
       .map(([name, qty]) => {
-        const product = findProductByName(name);
+        const product = resolveSipCartProduct(name, overrides);
         if (!product) return null;
         const unit = parsePrice(product.price);
         return {
@@ -214,7 +220,7 @@ export function SipCartPage() {
         };
       })
       .filter((item): item is NonNullable<typeof item> => item !== null);
-  }, [cart]);
+  }, [cart, overrides]);
 
   const subtotal = useMemo(
     () => lines.reduce((sum, line) => sum + line.lineTotal, 0),
@@ -254,7 +260,10 @@ export function SipCartPage() {
   }
 
   if (lines.length === 0) {
-    const highlights = sipImages.popular.slice(0, 3);
+    const highlights = (
+      menuReady ? getVisibleSipPopular(overrides) : [...sipImages.popular]
+    ).slice(0, 3);
+    const collage = highlights.length > 0 ? highlights : [...sipImages.popular].slice(0, 3);
 
     return (
       <main>
@@ -295,8 +304,8 @@ export function SipCartPage() {
               <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] sm:rounded-[1.75rem]">
                   <Image
-                    src={highlights[0].src}
-                    alt={highlights[0].name}
+                    src={collage[0].src}
+                    alt={collage[0].name}
                     fill
                     priority
                     sizes="(max-width: 1024px) 45vw, 240px"
@@ -306,8 +315,8 @@ export function SipCartPage() {
                 <div className="flex flex-col gap-3 sm:gap-4">
                   <div className="relative aspect-square overflow-hidden rounded-[1.5rem] sm:rounded-[1.75rem]">
                     <Image
-                      src={highlights[1].src}
-                      alt={highlights[1].name}
+                      src={collage[1]?.src ?? collage[0].src}
+                      alt={collage[1]?.name ?? collage[0].name}
                       fill
                       sizes="(max-width: 1024px) 40vw, 200px"
                       className="object-cover"
@@ -315,8 +324,8 @@ export function SipCartPage() {
                   </div>
                   <div className="relative min-h-[7.5rem] flex-1 overflow-hidden rounded-[1.5rem] sm:rounded-[1.75rem]">
                     <Image
-                      src={highlights[2].src}
-                      alt={highlights[2].name}
+                      src={collage[2]?.src ?? collage[0].src}
+                      alt={collage[2]?.name ?? collage[0].name}
                       fill
                       sizes="(max-width: 1024px) 40vw, 200px"
                       className="object-cover"
@@ -352,7 +361,7 @@ export function SipCartPage() {
             </div>
 
             <ul className="mt-8 grid gap-4 sm:grid-cols-3">
-              {highlights.map((item) => (
+              {collage.map((item) => (
                 <li key={item.name}>
                   <Link
                     href="/sip/menu"
@@ -438,6 +447,33 @@ export function SipCartPage() {
       setError("Lütfen teslimat bilgilerini eksiksiz doldurun.");
       return;
     }
+    if (lines.length === 0) {
+      setError("Sepetiniz boş.");
+      return;
+    }
+
+    createSipOrder({
+      payment: form.payment,
+      total: subtotal,
+      items: lines.map((line) => ({
+        name: line.product.name,
+        qty: line.qty,
+        unitPrice: line.unit,
+        lineTotal: line.lineTotal,
+      })),
+      customer: {
+        name: form.name.trim(),
+        phone: form.phone.trim(),
+        city: "İzmir",
+        district: form.district,
+        neighborhood: form.neighborhood,
+        street: streetValue,
+        buildingNo: form.buildingNo.trim(),
+        apartmentNo: form.apartmentNo.trim(),
+        note: form.note.trim(),
+      },
+    });
+
     cart.clear();
     setSubmitted(true);
   };

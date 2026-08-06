@@ -2,11 +2,15 @@
 
 import { useMemo, useState } from "react";
 import {
-  getMenuByCategory,
   sipCategoryOrder,
   sipImages,
   type SipProduct,
 } from "@/lib/sip-content";
+import {
+  getVisibleMenuByCategory,
+  getVisibleSipPopular,
+} from "@/lib/sip-store";
+import { useSipMenuOverrides } from "@/lib/use-sip-store";
 import { SipProductGrid } from "./SipProductCard";
 
 type MenuTab = "Favoriler" | (typeof sipCategoryOrder)[number];
@@ -15,11 +19,13 @@ const tabs: MenuTab[] = ["Favoriler", ...sipCategoryOrder];
 
 export function SipMenuPage() {
   const [active, setActive] = useState<MenuTab>("Favoriler");
+  const { overrides, ready } = useSipMenuOverrides();
 
   const products = useMemo<readonly SipProduct[]>(() => {
-    if (active === "Favoriler") return sipImages.popular;
-    return getMenuByCategory(active);
-  }, [active]);
+    if (!ready) return [];
+    if (active === "Favoriler") return getVisibleSipPopular(overrides);
+    return getVisibleMenuByCategory(active, overrides);
+  }, [active, overrides, ready]);
 
   const subtitle =
     active === "Favoriler"
@@ -76,11 +82,17 @@ export function SipMenuPage() {
             </p>
           ) : null}
 
-          <SipProductGrid
-            key={active}
-            products={products}
-            className="!mt-4 sm:!mt-5 lg:!mt-6"
-          />
+          {ready && products.length === 0 ? (
+            <p className="mt-10 text-sm text-[var(--muted)]">
+              Bu kategoride şu an ürün yok.
+            </p>
+          ) : (
+            <SipProductGrid
+              key={active}
+              products={products}
+              className="!mt-4 sm:!mt-5 lg:!mt-6"
+            />
+          )}
         </div>
       </section>
     </main>
