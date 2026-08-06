@@ -47,7 +47,9 @@ type ContactLink = {
 };
 
 export function ContactInfo() {
-  const [mapsHref, setMapsHref] = useState(contactDetails.directionsGoogleUrl);
+  const [mapsHref, setMapsHref] = useState<string>(
+    contactDetails.directionsGoogleUrl,
+  );
 
   useEffect(() => {
     setMapsHref(getDirectionsUrl());

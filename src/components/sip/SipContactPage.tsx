@@ -48,7 +48,9 @@ type ContactLink = {
 };
 
 export function SipContactPage() {
-  const [mapsHref, setMapsHref] = useState(contactDetails.directionsGoogleUrl);
+  const [mapsHref, setMapsHref] = useState<string>(
+    contactDetails.directionsGoogleUrl,
+  );
 
   useEffect(() => {
     setMapsHref(getDirectionsUrl());

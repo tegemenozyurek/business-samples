@@ -9,7 +9,7 @@ import { rezImages } from "@/lib/rez-content";
 
 export function RezHero() {
   const reduceMotion = useReducedMotion();
-  const [directionsUrl, setDirectionsUrl] = useState(
+  const [directionsUrl, setDirectionsUrl] = useState<string>(
     contactDetails.directionsGoogleUrl,
   );
 
