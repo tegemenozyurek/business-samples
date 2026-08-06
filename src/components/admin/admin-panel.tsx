@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Check, Phone, X } from "lucide-react";
 import { densityLegend } from "@/lib/appointment-content";
 import {
+  countAppointmentsByDate,
   formatAppointmentDate,
   getAppointments,
   getTodayKey,
@@ -294,6 +295,11 @@ export function AdminPanel({ onLogout }: AdminPanelProps) {
     [items, selectedDate],
   );
 
+  const occupancyByDate = useMemo(
+    () => countAppointmentsByDate(items),
+    [items],
+  );
+
   const setStatus = (id: string, status: AppointmentStatus) => {
     const next = updateAppointmentStatus(id, status);
     setItems(next);
@@ -411,6 +417,7 @@ export function AdminPanel({ onLogout }: AdminPanelProps) {
                 mode="admin"
                 value={selectedDate}
                 onChange={setSelectedDate}
+                occupancyByDate={occupancyByDate}
               />
             </div>
 

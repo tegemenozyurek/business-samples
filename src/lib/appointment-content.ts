@@ -86,6 +86,21 @@ export function getTimeSlotsForDate(dateKey: string): string[] {
   return [...weekdaySlots];
 }
 
+/** Occupancy bead from booked count vs day capacity. */
+export function densityFromOccupancy(
+  bookedCount: number,
+  capacity: number,
+): DensityLevel {
+  if (capacity <= 0) return "red";
+  if (bookedCount <= 0) return "green";
+
+  const ratio = bookedCount / capacity;
+  if (ratio < 0.25) return "green";
+  if (ratio < 0.5) return "yellow";
+  if (ratio < 0.75) return "orange";
+  return "red";
+}
+
 /** Mock occupancy for a day — stable per date. */
 export function getDayDensity(dateKey: string): DensityLevel {
   const day = new Date(`${dateKey}T12:00:00`).getDay();

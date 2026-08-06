@@ -1,3 +1,10 @@
+import {
+  appointmentServices,
+  getAdminCalendarRange,
+  getBookedSlotsForDate,
+  toDateKey,
+} from "@/lib/appointment-content";
+
 export type AppointmentStatus = "pending" | "approved" | "rejected";
 
 export type StoredAppointment = {
@@ -15,7 +22,7 @@ export type StoredAppointment = {
   createdAt: string;
 };
 
-const STORAGE_KEY = "qeva-appointments";
+const STORAGE_KEY = "qeva-appointments-v2";
 const AUTH_KEY = "qeva-admin-auth";
 
 export const ADMIN_CREDENTIALS = {
@@ -23,12 +30,23 @@ export const ADMIN_CREDENTIALS = {
   password: "admin123",
 } as const;
 
-function toDateKey(date: Date) {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
-}
+const seedNames = [
+  "Elif Yılmaz",
+  "Selin Kara",
+  "Deniz Acar",
+  "Ayşe Demir",
+  "Merve Çelik",
+  "Zeynep Aksoy",
+  "İrem Koç",
+  "Ceren Yıldız",
+  "Buse Arslan",
+  "Gizem Şahin",
+  "Ece Polat",
+  "Melis Kurt",
+  "Derya Özkan",
+  "Sude Aydın",
+  "Nazlı Erdem",
+] as const;
 
 function addDays(date: Date, days: number) {
   const next = new Date(date);
@@ -36,76 +54,72 @@ function addDays(date: Date, days: number) {
   return next;
 }
 
-function seedAppointments(): StoredAppointment[] {
-  const today = new Date();
-  const yesterday = addDays(today, -1);
-  const tomorrow = addDays(today, 1);
-  const lastWeek = addDays(today, -7);
+function eachDateKey(start: Date, end: Date) {
+  const keys: string[] = [];
+  const cursor = new Date(start);
+  while (cursor <= end) {
+    keys.push(toDateKey(cursor));
+    cursor.setDate(cursor.getDate() + 1);
+  }
+  return keys;
+}
 
-  return [
-    {
-      id: "seed-1",
-      appointmentNo: "QEVA-100001",
-      name: "Elif Yılmaz",
-      phone: "0532 111 22 33",
-      email: "elif@mail.com",
-      serviceId: "manikur",
-      serviceName: "Manikür",
-      date: toDateKey(today),
-      time: "11:00",
-      notes: "",
-      status: "pending",
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: "seed-2",
-      appointmentNo: "QEVA-100002",
-      name: "Selin Kara",
-      phone: "0541 222 33 44",
-      serviceId: "kalici-oje",
-      serviceName: "Kalıcı Oje",
-      date: toDateKey(today),
-      time: "14:30",
-      status: "approved",
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: "seed-3",
-      appointmentNo: "QEVA-100003",
-      name: "Deniz Acar",
-      phone: "0505 333 44 55",
-      serviceId: "pedikur",
-      serviceName: "Pedikür",
-      date: toDateKey(tomorrow),
-      time: "10:00",
-      status: "pending",
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: "seed-4",
-      appointmentNo: "QEVA-100004",
-      name: "Ayşe Demir",
-      phone: "0533 444 55 66",
-      serviceId: "protez-tirnak",
-      serviceName: "Protez Tırnak",
-      date: toDateKey(yesterday),
-      time: "16:00",
-      status: "approved",
-      createdAt: yesterday.toISOString(),
-    },
-    {
-      id: "seed-5",
-      appointmentNo: "QEVA-100005",
-      name: "Merve Çelik",
-      phone: "0555 666 77 88",
-      serviceId: "nail-art",
-      serviceName: "Nail Art",
-      date: toDateKey(lastWeek),
-      time: "13:00",
-      status: "rejected",
-      createdAt: lastWeek.toISOString(),
-    },
-  ];
+function phoneForIndex(index: number) {
+  const base = 5321000000 + ((index * 137) % 8999999);
+  const digits = String(base);
+  return `0${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6, 8)} ${digits.slice(8, 10)}`;
+}
+
+function statusForDate(
+  dateKey: string,
+  todayKey: string,
+  index: number,
+): AppointmentStatus {
+  if (dateKey < todayKey) {
+    return index % 9 === 0 ? "rejected" : "approved";
+  }
+  if (dateKey === todayKey) {
+    if (index % 3 === 0) return "pending";
+    if (index % 7 === 0) return "rejected";
+    return "approved";
+  }
+  return index % 4 === 0 ? "pending" : "approved";
+}
+
+function seedAppointments(): StoredAppointment[] {
+  const { start, end, today } = getAdminCalendarRange();
+  const todayKey = toDateKey(today);
+  const items: StoredAppointment[] = [];
+  let seq = 100001;
+
+  for (const dateKey of eachDateKey(start, end)) {
+    const slots = getBookedSlotsForDate(dateKey);
+    if (slots.length === 0) continue;
+
+    slots.forEach((time, slotIndex) => {
+      const index = items.length;
+      const service =
+        appointmentServices[(index + slotIndex) % appointmentServices.length];
+      const created = addDays(new Date(`${dateKey}T12:00:00`), -2);
+
+      items.push({
+        id: `seed-${dateKey}-${time}`,
+        appointmentNo: `QEVA-${seq}`,
+        name: seedNames[index % seedNames.length],
+        phone: phoneForIndex(index),
+        serviceId: service.id,
+        serviceName: service.name,
+        date: dateKey,
+        time,
+        notes: "",
+        status: statusForDate(dateKey, todayKey, index),
+        createdAt: created.toISOString(),
+      });
+      seq += 1;
+    });
+  }
+
+  return items;
 }
 
 function canUseStorage() {
@@ -191,4 +205,15 @@ export function formatAppointmentDate(dateKey: string) {
 
 export function getTodayKey() {
   return toDateKey(new Date());
+}
+
+/** Count appointments per date for calendar density beads. */
+export function countAppointmentsByDate(
+  items: StoredAppointment[],
+): Record<string, number> {
+  const counts: Record<string, number> = {};
+  for (const item of items) {
+    counts[item.date] = (counts[item.date] ?? 0) + 1;
+  }
+  return counts;
 }

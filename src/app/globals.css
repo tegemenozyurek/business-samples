@@ -223,6 +223,16 @@ body {
   color: var(--selection-fg);
 }
 
+@keyframes admin-tab-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.38;
+  }
+}
+
 @keyframes contact-fade-up {
   from {
     opacity: 0;

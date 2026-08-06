@@ -3,10 +3,12 @@
 import { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
+  densityFromOccupancy,
   densityLegend,
   getAdminCalendarRange,
   getDayDensity,
   getSelectableRange,
+  getTimeSlotsForDate,
   toDateKey,
   type DensityLevel,
 } from "@/lib/appointment-content";
@@ -25,6 +27,8 @@ type DateCalendarProps = {
   onChange: (dateKey: string) => void;
   mode?: "booking" | "admin";
   showLegend?: boolean;
+  /** When set (admin), beads follow real appointment counts. */
+  occupancyByDate?: Record<string, number>;
 };
 
 function monthLabel(year: number, month: number) {
@@ -39,6 +43,7 @@ export function DateCalendar({
   onChange,
   mode = "booking",
   showLegend = false,
+  occupancyByDate,
 }: DateCalendarProps) {
   const isAdmin = mode === "admin";
   const range = useMemo(
@@ -151,11 +156,19 @@ export function DateCalendar({
           const isSunday = date.getDay() === 0;
           const outOfRange = beforeStart || afterEnd || (!isAdmin && isSunday);
           const selected = value === key;
-          const density = getDayDensity(key);
+          const capacity = getTimeSlotsForDate(key).length;
+          const density =
+            isAdmin && occupancyByDate
+              ? isSunday
+                ? "green"
+                : densityFromOccupancy(occupancyByDate[key] ?? 0, capacity)
+              : getDayDensity(key);
           const fullyBooked = !outOfRange && density === "red";
           const cannotSelect = isAdmin
             ? beforeStart || afterEnd
             : outOfRange || fullyBooked;
+          const mutedBead =
+            beforeStart || afterEnd || isSunday || (!isAdmin && outOfRange);
 
           return (
             <button
@@ -164,7 +177,11 @@ export function DateCalendar({
               disabled={cannotSelect}
               onClick={() => onChange(key)}
               aria-pressed={selected}
-              aria-label={`${key}, ${densityLegend.find((item) => item.level === density)?.label}`}
+              aria-label={`${key}, ${
+                isSunday
+                  ? "Kapalı"
+                  : densityLegend.find((item) => item.level === density)?.label
+              }`}
               className={`flex h-10 flex-col items-center justify-center rounded-lg border text-[13px] transition-all duration-300 sm:h-11 ${
                 cannotSelect
                   ? "cursor-not-allowed border-transparent text-[var(--faint)]"
@@ -176,7 +193,7 @@ export function DateCalendar({
               <span className="leading-none">{date.getDate()}</span>
               <span
                 className={`mt-0.5 h-1.5 w-1.5 rounded-full ${
-                  beforeStart || afterEnd || (!isAdmin && isSunday)
+                  mutedBead
                     ? "bg-[rgba(26,22,20,0.12)]"
                     : selected
                       ? "bg-white/90"
