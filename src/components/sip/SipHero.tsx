@@ -10,7 +10,7 @@ export function SipHero() {
 
   return (
     <section className="relative overflow-hidden bg-[var(--background)]">
-      <div className="sip-section relative z-10 mx-auto grid max-w-7xl items-center gap-12 pt-28 lg:grid-cols-2 lg:gap-16 lg:pt-32">
+      <div className="sip-section relative z-10 mx-auto grid max-w-7xl items-center gap-12 !pt-36 sm:!pt-40 lg:grid-cols-2 lg:gap-16 lg:!pt-36">
         <div>
           <motion.h1
             className="sip-display text-4xl leading-[1.05] tracking-[-0.03em] text-[var(--heading)] sm:text-5xl lg:text-6xl"
