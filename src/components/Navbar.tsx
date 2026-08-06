@@ -14,15 +14,13 @@ import { Logo } from "./Logo";
 function CartCount({
   count,
   pulse,
-  overlay = false,
 }: {
   count: number;
   pulse: number;
-  overlay?: boolean;
 }) {
   if (count <= 0) return null;
 
-  const label = count > 99 ? "99+" : String(count);
+  const label = count > 9 ? "9+" : String(count);
 
   return (
     <motion.span
@@ -31,13 +29,9 @@ function CartCount({
       initial={{ scale: 0.7, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ type: "spring", stiffness: 480, damping: 24 }}
-      className={
-        overlay
-          ? "absolute -top-1 -right-1 z-10 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--background)] px-1 text-[10px] font-bold leading-none text-[var(--accent)] ring-2 ring-[var(--accent)]"
-          : "flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-[var(--background)] px-1.5 text-[10px] font-bold leading-none text-[var(--accent)]"
-      }
+      className="absolute top-0 right-0 z-10 grid h-5 min-w-5 translate-x-1/3 -translate-y-1/3 place-items-center rounded-full bg-[var(--background)] px-1 text-[10px] font-bold leading-none text-[var(--accent)] tabular-nums ring-2 ring-[var(--accent)]"
     >
-      {label}
+      <span className="relative top-[0.5px]">{label}</span>
     </motion.span>
   );
 }
@@ -81,7 +75,7 @@ export function Navbar() {
   const closeMenu = () => setIsMenuOpen(false);
 
   const ctaClassName =
-    "relative inline-flex items-center justify-center gap-2 rounded-full border border-accent bg-accent px-4 py-2.5 text-[12px] font-medium tracking-[0.14em] text-background uppercase transition-all duration-300 hover:opacity-90 sm:px-5";
+    "relative inline-flex items-center justify-center gap-2 overflow-visible rounded-full border border-accent bg-accent px-4 py-2.5 text-[12px] font-medium tracking-[0.14em] text-background uppercase transition-all duration-300 hover:opacity-90 sm:px-5";
 
   const ctaContent = (
     <>
@@ -101,7 +95,7 @@ export function Navbar() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ease-out ${
+      className={`fixed inset-x-0 top-0 z-50 overflow-visible transition-all duration-500 ease-out ${
         isMenuOpen
           ? "border-b border-border bg-background shadow-[0_8px_32px_var(--nav-shadow)]"
           : isScrolled
@@ -110,12 +104,12 @@ export function Navbar() {
       }`}
     >
       <nav
-        className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-6 lg:px-10"
+        className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 overflow-visible px-6 lg:px-10"
         aria-label={copy.ariaLabel}
       >
         <Logo href={copy.homeHref} />
 
-        <ul className="hidden items-center gap-10 md:flex">
+        <ul className="hidden items-center gap-10 overflow-visible md:flex">
           {copy.links.map((link) => {
             const active = isActive(link.href);
 
@@ -179,7 +173,7 @@ export function Navbar() {
                 className="relative z-50 flex h-11 w-11 shrink-0 items-center justify-center overflow-visible rounded-full border border-accent bg-accent text-background transition-opacity duration-300 hover:opacity-90"
               >
                 <ShoppingCart className="h-4 w-4" strokeWidth={2} />
-                <CartCount count={cartCount} pulse={cartPulse} overlay />
+                <CartCount count={cartCount} pulse={cartPulse} />
               </Link>
             </motion.div>
           ) : null}
