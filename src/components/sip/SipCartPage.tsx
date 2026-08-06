@@ -2,21 +2,47 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState, type FormEvent } from "react";
-import { Banknote, Check, CreditCard, Minus, Plus, Trash2 } from "lucide-react";
+import {
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type FormEvent,
+} from "react";
+import {
+  Banknote,
+  Check,
+  ChevronDown,
+  CreditCard,
+  Minus,
+  Plus,
+  Trash2,
+} from "lucide-react";
 import { useCart } from "@/lib/cart";
 import {
   findProductByName,
   formatPrice,
   parsePrice,
 } from "@/lib/sip-content";
+import {
+  getIzmirNeighborhoods,
+  getIzmirStreets,
+  izmirDistricts,
+  IZMIR_STREET_OTHER,
+} from "@/lib/izmir-address";
 
 type PaymentMethod = "cash" | "card";
 
 type FormState = {
   name: string;
   phone: string;
-  address: string;
+  district: string;
+  neighborhood: string;
+  street: string;
+  streetOther: string;
+  buildingNo: string;
+  apartmentNo: string;
   note: string;
   payment: PaymentMethod;
 };
@@ -24,16 +50,153 @@ type FormState = {
 const initialForm: FormState = {
   name: "",
   phone: "",
-  address: "",
+  district: "",
+  neighborhood: "",
+  street: "",
+  streetOther: "",
+  buildingNo: "",
+  apartmentNo: "",
   note: "",
   payment: "cash",
 };
+
+const fieldClassName =
+  "mt-2 w-full rounded-xl border border-[var(--border-strong)] bg-[var(--background)] px-4 py-3 text-sm text-[var(--heading)] outline-none transition-colors focus:border-[var(--accent)]";
+
+const selectClassName = `${fieldClassName}`;
+
+function CompactSelect({
+  value,
+  onChange,
+  options,
+  placeholder,
+  disabled = false,
+  searchPlaceholder = "Ara...",
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  options: string[];
+  placeholder: string;
+  disabled?: boolean;
+  searchPlaceholder?: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const rootRef = useRef<HTMLDivElement>(null);
+  const listId = useId();
+
+  useEffect(() => {
+    if (!open) setQuery("");
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const onPointer = (event: MouseEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+
+    document.addEventListener("mousedown", onPointer);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onPointer);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLocaleLowerCase("tr");
+    if (!q) return options;
+    return options.filter((option) =>
+      option.toLocaleLowerCase("tr").includes(q),
+    );
+  }, [options, query]);
+
+  return (
+    <div ref={rootRef} className="relative mt-2">
+      <button
+        type="button"
+        disabled={disabled}
+        aria-expanded={open}
+        aria-controls={listId}
+        onClick={() => setOpen((current) => !current)}
+        className="flex w-full items-center justify-between gap-3 rounded-xl border border-[var(--border-strong)] bg-[var(--background)] px-4 py-3 text-left text-sm outline-none transition-colors focus:border-[var(--accent)] disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        <span
+          className={`truncate ${value ? "text-[var(--heading)]" : "text-[var(--muted)]"}`}
+        >
+          {value || placeholder}
+        </span>
+        <ChevronDown
+          className={`h-4 w-4 shrink-0 text-[var(--muted)] transition-transform ${open ? "rotate-180" : ""}`}
+          strokeWidth={1.75}
+        />
+      </button>
+
+      {open && !disabled ? (
+        <div
+          id={listId}
+          className="absolute z-30 mt-2 w-full overflow-hidden rounded-xl border border-[var(--border-strong)] bg-[var(--surface)] shadow-[0_14px_40px_color-mix(in_srgb,var(--foreground)_12%,transparent)]"
+        >
+          <div className="border-b border-[var(--border)] p-2">
+            <input
+              autoFocus
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder={searchPlaceholder}
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm text-[var(--heading)] outline-none focus:border-[var(--accent)]"
+            />
+          </div>
+          <ul className="max-h-48 overflow-y-auto overscroll-contain py-1">
+            {filtered.length === 0 ? (
+              <li className="px-4 py-3 text-sm text-[var(--muted)]">Sonuç yok</li>
+            ) : (
+              filtered.map((option) => (
+                <li key={option}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onChange(option);
+                      setOpen(false);
+                    }}
+                    className={`flex w-full px-4 py-2.5 text-left text-sm transition-colors hover:bg-[var(--surface-hover)] ${
+                      option === value
+                        ? "bg-[color-mix(in_srgb,var(--accent)_10%,transparent)] font-medium text-[var(--heading)]"
+                        : "text-[var(--heading)]"
+                    }`}
+                  >
+                    {option}
+                  </button>
+                </li>
+              ))
+            )}
+          </ul>
+        </div>
+      ) : null}
+    </div>
+  );
+}
 
 export function SipCartPage() {
   const cart = useCart();
   const [form, setForm] = useState<FormState>(initialForm);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+
+  const neighborhoods = useMemo(
+    () => getIzmirNeighborhoods(form.district),
+    [form.district],
+  );
+  const streets = useMemo(
+    () => getIzmirStreets(form.district, form.neighborhood),
+    [form.district, form.neighborhood],
+  );
+  const streetIsOther = form.street === IZMIR_STREET_OTHER;
 
   const lines = useMemo(() => {
     if (!cart) return [];
@@ -114,10 +277,49 @@ export function SipCartPage() {
     setError("");
   };
 
+  const handleDistrictChange = (district: string) => {
+    setForm((current) => ({
+      ...current,
+      district,
+      neighborhood: "",
+      street: "",
+      streetOther: "",
+    }));
+    setError("");
+  };
+
+  const handleNeighborhoodChange = (neighborhood: string) => {
+    setForm((current) => ({
+      ...current,
+      neighborhood,
+      street: "",
+      streetOther: "",
+    }));
+    setError("");
+  };
+
+  const handleStreetChange = (street: string) => {
+    setForm((current) => ({
+      ...current,
+      street,
+      streetOther: street === IZMIR_STREET_OTHER ? current.streetOther : "",
+    }));
+    setError("");
+  };
+
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    if (!form.name.trim() || !form.phone.trim() || !form.address.trim()) {
-      setError("Lütfen ad, telefon ve adres bilgilerini doldur.");
+    const streetValue = streetIsOther ? form.streetOther.trim() : form.street;
+    if (
+      !form.name.trim() ||
+      !form.phone.trim() ||
+      !form.district ||
+      !form.neighborhood ||
+      !streetValue ||
+      !form.buildingNo.trim() ||
+      !form.apartmentNo.trim()
+    ) {
+      setError("Lütfen teslimat bilgilerini eksiksiz doldurun.");
       return;
     }
     cart.clear();
@@ -260,16 +462,106 @@ export function SipCartPage() {
                   />
                 </label>
 
+                <div className="block sm:col-span-2">
+                  <span className="text-[11px] font-semibold tracking-[0.14em] text-[var(--muted)] uppercase">
+                    Şehir
+                  </span>
+                  <p className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--muted)_8%,var(--background))] px-4 py-3 text-sm text-[var(--heading)] select-none pointer-events-none">
+                    İzmir
+                  </p>
+                </div>
+
                 <label className="block sm:col-span-2">
                   <span className="text-[11px] font-semibold tracking-[0.14em] text-[var(--muted)] uppercase">
-                    Adres
+                    İlçe
                   </span>
-                  <textarea
-                    rows={3}
-                    value={form.address}
-                    onChange={(event) => updateField("address", event.target.value)}
-                    className="mt-2 w-full resize-none rounded-xl border border-[var(--border-strong)] bg-[var(--background)] px-4 py-3 text-sm text-[var(--heading)] outline-none transition-colors focus:border-[var(--accent)]"
-                    placeholder="Mahalle, sokak, bina no, daire"
+                  <select
+                    value={form.district}
+                    onChange={(event) => handleDistrictChange(event.target.value)}
+                    className={selectClassName}
+                  >
+                    <option value="">İlçe seçin</option>
+                    {izmirDistricts.map((district) => (
+                      <option key={district} value={district}>
+                        {district}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <div className="block sm:col-span-2">
+                  <span className="text-[11px] font-semibold tracking-[0.14em] text-[var(--muted)] uppercase">
+                    Mahalle
+                  </span>
+                  <CompactSelect
+                    value={form.neighborhood}
+                    onChange={handleNeighborhoodChange}
+                    options={neighborhoods}
+                    disabled={!form.district}
+                    placeholder={
+                      form.district ? "Mahalle seçin" : "Önce ilçe seçin"
+                    }
+                    searchPlaceholder="Mahalle ara..."
+                  />
+                </div>
+
+                <div className="block sm:col-span-2">
+                  <span className="text-[11px] font-semibold tracking-[0.14em] text-[var(--muted)] uppercase">
+                    Sokak
+                  </span>
+                  <CompactSelect
+                    value={form.street}
+                    onChange={handleStreetChange}
+                    options={streets}
+                    disabled={!form.neighborhood}
+                    placeholder={
+                      form.neighborhood ? "Sokak seçin" : "Önce mahalle seçin"
+                    }
+                    searchPlaceholder="Sokak ara..."
+                  />
+                </div>
+
+                {streetIsOther ? (
+                  <label className="block sm:col-span-2">
+                    <span className="text-[11px] font-semibold tracking-[0.14em] text-[var(--muted)] uppercase">
+                      Sokak Adı
+                    </span>
+                    <input
+                      value={form.streetOther}
+                      onChange={(event) =>
+                        updateField("streetOther", event.target.value)
+                      }
+                      className={fieldClassName}
+                      placeholder="Sokak / cadde adını yazın"
+                    />
+                  </label>
+                ) : null}
+
+                <label className="block sm:col-span-1">
+                  <span className="text-[11px] font-semibold tracking-[0.14em] text-[var(--muted)] uppercase">
+                    Bina No
+                  </span>
+                  <input
+                    value={form.buildingNo}
+                    onChange={(event) =>
+                      updateField("buildingNo", event.target.value)
+                    }
+                    className={fieldClassName}
+                    placeholder="Örn. 8"
+                  />
+                </label>
+
+                <label className="block sm:col-span-1">
+                  <span className="text-[11px] font-semibold tracking-[0.14em] text-[var(--muted)] uppercase">
+                    Daire
+                  </span>
+                  <input
+                    value={form.apartmentNo}
+                    onChange={(event) =>
+                      updateField("apartmentNo", event.target.value)
+                    }
+                    className={fieldClassName}
+                    placeholder="Örn. 4"
                   />
                 </label>
 
@@ -281,7 +573,7 @@ export function SipCartPage() {
                     rows={2}
                     value={form.note}
                     onChange={(event) => updateField("note", event.target.value)}
-                    className="mt-2 w-full resize-none rounded-xl border border-[var(--border-strong)] bg-[var(--background)] px-4 py-3 text-sm text-[var(--heading)] outline-none transition-colors focus:border-[var(--accent)]"
+                    className={`${fieldClassName} resize-none`}
                     placeholder="Ekstra sos, zil çalışmıyor vb. (opsiyonel)"
                   />
                 </label>
