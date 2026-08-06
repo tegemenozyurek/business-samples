@@ -55,14 +55,6 @@ export function SipHero() {
             aria-hidden="true"
             className="absolute -bottom-8 -left-10 h-40 w-40 rounded-full bg-[radial-gradient(circle,color-mix(in_srgb,var(--heading)_10%,transparent),transparent_70%)] blur-2xl"
           />
-          <div
-            aria-hidden="true"
-            className="absolute top-1/3 -left-4 h-16 w-16 rounded-[1.25rem] border border-[var(--border)] bg-[var(--surface)]/50"
-          />
-          <div
-            aria-hidden="true"
-            className="absolute right-4 bottom-16 h-10 w-10 rounded-full border border-[var(--border-strong)]"
-          />
 
           <motion.div
             className="relative aspect-square overflow-hidden rounded-[2rem] shadow-[0_30px_80px_color-mix(in_srgb,var(--foreground)_18%,transparent)]"
