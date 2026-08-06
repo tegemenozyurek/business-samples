@@ -13,7 +13,7 @@ export function WorkingHours() {
           </h2>
         </FadeUp>
 
-        <ul className="mt-8 divide-y divide-[rgba(26,22,20,0.08)] border-y border-[rgba(26,22,20,0.08)]">
+        <ul className="mt-8 divide-y divide-[var(--border)] border-y border-[var(--border)]">
           {workingHours.map((item, index) => (
             <li key={item.id}>
               <FadeUp delay={index * 0.04}>

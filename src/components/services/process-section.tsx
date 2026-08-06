@@ -30,12 +30,12 @@ export function ProcessSection() {
                   {!isLast ? (
                     <span
                       aria-hidden="true"
-                      className="absolute top-9 bottom-0 left-[1.15rem] w-px bg-[rgba(74,55,40,0.14)] sm:top-11 sm:left-[1.35rem]"
+                      className="absolute top-9 bottom-0 left-[1.15rem] w-px bg-[var(--border-strong)] sm:top-11 sm:left-[1.35rem]"
                     />
                   ) : null}
 
-                  <div className="relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[rgba(74,55,40,0.16)] bg-[var(--salon-beige)] sm:h-11 sm:w-11">
-                    <span className="font-[family-name:var(--font-cormorant)] text-sm text-[var(--heading)] sm:text-base">
+                  <div className="relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--accent)]/35 bg-[var(--surface)] text-[var(--accent)] sm:h-11 sm:w-11">
+                    <span className="font-[family-name:var(--font-cormorant)] text-sm sm:text-base">
                       {item.step}
                     </span>
                   </div>

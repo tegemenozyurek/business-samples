@@ -25,7 +25,7 @@ export function RezWhy() {
             return (
               <FadeUp key={item.title} delay={index * 0.04}>
                 <article className="flex h-full items-start gap-4 rounded-[1.15rem] border border-[var(--border)] bg-[var(--surface)] px-4 py-4 transition-colors duration-300 hover:bg-[var(--surface-hover)] sm:px-5 sm:py-5">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--border-strong)] text-[var(--heading)]">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--accent)]/30 bg-[color-mix(in_srgb,var(--accent)_12%,transparent)] text-[var(--accent)]">
                     <Icon className="h-4 w-4" strokeWidth={1.5} />
                   </div>
                   <div className="min-w-0">

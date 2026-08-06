@@ -36,7 +36,7 @@ export function BookingSummary({
   ];
 
   return (
-    <aside className="rounded-[1.75rem] border border-[rgba(26,22,20,0.06)] bg-white p-6 shadow-[0_16px_50px_rgba(26,22,20,0.05)] lg:sticky lg:top-28">
+    <aside className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[0_16px_50px_rgba(26,22,20,0.05)] lg:sticky lg:top-28">
       <h2 className="font-[family-name:var(--font-cormorant)] text-3xl text-[var(--heading)]">
         Özet
       </h2>
@@ -48,7 +48,7 @@ export function BookingSummary({
         {rows.map((row) => (
           <div
             key={row.label}
-            className="flex items-start justify-between gap-4 border-b border-[rgba(26,22,20,0.06)] pb-4"
+            className="flex items-start justify-between gap-4 border-b border-[var(--border)] pb-4"
           >
             <dt className="flex items-center gap-2 text-xs tracking-[0.12em] text-[var(--subtle)] uppercase">
               {row.icon}
@@ -80,7 +80,7 @@ export function BookingSummary({
         </div>
       </div>
 
-      <p className="mt-6 rounded-2xl border border-[rgba(26,22,20,0.06)] bg-[var(--salon-gray)] px-4 py-3 text-xs leading-relaxed text-[var(--muted)]">
+      <p className="mt-6 rounded-2xl border border-[var(--border)] bg-[var(--salon-gray)] px-4 py-3 text-xs leading-relaxed text-[var(--muted)]">
         Lütfen randevu saatinden 10 dakika önce salonda olun.
       </p>
     </aside>

@@ -118,7 +118,7 @@ export function DateCalendar({
           onClick={goPrev}
           disabled={!canGoPrev}
           aria-label="Önceki ay"
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(26,22,20,0.12)] text-[var(--heading)] transition-colors hover:bg-[var(--salon-beige)] disabled:cursor-not-allowed disabled:opacity-30"
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border-strong)] text-[var(--heading)] transition-colors hover:bg-[var(--salon-beige)] disabled:cursor-not-allowed disabled:opacity-30"
         >
           <ChevronLeft className="h-4 w-4" strokeWidth={1.5} />
         </button>
@@ -130,7 +130,7 @@ export function DateCalendar({
           onClick={goNext}
           disabled={!canGoNext}
           aria-label="Sonraki ay"
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(26,22,20,0.12)] text-[var(--heading)] transition-colors hover:bg-[var(--salon-beige)] disabled:cursor-not-allowed disabled:opacity-30"
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border-strong)] text-[var(--heading)] transition-colors hover:bg-[var(--salon-beige)] disabled:cursor-not-allowed disabled:opacity-30"
         >
           <ChevronRight className="h-4 w-4" strokeWidth={1.5} />
         </button>
@@ -186,7 +186,7 @@ export function DateCalendar({
                 cannotSelect
                   ? "cursor-not-allowed border-transparent text-[var(--faint)]"
                   : selected
-                    ? "border-[var(--heading)] bg-[var(--heading)] text-[var(--background)]"
+                    ? "border-[var(--accent)] bg-[var(--accent)] text-[var(--background)]"
                     : "border-transparent text-[var(--heading)] hover:bg-[var(--salon-beige)]"
               }`}
             >
@@ -194,9 +194,9 @@ export function DateCalendar({
               <span
                 className={`mt-0.5 h-1.5 w-1.5 rounded-full ${
                   mutedBead
-                    ? "bg-[rgba(26,22,20,0.12)]"
+                    ? "bg-[var(--surface-hover)]"
                     : selected
-                      ? "bg-white/90"
+                      ? "bg-[color-mix(in_srgb,var(--surface)_90%,transparent)]"
                       : beadClass[density]
                 }`}
               />

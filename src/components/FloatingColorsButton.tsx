@@ -46,10 +46,10 @@ const themeOrder: ThemeId[] = [
 ];
 
 const swatches: Record<ThemeId, string[]> = {
-  dark: ["#090909", "#a3a3a3", "#ffffff"],
+  dark: ["#161616", "#a8a8a8", "#fafafa"],
   light: ["#f4f4f5", "#52525b", "#090909"],
-  latte: ["#f3ebe2", "#c4a484", "#4a3728"],
-  mint: ["#e8f5f0", "#5bb89a", "#1a3d34"],
+  latte: ["#ebe0d4", "#a8724e", "#3a2a1e"],
+  mint: ["#d8efe6", "#3fa887", "#16352e"],
   corporate: ["#ffffff", "#111111", "#ef4444"],
 };
 
@@ -167,7 +167,7 @@ export function FloatingColorsButton() {
                   onClick={() => setTheme(id)}
                   className={`group flex flex-col overflow-hidden rounded-2xl border text-left transition-all duration-300 ${
                     active
-                      ? "border-heading bg-surface-hover shadow-[0_0_0_1px_var(--heading)]"
+                      ? "border-accent bg-surface-hover shadow-[0_0_0_1px_var(--accent)]"
                       : "border-border bg-surface-soft hover:border-border-strong hover:bg-surface-hover"
                   }`}
                   aria-pressed={active}
@@ -188,7 +188,7 @@ export function FloatingColorsButton() {
                     </span>
                     <span
                       className={`h-1.5 w-1.5 shrink-0 rounded-full transition-opacity ${
-                        active ? "bg-heading opacity-100" : "opacity-0"
+                        active ? "bg-accent opacity-100" : "opacity-0"
                       }`}
                       aria-hidden="true"
                     />
@@ -214,7 +214,7 @@ export function FloatingColorsButton() {
                         onClick={() => setAccent(value)}
                         className={`flex h-11 items-center gap-2.5 rounded-full border px-4 transition-all duration-200 ${
                           selected
-                            ? "border-heading bg-surface-hover"
+                            ? "border-accent bg-surface-hover"
                             : "border-border hover:border-border-strong hover:bg-surface-soft"
                         }`}
                         aria-label={value}

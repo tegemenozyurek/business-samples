@@ -43,14 +43,16 @@ export function Navbar() {
   const closeMenu = () => setIsMenuOpen(false);
 
   const ctaClassName =
-    "inline-flex items-center justify-center rounded-full border border-heading bg-heading px-5 py-2.5 text-[12px] font-medium tracking-[0.14em] text-background uppercase transition-all duration-300 hover:opacity-90";
+    "inline-flex items-center justify-center rounded-full border border-accent bg-accent px-5 py-2.5 text-[12px] font-medium tracking-[0.14em] text-background uppercase transition-all duration-300 hover:opacity-90";
 
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ease-out ${
-        isScrolled || isMenuOpen
-          ? "border-b border-border bg-[var(--nav-bg)] shadow-[0_8px_32px_var(--nav-shadow)] backdrop-blur-xl backdrop-saturate-150"
-          : "border-b border-transparent bg-transparent"
+        isMenuOpen
+          ? "border-b border-border bg-background shadow-[0_8px_32px_var(--nav-shadow)]"
+          : isScrolled
+            ? "border-b border-border bg-[var(--nav-bg)] shadow-[0_8px_32px_var(--nav-shadow)] backdrop-blur-xl backdrop-saturate-150"
+            : "border-b border-transparent bg-transparent"
       }`}
     >
       <nav
@@ -140,7 +142,7 @@ export function Navbar() {
         />
 
         <div
-          className={`absolute inset-x-0 top-20 border-b border-border bg-[var(--nav-bg)] px-6 pb-10 pt-6 backdrop-blur-2xl transition-all duration-500 ease-out ${
+          className={`absolute inset-x-0 top-20 border-b border-border bg-background px-6 pb-10 pt-6 transition-all duration-500 ease-out ${
             isMenuOpen
               ? "translate-y-0 opacity-100"
               : "-translate-y-4 opacity-0"

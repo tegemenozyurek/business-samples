@@ -8,28 +8,33 @@
 }
 
 html[data-theme="dark"] .rez-home {
-  --salon-nude: #2a241f;
-  --salon-beige: #141210;
-  --salon-gray: #191614;
+  --salon-nude: #2e2823;
+  --salon-beige: #1c1916;
+  --salon-gray: #22201c;
 }
 
-html[data-theme="light"] .rez-home,
+html[data-theme="light"] .rez-home {
+  --salon-nude: #e4e4e7;
+  --salon-beige: #ececee;
+  --salon-gray: #f0f0f2;
+}
+
 html[data-theme="latte"] .rez-home {
-  --salon-nude: #e8d5c4;
-  --salon-beige: #f3ebe3;
-  --salon-gray: #f0eeec;
+  --salon-nude: #dfc7b0;
+  --salon-beige: #e8d8c6;
+  --salon-gray: #f0e6da;
 }
 
 html[data-theme="mint"] .rez-home {
-  --salon-nude: #d5ebe3;
-  --salon-beige: #e8f5f0;
-  --salon-gray: #eef6f3;
+  --salon-nude: #bfe3d6;
+  --salon-beige: #cfe9df;
+  --salon-gray: #def2ea;
 }
 
 html[data-theme="corporate"] .rez-home {
-  --salon-nude: color-mix(in srgb, var(--accent) 12%, #ffffff);
-  --salon-beige: #f7f7f7;
-  --salon-gray: #f2f2f2;
+  --salon-nude: color-mix(in srgb, var(--accent) 16%, #ffffff);
+  --salon-beige: color-mix(in srgb, var(--accent) 8%, #f7f7f7);
+  --salon-gray: color-mix(in srgb, var(--accent) 5%, #f2f2f2);
 }
 
 .rez-hero-wash {
@@ -59,7 +64,7 @@ html[data-theme="corporate"] .rez-home {
   align-items: center;
   justify-content: center;
   border-radius: 1rem;
-  background: var(--heading);
+  background: var(--accent);
   padding: 0.9rem 1.75rem;
   font-size: 12px;
   font-weight: 500;
@@ -78,7 +83,7 @@ html[data-theme="corporate"] .rez-home {
   align-items: center;
   justify-content: center;
   border-radius: 1rem;
-  border: 1px solid var(--border-strong);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border-strong));
   background: color-mix(in srgb, var(--surface) 70%, transparent);
   padding: 0.9rem 1.75rem;
   font-size: 12px;
@@ -87,10 +92,11 @@ html[data-theme="corporate"] .rez-home {
   text-transform: uppercase;
   color: var(--heading);
   backdrop-filter: blur(10px);
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 .rez-btn-secondary:hover {
   background: var(--surface);
-  border-color: var(--border-strong);
+  border-color: var(--accent);
+  color: var(--accent);
 }

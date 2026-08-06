@@ -71,7 +71,7 @@ export function SuccessDialog({
                 Randevu talebiniz alındı.
               </h2>
               <motion.div
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--heading)] text-[var(--background)] sm:h-12 sm:w-12"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--accent)] text-[var(--background)] sm:h-12 sm:w-12"
                 initial={{ scale: 0.85, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.08, duration: 0.35 }}
@@ -84,12 +84,12 @@ export function SuccessDialog({
               Onay bilginiz kısa süre içinde iletilecektir.
             </p>
 
-            <p className="mt-5 inline-flex w-fit items-center gap-2 rounded-full border border-[rgba(26,22,20,0.1)] px-3.5 py-1.5 text-[11px] tracking-[0.14em] text-[var(--heading)] uppercase">
+            <p className="mt-5 inline-flex w-fit items-center gap-2 rounded-full border border-[var(--border)] px-3.5 py-1.5 text-[11px] tracking-[0.14em] text-[var(--heading)] uppercase">
               <span className="text-[var(--muted)]">No</span>
               {appointmentNo}
             </p>
 
-            <dl className="mt-7 divide-y divide-[rgba(26,22,20,0.08)] border-y border-[rgba(26,22,20,0.08)]">
+            <dl className="mt-7 divide-y divide-[var(--border)] border-y border-[var(--border)]">
               {details.map((item) => (
                 <div
                   key={item.label}

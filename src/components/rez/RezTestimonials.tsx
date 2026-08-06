@@ -21,7 +21,7 @@ export function RezTestimonials() {
         <div className="mt-14 grid gap-5 md:grid-cols-3">
           {rezImages.testimonials.map((item, index) => (
             <FadeUp key={item.name} delay={index * 0.08}>
-              <article className="flex h-full flex-col rounded-[1.5rem] border border-[rgba(26,22,20,0.06)] bg-white p-7 shadow-[0_12px_40px_rgba(26,22,20,0.04)]">
+              <article className="flex h-full flex-col rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-7 shadow-[0_12px_40px_rgba(26,22,20,0.04)]">
                 <div className="flex items-center gap-3">
                   <div className="relative h-12 w-12 overflow-hidden rounded-full">
                     <Image

@@ -6,7 +6,7 @@ import { FadeUp } from "@/components/rez/FadeUp";
 
 export function AppointmentCta() {
   return (
-    <section className="border-t border-[rgba(26,22,20,0.06)] bg-[var(--background)] px-6 py-20 lg:px-10 lg:py-28">
+    <section className="border-t border-[var(--border)] bg-[var(--background)] px-6 py-20 lg:px-10 lg:py-28">
       <div className="mx-auto grid max-w-7xl items-end gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-20">
         <FadeUp>
           <p className="text-[11px] font-medium tracking-[0.24em] text-[var(--accent)] uppercase">
@@ -22,7 +22,7 @@ export function AppointmentCta() {
         </FadeUp>
 
         <FadeUp delay={0.08}>
-          <div className="divide-y divide-[rgba(26,22,20,0.08)] border-y border-[rgba(26,22,20,0.08)]">
+          <div className="divide-y divide-[var(--border)] border-y border-[var(--border)]">
             <a
               href={contactDetails.whatsappHref}
               target="_blank"

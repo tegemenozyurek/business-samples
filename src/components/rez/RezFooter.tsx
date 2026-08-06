@@ -38,7 +38,7 @@ export function RezFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-[rgba(26,22,20,0.08)] bg-[var(--background)] text-[var(--foreground)]">
+    <footer className="border-t border-[var(--border)] bg-[var(--background)] text-[var(--foreground)]">
       <div className="mx-auto grid max-w-7xl grid-cols-3 items-center gap-4 px-6 py-5 lg:px-10">
         <div />
 

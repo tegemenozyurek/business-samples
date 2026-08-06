@@ -23,8 +23,8 @@ export function ServiceSelector({ value, onChange }: ServiceSelectorProps) {
             aria-pressed={selected}
             className={`group flex w-full overflow-hidden rounded-[1.25rem] border text-left transition-all duration-300 ${
               selected
-                ? "border-[var(--heading)] bg-white shadow-[0_0_0_1px_var(--heading)]"
-                : "border-[rgba(26,22,20,0.08)] bg-white hover:border-[rgba(26,22,20,0.16)]"
+                ? "border-[var(--accent)] bg-[var(--surface)] shadow-[0_0_0_1px_var(--accent)]"
+                : "border-[var(--border)] bg-[var(--surface)] hover:border-[var(--border-strong)]"
             }`}
           >
             <span className="relative w-24 shrink-0 self-stretch sm:w-28">
@@ -44,7 +44,7 @@ export function ServiceSelector({ value, onChange }: ServiceSelectorProps) {
                 </span>
                 {selected ? (
                   <Check
-                    className="h-4 w-4 shrink-0 text-[var(--heading)]"
+                    className="h-4 w-4 shrink-0 text-[var(--accent)]"
                     strokeWidth={1.75}
                   />
                 ) : null}

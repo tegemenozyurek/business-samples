@@ -40,8 +40,8 @@ export function TimeSlotPicker({ date, value, onChange }: TimeSlotPickerProps) {
                 booked
                   ? "cursor-not-allowed border-transparent bg-[var(--salon-gray)] text-[var(--faint)] line-through"
                   : selected
-                    ? "border-[var(--heading)] bg-[var(--heading)] text-[#fbf9f7]"
-                    : "border-[rgba(26,22,20,0.1)] bg-white text-[var(--heading)] hover:border-[rgba(26,22,20,0.2)]"
+                    ? "border-[var(--accent)] bg-[var(--accent)] text-[var(--background)]"
+                    : "border-[var(--border)] bg-[var(--surface)] text-[var(--heading)] hover:border-[var(--border-strong)]"
               }`}
             >
               {slot}

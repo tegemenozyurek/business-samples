@@ -19,7 +19,7 @@ export function BookingInfo() {
         <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {bookingInfoCards.map((card, index) => (
             <FadeUp key={card.title} delay={index * 0.05}>
-              <article className="h-full rounded-[1.5rem] border border-[rgba(26,22,20,0.06)] bg-white p-6 shadow-[0_12px_40px_rgba(26,22,20,0.04)] transition-transform duration-500 hover:-translate-y-1">
+              <article className="h-full rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[0_12px_40px_rgba(26,22,20,0.04)] transition-transform duration-500 hover:-translate-y-1">
                 <h3 className="font-[family-name:var(--font-cormorant)] text-2xl text-[var(--heading)]">
                   {card.title}
                 </h3>

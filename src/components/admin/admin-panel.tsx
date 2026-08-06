@@ -160,7 +160,7 @@ function AppointmentDetailModal({
           </button>
         </div>
 
-        <dl className="mt-5 divide-y divide-[rgba(26,22,20,0.08)] border-y border-[rgba(26,22,20,0.08)]">
+        <dl className="mt-5 divide-y divide-[var(--border)] border-y border-[var(--border)]">
           {details.map((row) => (
             <div
               key={row.label}
@@ -183,7 +183,7 @@ function AppointmentDetailModal({
         <div className="mt-5 space-y-2">
           <a
             href={`tel:${item.phone.replace(/\s/g, "")}`}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-[rgba(26,22,20,0.14)] px-4 py-3 text-[12px] font-medium tracking-[0.14em] text-[var(--heading)] uppercase transition-colors hover:bg-[var(--salon-beige)]"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-[var(--border-strong)] px-4 py-3 text-[12px] font-medium tracking-[0.14em] text-[var(--heading)] uppercase transition-colors hover:bg-[var(--salon-beige)]"
           >
             <Phone className="h-4 w-4" strokeWidth={1.5} />
             Telefon Et
@@ -192,7 +192,7 @@ function AppointmentDetailModal({
             href={phoneToWhatsApp(item.phone)}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-[rgba(26,22,20,0.14)] px-4 py-3 text-[12px] font-medium tracking-[0.14em] text-[var(--heading)] uppercase transition-colors hover:bg-[var(--salon-beige)]"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-[var(--border-strong)] px-4 py-3 text-[12px] font-medium tracking-[0.14em] text-[var(--heading)] uppercase transition-colors hover:bg-[var(--salon-beige)]"
           >
             <WhatsAppIcon className="h-4 w-4" />
             WhatsApp
@@ -207,7 +207,7 @@ function AppointmentDetailModal({
                 onStatus(item.id, "approved");
                 onClose();
               }}
-              className="rounded-2xl bg-[var(--heading)] px-4 py-3 text-[11px] font-medium tracking-[0.14em] text-[var(--background)] uppercase"
+              className="rounded-2xl bg-[var(--accent)] px-4 py-3 text-[11px] font-medium tracking-[0.14em] text-[var(--background)] uppercase"
             >
               Onayla
             </button>
@@ -217,7 +217,7 @@ function AppointmentDetailModal({
                 onStatus(item.id, "rejected");
                 onClose();
               }}
-              className="rounded-2xl border border-[rgba(26,22,20,0.18)] px-4 py-3 text-[11px] font-medium tracking-[0.14em] text-[var(--heading)] uppercase"
+              className="rounded-2xl border border-[var(--border-strong)] px-4 py-3 text-[11px] font-medium tracking-[0.14em] text-[var(--heading)] uppercase"
             >
               Reddet
             </button>
@@ -249,7 +249,7 @@ function AppointmentCard({
       <button
         type="button"
         onClick={onOpen}
-        className="shrink-0 rounded-xl border border-[rgba(26,22,20,0.14)] px-3.5 py-2 text-[11px] font-medium tracking-[0.14em] text-[var(--heading)] uppercase transition-colors hover:bg-[var(--salon-beige)]"
+        className="shrink-0 rounded-xl border border-[var(--border-strong)] px-3.5 py-2 text-[11px] font-medium tracking-[0.14em] text-[var(--heading)] uppercase transition-colors hover:bg-[var(--salon-beige)]"
       >
         Detay
       </button>
@@ -343,7 +343,7 @@ export function AdminPanel({ onLogout }: AdminPanelProps) {
               logoutAdmin();
               onLogout();
             }}
-            className="inline-flex items-center justify-center rounded-2xl border border-[rgba(26,22,20,0.18)] px-5 py-3 text-[12px] font-medium tracking-[0.14em] text-[var(--heading)] uppercase transition-colors hover:bg-[var(--salon-beige)]"
+            className="inline-flex items-center justify-center rounded-2xl border border-[var(--border-strong)] px-5 py-3 text-[12px] font-medium tracking-[0.14em] text-[var(--heading)] uppercase transition-colors hover:bg-[var(--salon-beige)]"
           >
             Çıkış
           </button>
@@ -351,7 +351,7 @@ export function AdminPanel({ onLogout }: AdminPanelProps) {
 
         <nav
           aria-label="Panel sekmeleri"
-          className="mt-8 border-b border-[rgba(26,22,20,0.1)]"
+          className="mt-8 border-b border-[var(--border)]"
         >
           <ul className="flex gap-1 overflow-x-auto pb-px [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {tabs.map((item) => {
@@ -384,7 +384,7 @@ export function AdminPanel({ onLogout }: AdminPanelProps) {
                     {active ? (
                       <span
                         aria-hidden="true"
-                        className="absolute inset-x-3 bottom-0 h-px bg-[var(--heading)] sm:inset-x-4"
+                        className="absolute inset-x-3 bottom-0 h-px bg-[var(--accent)] sm:inset-x-4"
                       />
                     ) : null}
                   </button>

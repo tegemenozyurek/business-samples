@@ -47,7 +47,7 @@ const steps = [
 ] as const;
 
 const fieldClass =
-  "w-full rounded-2xl border border-[rgba(26,22,20,0.1)] bg-[var(--salon-gray)] px-4 py-3.5 text-sm text-[var(--heading)] outline-none transition-colors placeholder:text-[var(--faint)] focus:border-[var(--accent)] focus:bg-white";
+  "w-full rounded-2xl border border-[var(--border)] bg-[var(--salon-gray)] px-4 py-3.5 text-sm text-[var(--heading)] outline-none transition-colors placeholder:text-[var(--faint)] focus:border-[var(--accent)] focus:bg-[var(--surface)]";
 
 function formatDisplayDate(value: string) {
   if (!value) return "";
@@ -246,7 +246,7 @@ export function BookingForm() {
                             ? "text-[var(--heading)]"
                             : done
                               ? "text-[var(--heading)]"
-                              : "text-[rgba(26,22,20,0.22)]"
+                              : "text-[var(--faint)]"
                         }`}
                       >
                         0{item.id}
@@ -272,8 +272,8 @@ export function BookingForm() {
                         <span
                           className={`block h-px w-full transition-colors duration-500 ${
                             done
-                              ? "bg-[var(--heading)]"
-                              : "bg-[rgba(26,22,20,0.12)]"
+                              ? "bg-[var(--accent)]"
+                              : "bg-[var(--surface-hover)]"
                           }`}
                         />
                       </span>
@@ -482,7 +482,7 @@ export function BookingForm() {
                   </div>
                 </div>
 
-                <div className="mt-8 rounded-[1.25rem] border border-[rgba(26,22,20,0.08)] bg-[var(--salon-beige)] px-5 py-5">
+                <div className="mt-8 rounded-[1.25rem] border border-[var(--border)] bg-[var(--salon-beige)] px-5 py-5">
                   <p className="text-[11px] font-medium tracking-[0.16em] text-[var(--accent)] uppercase">
                     Özet
                   </p>
@@ -512,7 +512,7 @@ export function BookingForm() {
                       </dd>
                     </div>
                     {name || phone ? (
-                      <div className="flex justify-between gap-4 border-t border-[rgba(26,22,20,0.08)] pt-3">
+                      <div className="flex justify-between gap-4 border-t border-[var(--border)] pt-3">
                         <dt className="text-[var(--muted)]">İletişim</dt>
                         <dd className="text-right font-medium text-[var(--heading)]">
                           {[name, phone].filter(Boolean).join(" · ")}
@@ -525,7 +525,7 @@ export function BookingForm() {
                 <label className="mt-6 flex items-start gap-3 text-sm text-[var(--muted)]">
                   <input
                     type="checkbox"
-                    className="mt-1 h-4 w-4 rounded border-[rgba(26,22,20,0.2)]"
+                    className="mt-1 h-4 w-4 rounded border-[var(--border-strong)]"
                     {...register("privacy")}
                   />
                   <span>
@@ -542,12 +542,12 @@ export function BookingForm() {
             ) : null}
             </div>
 
-            <div className="mt-auto flex items-center justify-between gap-4 border-t border-[rgba(26,22,20,0.08)] pt-8">
+            <div className="mt-auto flex items-center justify-between gap-4 border-t border-[var(--border)] pt-8">
               {step > 1 ? (
                 <button
                   type="button"
                   onClick={goBack}
-                  className="inline-flex min-w-[132px] items-center justify-center rounded-2xl border border-[rgba(26,22,20,0.18)] bg-transparent px-7 py-3.5 text-[12px] font-medium tracking-[0.16em] text-[var(--heading)] uppercase transition-colors hover:border-[var(--heading)] hover:bg-[var(--salon-beige)]"
+                  className="inline-flex min-w-[132px] items-center justify-center rounded-2xl border border-[var(--border-strong)] bg-transparent px-7 py-3.5 text-[12px] font-medium tracking-[0.16em] text-[var(--heading)] uppercase transition-colors hover:border-[var(--accent)] hover:bg-[var(--salon-beige)]"
                 >
                   Geri
                 </button>
@@ -559,7 +559,7 @@ export function BookingForm() {
                 <button
                   type="button"
                   onClick={goNext}
-                  className="inline-flex min-w-[148px] items-center justify-center rounded-2xl bg-[var(--heading)] px-7 py-3.5 text-[12px] font-medium tracking-[0.16em] text-[var(--background)] uppercase transition-opacity hover:opacity-90"
+                  className="inline-flex min-w-[148px] items-center justify-center rounded-2xl bg-[var(--accent)] px-7 py-3.5 text-[12px] font-medium tracking-[0.16em] text-[var(--background)] uppercase transition-opacity hover:opacity-90"
                 >
                   Devam
                 </button>
@@ -568,7 +568,7 @@ export function BookingForm() {
                   type="submit"
                   disabled={isSubmitting}
                   onClick={() => setStep3Attempted(true)}
-                  className="inline-flex min-w-[190px] items-center justify-center rounded-2xl bg-[var(--heading)] px-7 py-3.5 text-[12px] font-medium tracking-[0.16em] text-[var(--background)] uppercase transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex min-w-[190px] items-center justify-center rounded-2xl bg-[var(--accent)] px-7 py-3.5 text-[12px] font-medium tracking-[0.16em] text-[var(--background)] uppercase transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {isSubmitting ? "Oluşturuluyor..." : "Randevuyu Oluştur"}
                 </button>

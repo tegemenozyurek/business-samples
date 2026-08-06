@@ -92,7 +92,7 @@ export function ContactInfo() {
           </h1>
         </FadeUp>
 
-        <ul className="divide-y divide-[rgba(26,22,20,0.08)] border-y border-[rgba(26,22,20,0.08)]">
+        <ul className="divide-y divide-[var(--border)] border-y border-[var(--border)]">
           {items.map((item, index) => (
             <li key={item.label}>
               <FadeUp delay={index * 0.04}>

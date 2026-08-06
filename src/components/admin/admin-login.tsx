@@ -50,7 +50,7 @@ export function AdminLogin({ onSuccess }: AdminLoginProps) {
               autoComplete="username"
               value={username}
               onChange={(event) => setUsername(event.target.value)}
-              className="w-full rounded-2xl border border-[rgba(26,22,20,0.1)] bg-[var(--salon-gray)] px-4 py-3.5 text-sm text-[var(--heading)] outline-none focus:border-[var(--accent)]"
+              className="w-full rounded-2xl border border-[var(--border)] bg-[var(--salon-gray)] px-4 py-3.5 text-sm text-[var(--heading)] outline-none focus:border-[var(--accent)]"
             />
           </div>
 
@@ -67,7 +67,7 @@ export function AdminLogin({ onSuccess }: AdminLoginProps) {
               autoComplete="current-password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="w-full rounded-2xl border border-[rgba(26,22,20,0.1)] bg-[var(--salon-gray)] px-4 py-3.5 text-sm text-[var(--heading)] outline-none focus:border-[var(--accent)]"
+              className="w-full rounded-2xl border border-[var(--border)] bg-[var(--salon-gray)] px-4 py-3.5 text-sm text-[var(--heading)] outline-none focus:border-[var(--accent)]"
             />
           </div>
 

@@ -40,7 +40,7 @@ export function RezAbout() {
             sonuçlar.
           </p>
 
-          <dl className="mt-7 grid grid-cols-3 gap-3 border-t border-[rgba(26,22,20,0.08)] pt-6">
+          <dl className="mt-7 grid grid-cols-3 gap-3 border-t border-[var(--border)] pt-6">
             {stats.map((stat) => (
               <div key={stat.label}>
                 <dt className="font-[family-name:var(--font-cormorant)] text-2xl text-[var(--heading)] sm:text-3xl">
