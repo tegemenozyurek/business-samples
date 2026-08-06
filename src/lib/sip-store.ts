@@ -6,7 +6,7 @@ import {
   type SipProduct,
 } from "@/lib/sip-content";
 
-const ORDERS_KEY = "sip-orders";
+const ORDERS_KEY = "sip-orders-v2";
 const MENU_KEY = "sip-menu-overrides";
 export const SIP_STORE_EVENT = "sip-store-change";
 
@@ -55,6 +55,154 @@ const emptyOverrides: SipMenuOverrides = {
   hidden: [],
 };
 
+function minutesAgo(minutes: number) {
+  return new Date(Date.now() - minutes * 60_000).toISOString();
+}
+
+function line(name: string, qty: number, unitPrice: number): SipOrderItem {
+  return { name, qty, unitPrice, lineTotal: qty * unitPrice };
+}
+
+function seedSipOrders(): SipOrder[] {
+  const samples: SipOrder[] = [
+    {
+      id: "sip-mock-001",
+      createdAt: minutesAgo(12),
+      status: "new",
+      payment: "cash",
+      customer: {
+        name: "Ayşe Yılmaz",
+        phone: "0532 411 22 33",
+        city: "İzmir",
+        district: "Bayraklı",
+        neighborhood: "Manavkuyu",
+        street: "1620/3. Sokak",
+        buildingNo: "8",
+        apartmentNo: "4",
+        note: "Zil çalışmıyor, kapıya bırakın.",
+      },
+      items: [
+        line("Karışık Tost", 2, 185),
+        line("Ayran", 2, 55),
+        line("Patates Kızartması", 1, 120),
+      ],
+      total: 600,
+    },
+    {
+      id: "sip-mock-002",
+      createdAt: minutesAgo(28),
+      status: "new",
+      payment: "card",
+      customer: {
+        name: "Emre Demir",
+        phone: "0541 778 90 12",
+        city: "İzmir",
+        district: "Karşıyaka",
+        neighborhood: "Bostanlı",
+        street: "Cemal Gürsel Caddesi",
+        buildingNo: "142",
+        apartmentNo: "7",
+        note: "",
+      },
+      items: [
+        line("Cheeseburger", 1, 320),
+        line("Soğan Halkası", 1, 145),
+        line("Pepsi", 1, 75),
+      ],
+      total: 540,
+    },
+    {
+      id: "sip-mock-003",
+      createdAt: minutesAgo(45),
+      status: "new",
+      payment: "card",
+      customer: {
+        name: "Selin Kara",
+        phone: "0533 204 55 61",
+        city: "İzmir",
+        district: "Bornova",
+        neighborhood: "Kazımdirik",
+        street: "Ankara Caddesi",
+        buildingNo: "56",
+        apartmentNo: "12",
+        note: "Ekstra sos olsun.",
+      },
+      items: [
+        line("Tavuklu Sandviç", 1, 210),
+        line("Ice Latte", 2, 130),
+        line("Cheesecake", 1, 160),
+      ],
+      total: 630,
+    },
+    {
+      id: "sip-mock-004",
+      createdAt: minutesAgo(90),
+      status: "delivered",
+      payment: "cash",
+      customer: {
+        name: "Burak Şahin",
+        phone: "0505 667 18 40",
+        city: "İzmir",
+        district: "Konak",
+        neighborhood: "Alsancak",
+        street: "Kıbrıs Şehitleri Caddesi",
+        buildingNo: "91",
+        apartmentNo: "3",
+        note: "",
+      },
+      items: [
+        line("Double Burger", 2, 390),
+        line("Fresh Limonata", 2, 110),
+      ],
+      total: 1000,
+    },
+    {
+      id: "sip-mock-005",
+      createdAt: minutesAgo(140),
+      status: "cancelled",
+      payment: "cash",
+      customer: {
+        name: "Merve Aksoy",
+        phone: "0536 889 01 27",
+        city: "İzmir",
+        district: "Çiğli",
+        neighborhood: "Ataşehir",
+        street: "Ataşehir Caddesi",
+        buildingNo: "18",
+        apartmentNo: "9",
+        note: "Yanlış adres girmişim.",
+      },
+      items: [line("Sucuklu Tost", 1, 165), line("Su", 1, 25)],
+      total: 190,
+    },
+    {
+      id: "sip-mock-006",
+      createdAt: minutesAgo(18),
+      status: "new",
+      payment: "cash",
+      customer: {
+        name: "Deniz Acar",
+        phone: "0542 130 44 58",
+        city: "İzmir",
+        district: "Bayraklı",
+        neighborhood: "Mansuroğlu",
+        street: "205/2. Sokak",
+        buildingNo: "3",
+        apartmentNo: "1",
+        note: "Hızlı gelsin lütfen.",
+      },
+      items: [
+        line("Patso", 1, 245),
+        line("Chicken Burger", 1, 290),
+        line("Filtre Kahve", 1, 95),
+      ],
+      total: 630,
+    },
+  ];
+
+  return samples;
+}
+
 function canUseStorage() {
   return typeof window !== "undefined" && !!window.localStorage;
 }
@@ -83,11 +231,31 @@ function writeJson(key: string, value: unknown) {
 }
 
 export function getSipOrders(): SipOrder[] {
-  const orders = readJson<SipOrder[]>(ORDERS_KEY, []);
-  return [...orders].sort(
-    (a, b) =>
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-  );
+  if (!canUseStorage()) return seedSipOrders();
+
+  const raw = window.localStorage.getItem(ORDERS_KEY);
+  if (!raw) {
+    const seeded = seedSipOrders();
+    writeJson(ORDERS_KEY, seeded);
+    return seeded;
+  }
+
+  try {
+    const parsed = JSON.parse(raw) as SipOrder[];
+    if (!Array.isArray(parsed)) {
+      const seeded = seedSipOrders();
+      writeJson(ORDERS_KEY, seeded);
+      return seeded;
+    }
+    return [...parsed].sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
+  } catch {
+    const seeded = seedSipOrders();
+    writeJson(ORDERS_KEY, seeded);
+    return seeded;
+  }
 }
 
 export function createSipOrder(
@@ -112,6 +280,13 @@ export function updateSipOrderStatus(
   const next = getSipOrders().map((order) =>
     order.id === id ? { ...order, status } : order,
   );
+  writeJson(ORDERS_KEY, next);
+  emitStoreChange("orders");
+  return next;
+}
+
+export function deleteSipOrder(id: string): SipOrder[] {
+  const next = getSipOrders().filter((order) => order.id !== id);
   writeJson(ORDERS_KEY, next);
   emitStoreChange("orders");
   return next;
@@ -246,8 +421,8 @@ export function formatSipOrderTime(iso: string) {
 }
 
 export const sipOrderStatusLabel: Record<SipOrderStatus, string> = {
-  new: "Yeni",
-  preparing: "Hazırlanıyor",
+  new: "Bekliyor",
+  preparing: "Bekliyor",
   delivered: "Teslim edildi",
   cancelled: "İptal",
 };

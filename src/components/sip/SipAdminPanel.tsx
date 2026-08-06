@@ -1,24 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
-import {
-  Check,
-  Eye,
-  EyeOff,
-  Phone,
-  Truck,
-  X,
-} from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ChevronDown, Eye, EyeOff, Phone } from "lucide-react";
 import {
   formatPrice,
   parsePrice,
   sipCategoryOrder,
+  sipImages,
 } from "@/lib/sip-content";
 import {
   formatSipOrderTime,
   getAllSipCatalogProducts,
   hideSipProduct,
+  deleteSipOrder,
   setSipProductPrice,
   showSipProduct,
   sipOrderStatusLabel,
@@ -31,149 +26,250 @@ import { useSipMenuOverrides, useSipOrders } from "@/lib/use-sip-store";
 type TabId = "orders" | "menu";
 type OrderFilter = "active" | "done" | "all";
 
-const tabs: { id: TabId; label: string }[] = [
-  { id: "orders", label: "Siparişler" },
-  { id: "menu", label: "Menü" },
+const orderFilterOptions: { id: OrderFilter; label: string }[] = [
+  { id: "active", label: "Aktif" },
+  { id: "done", label: "Tamamlanan" },
+  { id: "all", label: "Tümü" },
+];
+
+type MenuFilter = "active" | "hidden";
+
+const menuFilterOptions: { id: MenuFilter; label: string }[] = [
+  { id: "active", label: "Aktif" },
+  { id: "hidden", label: "Gizli" },
 ];
 
 type SipAdminPanelProps = {
   onLogout: () => void;
 };
 
-function statusTone(status: SipOrderStatus) {
-  switch (status) {
-    case "new":
-      return "bg-amber-400 text-white";
-    case "preparing":
-      return "bg-[var(--accent)] text-[var(--background)]";
-    case "delivered":
-      return "bg-emerald-500 text-white";
-    case "cancelled":
-      return "bg-[var(--muted)] text-white";
-  }
+function isActiveOrder(status: SipOrderStatus) {
+  return status === "new" || status === "preparing";
+}
+
+function ConfirmDialog({
+  title,
+  message,
+  confirmLabel,
+  confirmTone = "accent",
+  onConfirm,
+  onCancel,
+}: {
+  title: string;
+  message: string;
+  confirmLabel: string;
+  confirmTone?: "accent" | "danger";
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onCancel();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onCancel]);
+
+  return (
+    <div
+      className="fixed inset-0 z-[80] flex items-center justify-center bg-[color-mix(in_srgb,var(--heading)_45%,transparent)] p-6"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="sip-confirm-title"
+      onClick={onCancel}
+    >
+      <div
+        className="w-full max-w-sm rounded-[1.25rem] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[0_24px_60px_color-mix(in_srgb,var(--foreground)_18%,transparent)]"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <h3
+          id="sip-confirm-title"
+          className="sip-display text-2xl tracking-[-0.02em] text-[var(--heading)]"
+        >
+          {title}
+        </h3>
+        <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">
+          {message}
+        </p>
+        <div className="mt-6 flex gap-3">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="sip-btn-secondary flex-1"
+          >
+            Hayır
+          </button>
+          <button
+            type="button"
+            onClick={onConfirm}
+            className={`flex-1 rounded-[1rem] px-5 py-3.5 text-[12px] font-semibold tracking-[0.14em] uppercase transition-opacity hover:opacity-90 ${
+              confirmTone === "danger"
+                ? "bg-red-600 text-white"
+                : "bg-[var(--accent)] text-[var(--background)]"
+            }`}
+          >
+            {confirmLabel}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function phoneToWhatsApp(phone: string) {
+  const digits = phone.replace(/\D/g, "");
+  const normalized = digits.startsWith("0") ? `90${digits.slice(1)}` : digits;
+  return `https://wa.me/${normalized}`;
+}
+
+function WhatsAppIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
+    </svg>
+  );
 }
 
 function OrderCard({
   order,
-  onStatus,
+  onAskStatus,
 }: {
   order: SipOrder;
-  onStatus: (id: string, status: SipOrderStatus) => void;
+  onAskStatus: (order: SipOrder, status: "delivered" | "delete") => void;
 }) {
-  const address = [
-    order.customer.street,
-    `No: ${order.customer.buildingNo}`,
-    `Daire: ${order.customer.apartmentNo}`,
-    order.customer.neighborhood,
-    order.customer.district,
-    order.customer.city,
-  ].join(", ");
+  const [open, setOpen] = useState(false);
+  const active = isActiveOrder(order.status);
+  const address = `${order.customer.street} No:${order.customer.buildingNo} D:${order.customer.apartmentNo}, ${order.customer.neighborhood} / ${order.customer.district}`;
 
   return (
-    <article className="rounded-[1.35rem] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[0_12px_36px_color-mix(in_srgb,var(--foreground)_5%,transparent)]">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <div className="flex flex-wrap items-center gap-2">
-            <h3 className="sip-display text-2xl tracking-[-0.02em] text-[var(--heading)]">
-              {order.customer.name}
-            </h3>
-            <span
-              className={`rounded-full px-2.5 py-1 text-[10px] font-semibold tracking-[0.1em] uppercase ${statusTone(order.status)}`}
+    <li>
+      <article
+        className={`rounded-2xl border border-[var(--border)] bg-[var(--surface)] transition-colors ${
+          open ? "border-[var(--border-strong)]" : ""
+        }`}
+      >
+        <button
+          type="button"
+          onClick={() => setOpen((current) => !current)}
+          aria-expanded={open}
+          className="flex w-full flex-col gap-3 px-4 py-4 text-left sm:px-5 sm:py-5"
+        >
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <h3 className="sip-display text-xl tracking-[-0.02em] text-[var(--heading)] sm:text-2xl">
+                {order.customer.name}
+              </h3>
+              <p className="mt-1 text-sm leading-snug text-[var(--muted)]">
+                {address}
+              </p>
+            </div>
+            <p className="sip-display shrink-0 text-xl tracking-[-0.02em] text-[var(--heading)] sm:text-2xl">
+              {formatPrice(order.total)}
+            </p>
+          </div>
+        </button>
+
+        <div className="flex flex-wrap gap-2 border-t border-[var(--border)] px-4 py-3 sm:px-5">
+          <a
+            href={`tel:${order.customer.phone.replace(/\s/g, "")}`}
+            onClick={(event) => event.stopPropagation()}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--border-strong)] px-3 py-2 text-[11px] font-semibold tracking-[0.1em] text-[var(--heading)] uppercase transition-colors hover:border-[var(--accent)]"
+          >
+            <Phone className="h-3.5 w-3.5" strokeWidth={2} />
+            Ara
+          </a>
+          <a
+            href={phoneToWhatsApp(order.customer.phone)}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(event) => event.stopPropagation()}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--border-strong)] px-3 py-2 text-[11px] font-semibold tracking-[0.1em] text-[var(--heading)] uppercase transition-colors hover:border-[var(--accent)]"
+          >
+            <WhatsAppIcon className="h-3.5 w-3.5" />
+            WhatsApp
+          </a>
+          {active ? (
+            <button
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation();
+                onAskStatus(order, "delivered");
+              }}
+              className="rounded-xl bg-emerald-600 px-3 py-2 text-[11px] font-semibold tracking-[0.1em] text-white uppercase transition-opacity hover:opacity-90"
             >
+              Teslim Edildi
+            </button>
+          ) : (
+            <span className="inline-flex items-center px-1 text-[11px] font-semibold tracking-[0.1em] text-[var(--muted)] uppercase">
               {sipOrderStatusLabel[order.status]}
             </span>
-          </div>
-          <p className="mt-1 text-sm text-[var(--muted)]">
-            {formatSipOrderTime(order.createdAt)} · Kapıda{" "}
-            {order.payment === "cash" ? "nakit" : "kart"}
-          </p>
+          )}
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              onAskStatus(order, "delete");
+            }}
+            className="rounded-xl border border-red-200 px-3 py-2 text-[11px] font-semibold tracking-[0.1em] text-red-600 uppercase transition-colors hover:border-red-500"
+          >
+            Sil
+          </button>
         </div>
-        <p className="sip-display text-2xl tracking-[-0.02em] text-[var(--heading)]">
-          {formatPrice(order.total)}
-        </p>
-      </div>
 
-      <ul className="mt-4 space-y-1.5 border-t border-[var(--border)] pt-4">
-        {order.items.map((item) => (
-          <li
-            key={`${order.id}-${item.name}`}
-            className="flex items-center justify-between gap-3 text-sm"
-          >
-            <span className="text-[var(--heading)]">
-              {item.qty}× {item.name}
-            </span>
-            <span className="tabular-nums text-[var(--muted)]">
-              {formatPrice(item.lineTotal)}
-            </span>
-          </li>
-        ))}
-      </ul>
-
-      <div className="mt-4 space-y-2 text-sm text-[var(--muted)]">
-        <p>{address}</p>
-        {order.customer.note ? (
-          <p className="rounded-xl bg-[var(--sip-alt)] px-3 py-2 text-[var(--heading)]">
-            Not: {order.customer.note}
-          </p>
+        {open ? (
+          <div className="border-t border-[var(--border)] px-4 py-4 sm:px-5">
+            <p className="text-[11px] font-semibold tracking-[0.14em] text-[var(--muted)] uppercase">
+              Sipariş
+            </p>
+            <ul className="mt-3 space-y-2">
+              {order.items.map((item) => (
+                <li
+                  key={`${order.id}-${item.name}`}
+                  className="flex items-center justify-between gap-4 text-sm"
+                >
+                  <span className="text-[var(--heading)]">
+                    <span className="tabular-nums text-[var(--muted)]">
+                      {item.qty}×
+                    </span>{" "}
+                    {item.name}
+                  </span>
+                  <span className="tabular-nums text-[var(--muted)]">
+                    {formatPrice(item.lineTotal)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            {order.customer.note ? (
+              <p className="mt-4 text-sm leading-relaxed text-[var(--heading)]">
+                <span className="text-[var(--muted)]">Not:</span>{" "}
+                {order.customer.note}
+              </p>
+            ) : (
+              <p className="mt-4 text-sm text-[var(--muted)]">Not yok.</p>
+            )}
+            <p className="mt-3 text-xs text-[var(--muted)]">
+              {formatSipOrderTime(order.createdAt)} · Kapıda{" "}
+              {order.payment === "cash" ? "nakit" : "kart"}
+            </p>
+          </div>
         ) : null}
-      </div>
-
-      <div className="mt-5 flex flex-wrap gap-2">
-        <a
-          href={`tel:${order.customer.phone.replace(/\s/g, "")}`}
-          className="inline-flex items-center gap-2 rounded-xl border border-[var(--border-strong)] bg-[var(--background)] px-3.5 py-2.5 text-[11px] font-semibold tracking-[0.1em] text-[var(--heading)] uppercase transition-colors hover:border-[var(--accent)]"
-        >
-          <Phone className="h-3.5 w-3.5" strokeWidth={2} />
-          Ara
-        </a>
-
-        {order.status === "new" ? (
-          <button
-            type="button"
-            onClick={() => onStatus(order.id, "preparing")}
-            className="sip-btn-primary !px-4 !py-2.5"
-          >
-            Hazırlığa Al
-          </button>
-        ) : null}
-
-        {order.status === "preparing" ? (
-          <button
-            type="button"
-            onClick={() => onStatus(order.id, "delivered")}
-            className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2.5 text-[11px] font-semibold tracking-[0.14em] text-white uppercase transition-opacity hover:opacity-90"
-          >
-            <Truck className="h-3.5 w-3.5" strokeWidth={2} />
-            Teslim Edildi
-          </button>
-        ) : null}
-
-        {order.status === "new" || order.status === "preparing" ? (
-          <button
-            type="button"
-            onClick={() => onStatus(order.id, "cancelled")}
-            className="inline-flex items-center gap-2 rounded-xl border border-[var(--border-strong)] px-4 py-2.5 text-[11px] font-semibold tracking-[0.14em] text-[var(--muted)] uppercase transition-colors hover:border-red-500 hover:text-red-600"
-          >
-            <X className="h-3.5 w-3.5" strokeWidth={2} />
-            İptal
-          </button>
-        ) : null}
-
-        {order.status === "delivered" ? (
-          <span className="inline-flex items-center gap-2 rounded-xl bg-emerald-500/10 px-3.5 py-2.5 text-[11px] font-semibold tracking-[0.1em] text-emerald-700 uppercase">
-            <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
-            Tamamlandı
-          </span>
-        ) : null}
-      </div>
-    </article>
+      </article>
+    </li>
   );
 }
 
-function MenuEditor() {
+function MenuEditor({
+  menuFilter,
+}: {
+  menuFilter: MenuFilter;
+}) {
   const { overrides, refresh } = useSipMenuOverrides();
   const [draftPrices, setDraftPrices] = useState<Record<string, string>>({});
-  const [menuFilter, setMenuFilter] = useState<"active" | "hidden">("active");
 
   const catalog = useMemo(() => getAllSipCatalogProducts(), []);
 
@@ -217,140 +313,127 @@ function MenuEditor() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap gap-2">
-        <button
-          type="button"
-          onClick={() => setMenuFilter("active")}
-          className={`rounded-full px-4 py-2 text-[11px] font-semibold tracking-[0.1em] uppercase transition-colors ${
-            menuFilter === "active"
-              ? "bg-[var(--accent)] text-[var(--background)]"
-              : "border border-[var(--border-strong)] text-[var(--muted)]"
-          }`}
-        >
-          Aktif ({catalog.length - overrides.hidden.length})
-        </button>
-        <button
-          type="button"
-          onClick={() => setMenuFilter("hidden")}
-          className={`rounded-full px-4 py-2 text-[11px] font-semibold tracking-[0.1em] uppercase transition-colors ${
-            menuFilter === "hidden"
-              ? "bg-[var(--accent)] text-[var(--background)]"
-              : "border border-[var(--border-strong)] text-[var(--muted)]"
-          }`}
-        >
-          Gizli ({overrides.hidden.length})
-        </button>
-      </div>
-
+    <div className="space-y-10">
       {grouped.length === 0 ? (
-        <p className="rounded-[1.25rem] border border-dashed border-[var(--border-strong)] bg-[var(--surface)] px-5 py-10 text-center text-sm text-[var(--muted)]">
+        <p className="py-8 text-sm text-[var(--muted)]">
           {menuFilter === "hidden"
             ? "Gizli ürün yok."
             : "Aktif ürün bulunamadı."}
         </p>
       ) : (
-        grouped.map((group) => (
-          <section key={group.category} className="space-y-3">
-            <h3 className="text-[11px] font-semibold tracking-[0.18em] text-[var(--accent)] uppercase">
-              {group.category}
-            </h3>
-            <ul className="space-y-3">
-              {group.items.map((item) => {
-                const hidden = overrides.hidden.includes(item.name);
-                return (
-                  <li
-                    key={item.name}
-                    className="flex flex-col gap-4 rounded-[1.25rem] border border-[var(--border)] bg-[var(--surface)] p-4 sm:flex-row sm:items-center"
-                  >
-                    <div className="flex min-w-0 flex-1 items-center gap-3">
-                      <span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl">
-                        <Image
-                          src={item.src}
-                          alt={item.name}
-                          fill
-                          sizes="56px"
-                          className="object-cover"
-                        />
-                      </span>
-                      <div className="min-w-0">
-                        <p className="sip-display truncate text-xl tracking-[-0.02em] text-[var(--heading)]">
-                          {item.name}
-                        </p>
-                        <p className="mt-0.5 text-xs text-[var(--muted)]">
-                          Varsayılan {item.price}
-                        </p>
+        grouped.map((group) => {
+          const categoryMeta = sipImages.categories.find(
+            (item) => item.title === group.category,
+          );
+          return (
+            <section key={group.category} className="space-y-4">
+              <header className="max-w-xl">
+                <h3 className="sip-display text-xl tracking-[-0.02em] text-[var(--heading)] sm:text-2xl">
+                  {group.category}
+                </h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-[var(--muted)]">
+                  {categoryMeta?.text ?? `${group.items.length} ürün`}
+                  <span className="text-[var(--border-strong)]"> · </span>
+                  <span className="tabular-nums">{group.items.length} ürün</span>
+                </p>
+              </header>
+              <ul className="space-y-3">
+                {group.items.map((item) => {
+                  const hidden = overrides.hidden.includes(item.name);
+                  return (
+                    <li
+                      key={item.name}
+                      className="flex flex-col gap-4 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 sm:flex-row sm:items-center"
+                    >
+                      <div className="flex min-w-0 flex-1 items-center gap-3">
+                        <span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl">
+                          <Image
+                            src={item.src}
+                            alt={item.name}
+                            fill
+                            sizes="56px"
+                            className="object-cover"
+                          />
+                        </span>
+                        <div className="min-w-0">
+                          <p className="sip-display truncate text-xl tracking-[-0.02em] text-[var(--heading)]">
+                            {item.name}
+                          </p>
+                          <p className="mt-0.5 text-xs text-[var(--muted)]">
+                            Varsayılan {item.price}
+                          </p>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="flex flex-wrap items-center gap-2 sm:justify-end">
-                      {!hidden ? (
-                        <>
-                          <label className="flex items-center gap-2 rounded-xl border border-[var(--border-strong)] bg-[var(--background)] px-3 py-2">
-                            <span className="text-[11px] font-semibold tracking-[0.08em] text-[var(--muted)] uppercase">
-                              ₺
-                            </span>
-                            <input
-                              inputMode="numeric"
-                              value={currentPriceValue(item.name, item.price)}
-                              onChange={(event) =>
-                                setDraftPrices((current) => ({
-                                  ...current,
-                                  [item.name]: event.target.value.replace(
-                                    /[^\d]/g,
-                                    "",
-                                  ),
-                                }))
-                              }
-                              onBlur={() => savePrice(item.name, item.price)}
-                              onKeyDown={(event) => {
-                                if (event.key === "Enter") {
-                                  event.currentTarget.blur();
+                      <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+                        {!hidden ? (
+                          <>
+                            <label className="flex items-center gap-2 rounded-xl border border-[var(--border-strong)] bg-[var(--background)] px-3 py-2">
+                              <span className="text-[11px] font-semibold tracking-[0.08em] text-[var(--muted)] uppercase">
+                                ₺
+                              </span>
+                              <input
+                                inputMode="numeric"
+                                value={currentPriceValue(item.name, item.price)}
+                                onChange={(event) =>
+                                  setDraftPrices((current) => ({
+                                    ...current,
+                                    [item.name]: event.target.value.replace(
+                                      /[^\d]/g,
+                                      "",
+                                    ),
+                                  }))
                                 }
+                                onBlur={() => savePrice(item.name, item.price)}
+                                onKeyDown={(event) => {
+                                  if (event.key === "Enter") {
+                                    event.currentTarget.blur();
+                                  }
+                                }}
+                                className="w-20 bg-transparent text-sm tabular-nums text-[var(--heading)] outline-none"
+                                aria-label={`${item.name} fiyat`}
+                              />
+                            </label>
+                            <button
+                              type="button"
+                              onClick={() => savePrice(item.name, item.price)}
+                              className="rounded-xl border border-[var(--border-strong)] px-3 py-2 text-[11px] font-semibold tracking-[0.1em] text-[var(--heading)] uppercase transition-colors hover:border-[var(--accent)]"
+                            >
+                              Kaydet
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                hideSipProduct(item.name);
+                                refresh();
                               }}
-                              className="w-20 bg-transparent text-sm tabular-nums text-[var(--heading)] outline-none"
-                              aria-label={`${item.name} fiyat`}
-                            />
-                          </label>
-                          <button
-                            type="button"
-                            onClick={() => savePrice(item.name, item.price)}
-                            className="rounded-xl border border-[var(--border-strong)] px-3 py-2 text-[11px] font-semibold tracking-[0.1em] text-[var(--heading)] uppercase transition-colors hover:border-[var(--accent)]"
-                          >
-                            Kaydet
-                          </button>
+                              className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--border-strong)] px-3 py-2 text-[11px] font-semibold tracking-[0.1em] text-[var(--muted)] uppercase transition-colors hover:border-red-500 hover:text-red-600"
+                            >
+                              <EyeOff className="h-3.5 w-3.5" strokeWidth={2} />
+                              Gizle
+                            </button>
+                          </>
+                        ) : (
                           <button
                             type="button"
                             onClick={() => {
-                              hideSipProduct(item.name);
+                              showSipProduct(item.name);
                               refresh();
                             }}
-                            className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--border-strong)] px-3 py-2 text-[11px] font-semibold tracking-[0.1em] text-[var(--muted)] uppercase transition-colors hover:border-red-500 hover:text-red-600"
+                            className="inline-flex items-center gap-1.5 rounded-xl bg-[var(--accent)] px-3.5 py-2.5 text-[11px] font-semibold tracking-[0.1em] text-[var(--background)] uppercase transition-opacity hover:opacity-90"
                           >
-                            <EyeOff className="h-3.5 w-3.5" strokeWidth={2} />
-                            Gizle
+                            <Eye className="h-3.5 w-3.5" strokeWidth={2} />
+                            Ortaya Çıkar
                           </button>
-                        </>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            showSipProduct(item.name);
-                            refresh();
-                          }}
-                          className="inline-flex items-center gap-1.5 rounded-xl bg-[var(--accent)] px-3.5 py-2.5 text-[11px] font-semibold tracking-[0.1em] text-[var(--background)] uppercase transition-opacity hover:opacity-90"
-                        >
-                          <Eye className="h-3.5 w-3.5" strokeWidth={2} />
-                          Ortaya Çıkar
-                        </button>
-                      )}
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </section>
-        ))
+                        )}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          );
+        })
       )}
     </div>
   );
@@ -359,7 +442,17 @@ function MenuEditor() {
 export function SipAdminPanel({ onLogout }: SipAdminPanelProps) {
   const [tab, setTab] = useState<TabId>("orders");
   const [orderFilter, setOrderFilter] = useState<OrderFilter>("active");
+  const [menuFilter, setMenuFilter] = useState<MenuFilter>("active");
+  const [ordersMenuOpen, setOrdersMenuOpen] = useState(false);
+  const [menuMenuOpen, setMenuMenuOpen] = useState(false);
+  const ordersMenuRef = useRef<HTMLDivElement>(null);
+  const menuMenuRef = useRef<HTMLDivElement>(null);
+  const [pendingAction, setPendingAction] = useState<{
+    order: SipOrder;
+    status: "delivered" | "delete";
+  } | null>(null);
   const { orders, refresh } = useSipOrders();
+  const { overrides } = useSipMenuOverrides();
 
   const filteredOrders = useMemo(() => {
     if (orderFilter === "all") return orders;
@@ -369,104 +462,294 @@ export function SipAdminPanel({ onLogout }: SipAdminPanelProps) {
           order.status === "delivered" || order.status === "cancelled",
       );
     }
-    return orders.filter(
-      (order) => order.status === "new" || order.status === "preparing",
-    );
+    return orders.filter((order) => isActiveOrder(order.status));
   }, [orderFilter, orders]);
 
-  const activeCount = orders.filter(
-    (order) => order.status === "new" || order.status === "preparing",
+  const activeCount = orders.filter((order) =>
+    isActiveOrder(order.status),
   ).length;
 
+  const catalogCount = getAllSipCatalogProducts().length;
+  const hiddenCount = overrides.hidden.length;
+  const activeMenuCount = catalogCount - hiddenCount;
+
+  const orderFilterLabel =
+    orderFilterOptions.find((option) => option.id === orderFilter)?.label ??
+    "Aktif";
+
+  useEffect(() => {
+    if (!ordersMenuOpen && !menuMenuOpen) return;
+
+    const onPointer = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (
+        ordersMenuOpen &&
+        !ordersMenuRef.current?.contains(target)
+      ) {
+        setOrdersMenuOpen(false);
+      }
+      if (menuMenuOpen && !menuMenuRef.current?.contains(target)) {
+        setMenuMenuOpen(false);
+      }
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOrdersMenuOpen(false);
+        setMenuMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", onPointer);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onPointer);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [ordersMenuOpen, menuMenuOpen]);
+
   return (
-    <section className="min-h-svh bg-[var(--background)] px-6 py-10 lg:px-10">
-      <div className="mx-auto max-w-4xl">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 className="sip-display text-4xl tracking-[-0.02em] text-[var(--heading)] sm:text-5xl">
-              Admin
+    <section className="min-h-svh bg-[var(--background)]">
+      <div className="border-b border-[var(--border)] bg-[var(--sip-alt)]">
+        <div className="mx-auto flex max-w-3xl flex-wrap items-end justify-between gap-6 px-6 py-10 lg:px-10 lg:py-12">
+          <div className="max-w-lg">
+            <p className="text-[11px] font-semibold tracking-[0.22em] text-[var(--accent)] uppercase">
+              Yönetim
+            </p>
+            <h1 className="sip-display mt-3 text-4xl leading-[1.05] tracking-[-0.03em] text-[var(--heading)] sm:text-5xl">
+              Sipariş & Menü
             </h1>
-            <p className="mt-2 text-sm text-[var(--muted)]">
-              Siparişleri takip et, menü fiyatlarını yönet.
+            <p className="mt-3 text-base leading-relaxed text-[var(--muted)]">
+              Gelen siparişleri takip edin, fiyatları düzenleyin, ürün
+              görünürlüğünü yönetin.
             </p>
           </div>
-          <button type="button" onClick={onLogout} className="sip-btn-secondary">
+          <button
+            type="button"
+            onClick={onLogout}
+            className="text-[12px] font-semibold tracking-[0.14em] text-[var(--muted)] uppercase transition-colors hover:text-[var(--heading)]"
+          >
             Çıkış Yap
           </button>
         </div>
+      </div>
 
-        <div className="mt-8 flex flex-wrap gap-2">
-          {tabs.map((item) => (
+      <div className="mx-auto max-w-3xl px-6 py-8 lg:px-10 lg:py-10">
+        <div
+          className="flex gap-6 border-b border-[var(--border)]"
+          role="tablist"
+          aria-label="Admin sekmeleri"
+        >
+          <div ref={ordersMenuRef} className="relative -mb-px">
             <button
-              key={item.id}
               type="button"
-              onClick={() => setTab(item.id)}
-              className={`rounded-full px-4 py-2.5 text-[11px] font-semibold tracking-[0.1em] uppercase transition-colors ${
-                tab === item.id
-                  ? "bg-[var(--accent)] text-[var(--background)]"
-                  : "border border-[var(--border-strong)] text-[var(--muted)] hover:text-[var(--heading)]"
+              role="tab"
+              aria-selected={tab === "orders"}
+              aria-expanded={ordersMenuOpen}
+              aria-haspopup="menu"
+              onClick={() => {
+                setTab("orders");
+                setMenuMenuOpen(false);
+                setOrdersMenuOpen((open) => !open);
+              }}
+              className={`relative inline-flex items-center gap-1.5 pb-3 text-[13px] font-semibold tracking-[0.08em] uppercase transition-colors ${
+                tab === "orders"
+                  ? "text-[var(--heading)]"
+                  : "text-[var(--muted)] hover:text-[var(--heading)]"
               }`}
             >
-              {item.label}
-              {item.id === "orders" && activeCount > 0 ? (
-                <span className="ml-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--background)] px-1.5 text-[10px] text-[var(--accent)]">
+              Siparişler
+              {activeCount > 0 ? (
+                <span className="inline-flex min-w-5 justify-center rounded-full bg-[var(--accent)] px-1.5 py-0.5 text-[10px] font-bold text-[var(--background)] tabular-nums">
                   {activeCount}
                 </span>
               ) : null}
+              <ChevronDown
+                className={`h-3.5 w-3.5 transition-transform ${ordersMenuOpen ? "rotate-180" : ""}`}
+                strokeWidth={2}
+              />
+              <span
+                aria-hidden="true"
+                className={`absolute inset-x-0 bottom-0 h-0.5 origin-left bg-[var(--accent)] transition-transform duration-300 ${
+                  tab === "orders" ? "scale-x-100" : "scale-x-0"
+                }`}
+              />
             </button>
-          ))}
+
+            {ordersMenuOpen ? (
+              <div
+                role="menu"
+                className="absolute top-full left-0 z-20 mt-2 min-w-[11rem] overflow-hidden rounded-xl border border-[var(--border-strong)] bg-[var(--surface)] py-1 shadow-[0_16px_40px_color-mix(in_srgb,var(--foreground)_12%,transparent)]"
+              >
+                {orderFilterOptions.map((option) => {
+                  const selected = orderFilter === option.id;
+                  return (
+                    <button
+                      key={option.id}
+                      type="button"
+                      role="menuitemradio"
+                      aria-checked={selected}
+                      onClick={() => {
+                        setOrderFilter(option.id);
+                        setTab("orders");
+                        setOrdersMenuOpen(false);
+                      }}
+                      className={`flex w-full items-center justify-between px-4 py-2.5 text-left text-sm transition-colors hover:bg-[var(--sip-alt)] ${
+                        selected
+                          ? "font-semibold text-[var(--heading)]"
+                          : "text-[var(--muted)]"
+                      }`}
+                    >
+                      {option.label}
+                      {selected ? (
+                        <span className="text-[10px] tracking-[0.12em] text-[var(--accent)] uppercase">
+                          Seçili
+                        </span>
+                      ) : null}
+                    </button>
+                  );
+                })}
+              </div>
+            ) : null}
+          </div>
+
+          <div ref={menuMenuRef} className="relative -mb-px">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={tab === "menu"}
+              aria-expanded={menuMenuOpen}
+              aria-haspopup="menu"
+              onClick={() => {
+                setTab("menu");
+                setOrdersMenuOpen(false);
+                setMenuMenuOpen((open) => !open);
+              }}
+              className={`relative inline-flex items-center gap-1.5 pb-3 text-[13px] font-semibold tracking-[0.08em] uppercase transition-colors ${
+                tab === "menu"
+                  ? "text-[var(--heading)]"
+                  : "text-[var(--muted)] hover:text-[var(--heading)]"
+              }`}
+            >
+              Menü
+              <ChevronDown
+                className={`h-3.5 w-3.5 transition-transform ${menuMenuOpen ? "rotate-180" : ""}`}
+                strokeWidth={2}
+              />
+              <span
+                aria-hidden="true"
+                className={`absolute inset-x-0 bottom-0 h-0.5 origin-left bg-[var(--accent)] transition-transform duration-300 ${
+                  tab === "menu" ? "scale-x-100" : "scale-x-0"
+                }`}
+              />
+            </button>
+
+            {menuMenuOpen ? (
+              <div
+                role="menu"
+                className="absolute top-full left-0 z-20 mt-2 min-w-[11rem] overflow-hidden rounded-xl border border-[var(--border-strong)] bg-[var(--surface)] py-1 shadow-[0_16px_40px_color-mix(in_srgb,var(--foreground)_12%,transparent)]"
+              >
+                {menuFilterOptions.map((option) => {
+                  const selected = menuFilter === option.id;
+                  const count =
+                    option.id === "active" ? activeMenuCount : hiddenCount;
+                  return (
+                    <button
+                      key={option.id}
+                      type="button"
+                      role="menuitemradio"
+                      aria-checked={selected}
+                      onClick={() => {
+                        setMenuFilter(option.id);
+                        setTab("menu");
+                        setMenuMenuOpen(false);
+                      }}
+                      className={`flex w-full items-center justify-between gap-4 px-4 py-2.5 text-left text-sm transition-colors hover:bg-[var(--sip-alt)] ${
+                        selected
+                          ? "font-semibold text-[var(--heading)]"
+                          : "text-[var(--muted)]"
+                      }`}
+                    >
+                      <span>
+                        {option.label}
+                        <span className="ml-1.5 tabular-nums text-[var(--muted)]">
+                          {count}
+                        </span>
+                      </span>
+                      {selected ? (
+                        <span className="text-[10px] tracking-[0.12em] text-[var(--accent)] uppercase">
+                          Seçili
+                        </span>
+                      ) : null}
+                    </button>
+                  );
+                })}
+              </div>
+            ) : null}
+          </div>
         </div>
 
         {tab === "orders" ? (
-          <div className="mt-8 space-y-5">
-            <div className="flex flex-wrap gap-2">
-              {(
-                [
-                  ["active", "Aktif"],
-                  ["done", "Tamamlanan"],
-                  ["all", "Tümü"],
-                ] as const
-              ).map(([id, label]) => (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => setOrderFilter(id)}
-                  className={`rounded-full px-3.5 py-2 text-[11px] font-semibold tracking-[0.1em] uppercase transition-colors ${
-                    orderFilter === id
-                      ? "bg-[var(--sip-alt)] text-[var(--heading)] ring-1 ring-[var(--border-strong)]"
-                      : "text-[var(--muted)] hover:text-[var(--heading)]"
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
+          <div className="mt-8">
+            <p className="mb-4 text-xs font-semibold tracking-[0.14em] text-[var(--muted)] uppercase">
+              {orderFilterLabel} siparişler
+            </p>
 
             {filteredOrders.length === 0 ? (
-              <p className="rounded-[1.25rem] border border-dashed border-[var(--border-strong)] bg-[var(--surface)] px-5 py-12 text-center text-sm text-[var(--muted)]">
+              <p className="mt-6 text-sm text-[var(--muted)]">
                 Henüz sipariş yok. Müşteri sipariş verince burada görünür.
               </p>
             ) : (
-              <div className="space-y-4">
+              <ul className="space-y-3">
                 {filteredOrders.map((order) => (
                   <OrderCard
                     key={order.id}
                     order={order}
-                    onStatus={(id, status) => {
-                      updateSipOrderStatus(id, status);
-                      refresh();
-                    }}
+                    onAskStatus={(selected, status) =>
+                      setPendingAction({ order: selected, status })
+                    }
                   />
                 ))}
-              </div>
+              </ul>
             )}
           </div>
         ) : (
           <div className="mt-8">
-            <MenuEditor />
+            <MenuEditor menuFilter={menuFilter} />
           </div>
         )}
       </div>
+
+      {pendingAction ? (
+        <ConfirmDialog
+          title={
+            pendingAction.status === "delivered"
+              ? "Teslim edildi mi?"
+              : "Sipariş silinsin mi?"
+          }
+          message={
+            pendingAction.status === "delivered"
+              ? `${pendingAction.order.customer.name} siparişini teslim edildi olarak işaretlemek istediğinize emin misiniz?`
+              : `${pendingAction.order.customer.name} siparişini silmek istediğinize emin misiniz? Bu işlem geri alınamaz.`
+          }
+          confirmLabel="Evet"
+          confirmTone={
+            pendingAction.status === "delete" ? "danger" : "accent"
+          }
+          onCancel={() => setPendingAction(null)}
+          onConfirm={() => {
+            if (pendingAction.status === "delete") {
+              deleteSipOrder(pendingAction.order.id);
+            } else {
+              updateSipOrderStatus(
+                pendingAction.order.id,
+                pendingAction.status,
+              );
+            }
+            refresh();
+            setPendingAction(null);
+          }}
+        />
+      ) : null}
     </section>
   );
 }

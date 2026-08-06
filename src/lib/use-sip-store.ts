@@ -26,7 +26,7 @@ export function useSipOrders() {
       if (!detail?.type || detail.type === "orders") refresh();
     };
     const onStorage = (event: StorageEvent) => {
-      if (event.key === "sip-orders") refresh();
+      if (event.key === "sip-orders-v2") refresh();
     };
 
     window.addEventListener(SIP_STORE_EVENT, onStore);
